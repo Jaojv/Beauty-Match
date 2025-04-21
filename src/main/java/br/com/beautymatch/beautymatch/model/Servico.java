@@ -29,9 +29,20 @@ public class Servico {
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos;
 
+    @Override
+    public String toString() {
+        return "Servico{" +
+                "id_servico=" + id_servico +
+                ", nome='" + nome + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", preco=" + preco +
+                ", duracao=" + duracao +
+                '}';
+    }
+
     public Servico(){}
 
-    public Servico(Long id_servico, String nome, String descricao, BigDecimal preco, Duration duracao, List<Agendamento> agendamentos) {
+    public Servico(String nome, String descricao, BigDecimal preco, Duration duracao, List<Agendamento> agendamentos) {
         this.id_servico = id_servico;
         this.nome = nome;
         this.descricao = descricao;
@@ -39,7 +50,7 @@ public class Servico {
         this.duracao = duracao;
         this.agendamentos = agendamentos;
     }
-    public Servico(Long id_servico, String nome, String descricao, BigDecimal preco, Duration duracao) {
+    public Servico(String nome, String descricao, BigDecimal preco, Duration duracao) {
         this.id_servico = id_servico;
         this.nome = nome;
         this.descricao = descricao;
