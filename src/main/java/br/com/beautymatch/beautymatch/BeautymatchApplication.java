@@ -2,6 +2,7 @@ package br.com.beautymatch.beautymatch;
 
 // Importações necessárias do Spring Boot
 import br.com.beautymatch.beautymatch.service.CrudClienteService;
+import br.com.beautymatch.beautymatch.service.CrudProfissionalService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,12 +14,15 @@ import java.util.Scanner;
 @SpringBootApplication
 public class BeautymatchApplication implements CommandLineRunner {
 	private CrudClienteService clienteService;
+	private CrudProfissionalService profissionalService;
 
 	// Os objetos passado por parâmetro são injetados automaticamente pelo String
 	// pq sua classe possue a anotação @Service
-	public BeautymatchApplication(CrudClienteService clienteService) {
-		this.clienteService = clienteService;
 
+
+	public BeautymatchApplication(CrudClienteService clienteService, CrudProfissionalService profissionalService) {
+		this.clienteService = clienteService;
+		this.profissionalService = profissionalService;
 	}
 
 	public static void main(String[] args) {
@@ -38,12 +42,15 @@ public class BeautymatchApplication implements CommandLineRunner {
 			System.out.println("Qual entidade você deseja interagir? ");
 			System.out.println("0 - Sair");
 			System.out.println("1 - Cliente");
+			System.out.println("2 - Profissional");
 			int opcao = scanner.nextInt();
 
 			switch (opcao) {
 				case 1:
 					this.clienteService.menu(scanner);
 					break;
+				case 2:
+					this.profissionalService.menu(scanner);
 				default:
 					isTrue = false;
 					break;

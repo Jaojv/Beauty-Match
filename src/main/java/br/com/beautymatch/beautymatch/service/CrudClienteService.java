@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 @Service
 public class CrudClienteService {
-    private ClienteRepository clienteRepository; //Depêndencia da classe CrudClienteService
+    private ClienteRepository clienteRepository;//Depêndencia da classe CrudClienteService
 
     //O Spling autômaticamente cria um objeto com a interface 'ClienteRepository',
     //e o injeta para o construtor da classe atual ==> Injeção de Dependência

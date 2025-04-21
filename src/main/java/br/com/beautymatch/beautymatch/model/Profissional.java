@@ -19,15 +19,12 @@ public class Profissional {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_profissional;
 
-    // @Column: Define propriedades da coluna no banco de dados
-    // nullable = false: O campo não pode ser nulo
     @Column(nullable = false)
     private String nome;
 
     @Column(nullable = false)
     private String especialidade;
 
-    // length = 15: Define o tamanho máximo da coluna para armazenar números de telefone
     @Column(length = 15, unique = true)
     private String telefone;
 
@@ -38,4 +35,77 @@ public class Profissional {
     // mappedBy = "profissional": Indica que o campo 'profissional' na classe Agendamento controla o relacionamento
     @OneToMany(mappedBy = "profissional")
     private List<Agendamento> agendamentos;
+
+    @Override
+    public String toString() {
+        return "Profissional{" +
+                "id_profissional=" + id_profissional +
+                ", nome='" + nome + '\'' +
+                ", especialidade='" + especialidade + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
+    public Profissional(){}
+
+    public Profissional(String nome, String especialidade, String telefone, String email, List<Agendamento> agendamentos) {
+        this.nome = nome;
+        this.especialidade = especialidade;
+        this.telefone = telefone;
+        this.email = email;
+        this.agendamentos = agendamentos;
+    }
+
+    public Profissional(String nome, String especialidade, String telefone, String email) {
+        this.nome = nome;
+        this.especialidade = especialidade;
+        this.telefone = telefone;
+        this.email = email;
+    }
+
+    public Long getId_profissional() {
+        return id_profissional;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getEspecialidade() {
+        return especialidade;
+    }
+
+    public void setEspecialidade(String especialidade) {
+        this.especialidade = especialidade;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
+    }
+
 }
