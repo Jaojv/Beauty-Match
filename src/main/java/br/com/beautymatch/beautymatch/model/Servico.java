@@ -28,4 +28,66 @@ public class Servico {
 
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos;
+
+    public Servico(){}
+
+    public Servico(Long id_servico, String nome, String descricao, BigDecimal preco, Duration duracao, List<Agendamento> agendamentos) {
+        this.id_servico = id_servico;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.duracao = duracao;
+        this.agendamentos = agendamentos;
+    }
+    public Servico(Long id_servico, String nome, String descricao, BigDecimal preco, Duration duracao) {
+        this.id_servico = id_servico;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.duracao = duracao;
+    }
+
+    public Long getId_servico() {
+        return id_servico;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public Duration getDuracao() {
+        return duracao;
+    }
+
+    public void setDuracao(Duration duracao) {
+        this.duracao = duracao;
+    }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
+    }
 }
