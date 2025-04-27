@@ -1,7 +1,15 @@
 package br.com.beautymatch.beautymatch.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 // @Data: Anotação do Lombok que gera automaticamente getters, setters, toString, equals e hashCode
@@ -10,6 +18,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "profissionais")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Profissional {
 
     // @Id: Indica que este é o campo chave primária
@@ -19,22 +29,52 @@ public class Profissional {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_profissional;
 
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     @Column(nullable = false)
     private String nome;
 
+    @NotBlank(message = "A especialidade é obrigatória")
     @Column(nullable = false)
     private String especialidade;
 
-    @Column(length = 15, unique = true)
-    private String telefone;
+    @Column(columnDefinition = "TEXT")
+    private String biografia;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @NotNull(message = "O salão é obrigatório")
+    @ManyToOne
+    @JoinColumn(name = "salao_id", nullable = false)
+    private Salao salao;
 
-    // @OneToMany: Indica relacionamento um-para-muitos com a entidade Agendamento
-    // mappedBy = "profissional": Indica que o campo 'profissional' na classe Agendamento controla o relacionamento
-    @OneToMany(mappedBy = "profissional")
-    private List<Agendamento> agendamentos;
+    @OneToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
+
+    @OneToMany(mappedBy = "profissional", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Agendamento> agendamentos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profissional", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HorarioBloqueado> horariosBloqueados = new ArrayList<>();
+
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao;
+
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+
+    @PrePersist
+    protected void onCreate() {
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
 
     @Override
     public String toString() {
@@ -42,30 +82,31 @@ public class Profissional {
                 "id_profissional=" + id_profissional +
                 ", nome='" + nome + '\'' +
                 ", especialidade='" + especialidade + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", email='" + email + '\'' +
+                ", biografia='" + biografia + '\'' +
+                ", ativo=" + ativo +
+                ", salao=" + salao +
+                ", usuario=" + usuario +
+                ", agendamentos=" + agendamentos +
+                ", horariosBloqueados=" + horariosBloqueados +
+                ", dataCriacao=" + dataCriacao +
+                ", dataAtualizacao=" + dataAtualizacao +
                 '}';
     }
 
-    public Profissional(){}
-
-    public Profissional(String nome, String especialidade, String telefone, String email, List<Agendamento> agendamentos) {
-        this.nome = nome;
+    public Profissional(String especialidade, String biografia, boolean ativo, Salao salao, Usuario usuario) {
         this.especialidade = especialidade;
-        this.telefone = telefone;
-        this.email = email;
-        this.agendamentos = agendamentos;
+        this.biografia = biografia;
+        this.ativo = ativo;
+        this.salao = salao;
+        this.usuario = usuario;
     }
 
-    public Profissional(String nome, String especialidade, String telefone, String email) {
-        this.nome = nome;
-        this.especialidade = especialidade;
-        this.telefone = telefone;
-        this.email = email;
-    }
-
-    public Long getId_profissional() {
+    public Long getId() {
         return id_profissional;
+    }
+
+    public void setId(Long id) {
+        this.id_profissional = id;
     }
 
     public String getNome() {
@@ -84,20 +125,36 @@ public class Profissional {
         this.especialidade = especialidade;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public String getBiografia() {
+        return biografia;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setBiografia(String biografia) {
+        this.biografia = biografia;
     }
 
-    public String getEmail() {
-        return email;
+    public boolean isAtivo() {
+        return ativo;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Salao getSalao() {
+        return salao;
+    }
+
+    public void setSalao(Salao salao) {
+        this.salao = salao;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public List<Agendamento> getAgendamentos() {
@@ -106,6 +163,30 @@ public class Profissional {
 
     public void setAgendamentos(List<Agendamento> agendamentos) {
         this.agendamentos = agendamentos;
+    }
+
+    public List<HorarioBloqueado> getHorariosBloqueados() {
+        return horariosBloqueados;
+    }
+
+    public void setHorariosBloqueados(List<HorarioBloqueado> horariosBloqueados) {
+        this.horariosBloqueados = horariosBloqueados;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
     }
 
 }

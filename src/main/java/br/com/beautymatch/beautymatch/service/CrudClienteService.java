@@ -1,134 +1,89 @@
 package br.com.beautymatch.beautymatch.service;
 
-import br.com.beautymatch.beautymatch.model.Cliente;
-import br.com.beautymatch.beautymatch.repository.ClienteRepository;
+import br.com.beautymatch.beautymatch.model.Usuario;
+import br.com.beautymatch.beautymatch.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.Optional;
 import java.util.Scanner;
 
 @Service
 public class CrudClienteService {
-    private ClienteRepository clienteRepository;//Depêndencia da classe CrudClienteService
 
-    //O Spling autômaticamente cria um objeto com a interface 'ClienteRepository',
-    //e o injeta para o construtor da classe atual ==> Injeção de Dependência
-    public CrudClienteService(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
-    }
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    public void menu(Scanner scanner){
+    public void menu(Scanner scanner) {
         boolean isTrue = true;
 
-        while (isTrue){
-            System.out.println("Qual ação você quer executar?");
-            System.out.println("0 - Voltar a menu anterior");
-            System.out.println("1 - Cadastrar novo Cliente");
-            System.out.println("2 - Atualizar um Cliente");
-            System.out.println("3 - Visualizar todos Clientes");
-            System.out.println("4 - Deletar um Cliente");
-            int opcao = scanner.nextInt();
+        while (isTrue) {
+            System.out.println("\n=== Menu de Clientes ===");
+            System.out.println("1 - Listar todos os clientes");
+            System.out.println("2 - Buscar cliente por ID");
+            System.out.println("3 - Buscar cliente por email");
+            System.out.println("4 - Buscar cliente por CPF");
+            System.out.println("5 - Voltar ao menu principal");
+            System.out.print("Escolha uma opção: ");
 
-            switch (opcao){
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); // Consumir a quebra de linha
+
+            switch (opcao) {
                 case 1:
-                    this.cadastrar(scanner);
+                    listarTodos();
                     break;
                 case 2:
-                    this.atualizar(scanner);
+                    buscarPorId(scanner);
                     break;
                 case 3:
-                    this.visualizar();
+                    buscarPorEmail(scanner);
                     break;
                 case 4:
-                    this.deletar(scanner);
+                    buscarPorCpf(scanner);
                     break;
-                default:
+                case 5:
                     isTrue = false;
                     break;
+                default:
+                    System.out.println("Opção inválida!");
+                    break;
             }
-            System.out.println();
         }
     }
 
-    private void cadastrar(Scanner scanner){
-        scanner.nextLine();
+    private void listarTodos() {
+        System.out.println("\n=== Lista de Clientes ===");
+        usuarioRepository.findByTipo(Usuario.TipoUsuario.CLIENTE)
+                .forEach(cliente -> System.out.println(cliente));
+    }
 
-        System.out.print("Digite o nome do cliente: \n");
-        String nome = scanner.nextLine();
+    private void buscarPorId(Scanner scanner) {
+        System.out.print("Digite o ID do cliente: ");
+        Long id = scanner.nextLong();
+        usuarioRepository.findById(id)
+                .ifPresentOrElse(
+                        cliente -> System.out.println(cliente),
+                        () -> System.out.println("Cliente não encontrado!")
+                );
+    }
 
-        System.out.print("Digite o CPF do cliente: \n");
-        String cpf = scanner.nextLine();
-
-        System.out.print("Digite o telefone do cliente: \n");
-        String telefone = scanner.nextLine();
-
-        System.out.print("Digite o email do cliente: \n");
+    private void buscarPorEmail(Scanner scanner) {
+        System.out.print("Digite o email do cliente: ");
         String email = scanner.nextLine();
-
-        Cliente cliente = new Cliente(nome, cpf, telefone, email);
-        this.clienteRepository.save(cliente);
-        System.out.println("Cliente salvo no Banco.");
-
+        usuarioRepository.findByEmail(email)
+                .ifPresentOrElse(
+                        cliente -> System.out.println(cliente),
+                        () -> System.out.println("Cliente não encontrado!")
+                );
     }
 
-    private void atualizar(Scanner scanner) {
-        System.out.print("Digite o Id do Cliente a ser atualizado: ");
-        Long id = scanner.nextLong();
-
-        Optional<Cliente> optional = this.clienteRepository.findById(id);
-
-        //Se o hibernate conseguiu achar um registro na tabela de clientes com id igual ao passado pelo usuario
-        if (optional.isPresent()) {
-
-            scanner.nextLine();
-
-            System.out.print("Digite o nome do cliente: \n");
-            String nome = scanner.nextLine();
-
-            System.out.print("Digite o CPF do cliente: \n");
-            String cpf = scanner.nextLine();
-
-            System.out.print("Digite o telefone do cliente: \n");
-            String telefone = scanner.nextLine();
-
-            System.out.print("Digite o email do cliente: \n");
-            String email = scanner.nextLine();
-
-            Cliente cliente = optional.get();
-            cliente.setNome(nome);
-            cliente.setCpf(cpf);
-            cliente.setTelefone(telefone);
-            cliente.setEmail(email);
-
-            clienteRepository.save(cliente);
-
-            System.out.println("Cliente atualizado com sucesso.");
-
-        } else {
-            System.out.println("O Id do Cliente informado: " + id + " é inválido");
-        }
+    private void buscarPorCpf(Scanner scanner) {
+        System.out.print("Digite o CPF do cliente: ");
+        String cpf = scanner.nextLine();
+        usuarioRepository.findByCpf(cpf)
+                .ifPresentOrElse(
+                        cliente -> System.out.println(cliente),
+                        () -> System.out.println("Cliente não encontrado!")
+                );
     }
-
-    private void visualizar() {
-        Iterable<Cliente> clientes = this.clienteRepository.findAll();
-        for (Cliente cliente : clientes) {
-            System.out.println(cliente);
-        }
-        System.out.println();
-    }
-
-    private void deletar(Scanner scanner) {
-        System.out.print("Digite o Id do Cliente a ser deletado: ");
-        Long id = scanner.nextLong();
-
-        if (clienteRepository.existsById(id)) {
-            this.clienteRepository.deleteById(id);
-            System.out.println("Cliente deletado com sucesso.");
-        } else {
-            System.out.println("Cliente com o ID " + id + " não foi encontrado.");
-        }
-
-    }
-
 }
+

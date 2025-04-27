@@ -8,14 +8,16 @@ import br.com.beautymatch.beautymatch.service.CrudServicoService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 import java.util.Scanner;
 
 // @SpringBootApplication: Anotação que combina @Configuration, @EnableAutoConfiguration e @ComponentScan
 // Esta é a classe principal que inicia a aplicação Spring Boot
 @SpringBootApplication
-public class BeautymatchApplication implements CommandLineRunner {
-	private CrudClienteService clienteService;
+@EnableCaching
+public class BeautyMatchApplication implements CommandLineRunner {
+	private final CrudClienteService clienteService;
 	private CrudProfissionalService profissionalService;
 	private CrudServicoService servicoService;
 	private CrudAgendamentoService agendamentoService;
@@ -23,7 +25,7 @@ public class BeautymatchApplication implements CommandLineRunner {
 	// Os objetos passado por parâmetro são injetados automaticamente pelo String
 	// pq sua classe possue a anotação @Service
 
-	public BeautymatchApplication(CrudClienteService clienteService, 
+	public BeautyMatchApplication(CrudClienteService clienteService, 
                                  CrudProfissionalService profissionalService, 
                                  CrudServicoService servicoService,
                                  CrudAgendamentoService agendamentoService) {
@@ -37,7 +39,7 @@ public class BeautymatchApplication implements CommandLineRunner {
 		// SpringApplication.run: Inicia a aplicação Spring Boot
 		// BeautyMatchApplication.class: Classe principal da aplicação
 		// args: Argumentos de linha de comando passados para a aplicação
-		SpringApplication.run(BeautymatchApplication.class, args);
+		SpringApplication.run(BeautyMatchApplication.class, args);
 
 	}
 

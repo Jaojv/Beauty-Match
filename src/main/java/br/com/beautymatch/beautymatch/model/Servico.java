@@ -1,33 +1,79 @@
 package br.com.beautymatch.beautymatch.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
-import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
 @Table(name = "servicos")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Servico {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_servico;
-
+    
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     @Column(nullable = false)
     private String nome;
-
+    
+    @Column(columnDefinition = "TEXT")
     private String descricao;
-
+    
+    @NotNull(message = "O preço é obrigatório")
+    @Min(value = 0, message = "O preço deve ser maior ou igual a zero")
     @Column(nullable = false)
     private BigDecimal preco;
-
+    
+    @NotNull(message = "A duração é obrigatória")
+    @Min(value = 1, message = "A duração deve ser maior que zero")
+    @Column(name = "duracao_minutos", nullable = false)
+    private Integer duracaoMinutos;
+    
+    @NotNull(message = "O salão é obrigatório")
+    @ManyToOne
+    @JoinColumn(name = "salao_id", nullable = false)
+    private Salao salao;
+    
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private CategoriaServico categoria;
+    
+    @OneToMany(mappedBy = "servico", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Agendamento> agendamentos = new ArrayList<>();
+    
     @Column(nullable = false)
-    private Duration duracao;
-
-    @OneToMany(mappedBy = "servico")
-    private List<Agendamento> agendamentos;
+    private boolean ativo = true;
+    
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao;
+    
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+    
+    @PrePersist
+    protected void onCreate() {
+        dataCriacao = LocalDateTime.now();
+        dataAtualizacao = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
 
     @Override
     public String toString() {
@@ -36,30 +82,22 @@ public class Servico {
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", preco=" + preco +
-                ", duracao=" + duracao +
+                ", duracaoMinutos=" + duracaoMinutos +
+                ", ativo=" + ativo +
+                ", salao=" + salao +
+                ", categoria=" + categoria +
+                ", agendamentos=" + agendamentos +
+                ", dataCriacao=" + dataCriacao +
+                ", dataAtualizacao=" + dataAtualizacao +
                 '}';
     }
 
-    public Servico(){}
-
-    public Servico(String nome, String descricao, BigDecimal preco, Duration duracao, List<Agendamento> agendamentos) {
-        this.id_servico = id_servico;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.duracao = duracao;
-        this.agendamentos = agendamentos;
-    }
-    public Servico(String nome, String descricao, BigDecimal preco, Duration duracao) {
-        this.id_servico = id_servico;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.duracao = duracao;
-    }
-
-    public Long getId_servico() {
+    public Long getId() {
         return id_servico;
+    }
+
+    public void setId(Long id) {
+        this.id_servico = id;
     }
 
     public String getNome() {
@@ -86,12 +124,36 @@ public class Servico {
         this.preco = preco;
     }
 
-    public Duration getDuracao() {
-        return duracao;
+    public Integer getDuracaoMinutos() {
+        return duracaoMinutos;
     }
 
-    public void setDuracao(Duration duracao) {
-        this.duracao = duracao;
+    public void setDuracaoMinutos(Integer duracaoMinutos) {
+        this.duracaoMinutos = duracaoMinutos;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Salao getSalao() {
+        return salao;
+    }
+
+    public void setSalao(Salao salao) {
+        this.salao = salao;
+    }
+
+    public CategoriaServico getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(CategoriaServico categoria) {
+        this.categoria = categoria;
     }
 
     public List<Agendamento> getAgendamentos() {
@@ -100,5 +162,9 @@ public class Servico {
 
     public void setAgendamentos(List<Agendamento> agendamentos) {
         this.agendamentos = agendamentos;
+    }
+
+    public BigDecimal getValor() {
+        return preco;
     }
 }

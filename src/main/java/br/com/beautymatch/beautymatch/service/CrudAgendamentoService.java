@@ -9,9 +9,11 @@ import br.com.beautymatch.beautymatch.repository.ClienteRepository;
 import br.com.beautymatch.beautymatch.repository.ProfissionalRepository;
 import br.com.beautymatch.beautymatch.repository.ServicoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -121,13 +123,15 @@ public class CrudAgendamentoService {
         LocalTime hora = LocalTime.parse(horaStr, DateTimeFormatter.ofPattern("HH:mm"));
         
         // Verificar disponibilidade do horário
-        if (!verificarDisponibilidadeHorario(profissionalOpt.get(), data, hora, servicoOpt.get().getDuracao())) {
+        if (!verificarDisponibilidadeHorario(profissionalOpt.get(), data, hora, servicoOpt.get().getDuracaoMinutos())) {
             System.out.println("Horário indisponível para este profissional.");
             return;
         }
         
         // Criar e salvar o agendamento
-        Agendamento agendamento = new Agendamento(data, hora, clienteOpt.get(), profissionalOpt.get(), servicoOpt.get());
+        LocalDateTime dataHora = data.atTime(hora);
+        LocalDateTime dataHoraFim = dataHora.plusMinutes(servicoOpt.get().getDuracaoMinutos());
+        Agendamento agendamento = new Agendamento(dataHora, dataHoraFim, clienteOpt.get(), profissionalOpt.get(), servicoOpt.get());
         this.agendamentoRepository.save(agendamento);
         System.out.println("Agendamento salvo com sucesso.");
     }
@@ -183,14 +187,16 @@ public class CrudAgendamentoService {
             LocalTime hora = LocalTime.parse(horaStr, DateTimeFormatter.ofPattern("HH:mm"));
             
             // Verificar disponibilidade do horário (excluindo o agendamento atual)
-            if (!verificarDisponibilidadeHorario(profissionalOpt.get(), data, hora, servicoOpt.get().getDuracao(), id)) {
+            if (!verificarDisponibilidadeHorario(profissionalOpt.get(), data, hora, servicoOpt.get().getDuracaoMinutos(), id)) {
                 System.out.println("Horário indisponível para este profissional.");
                 return;
             }
             
             Agendamento agendamento = optional.get();
-            agendamento.setData(data);
-            agendamento.setHora(hora);
+            LocalDateTime dataHora = data.atTime(hora);
+            LocalDateTime dataHoraFim = dataHora.plusMinutes(servicoOpt.get().getDuracaoMinutos());
+            agendamento.setDataHora(dataHora);
+            agendamento.setDataHoraFim(dataHoraFim);
             agendamento.setCliente(clienteOpt.get());
             agendamento.setProfissional(profissionalOpt.get());
             agendamento.setServico(servicoOpt.get());
@@ -202,89 +208,214 @@ public class CrudAgendamentoService {
         }
     }
 
+    @Transactional
     private void visualizar() {
         Iterable<Agendamento> agendamentos = this.agendamentoRepository.findAll();
-        for (Agendamento agendamento : agendamentos) {
-            System.out.println(agendamento);
+        if (!((List<Agendamento>) agendamentos).isEmpty()) {
+            System.out.println("\n=== Lista de Agendamentos ===");
+            for (Agendamento agendamento : agendamentos) {
+                exibirDetalhesAgendamento(agendamento);
+            }
+        } else {
+            System.out.println("Não há agendamentos cadastrados.");
         }
-        System.out.println();
+    }
+
+    private void exibirDetalhesAgendamento(Agendamento agendamento) {
+        if (agendamento == null) {
+            System.out.println("Agendamento inválido");
+            return;
+        }
+
+        System.out.println("\nID: " + agendamento.getId());
+        System.out.println("Data: " + (agendamento.getDataHora() != null ? 
+            agendamento.getDataHora().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "Data não informada"));
+        System.out.println("Hora: " + (agendamento.getDataHora() != null ? 
+            agendamento.getDataHora().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) : "Hora não informada"));
+        
+        String nomeCliente = "Cliente não informado";
+        if (agendamento.getCliente() != null && agendamento.getCliente().getUsuario() != null) {
+            nomeCliente = agendamento.getCliente().getUsuario().getNome();
+        }
+        System.out.println("Cliente: " + nomeCliente + " (ID: " + (agendamento.getCliente() != null ? agendamento.getCliente().getId() : "N/A") + ")");
+        
+        String nomeProfissional = "Profissional não informado";
+        if (agendamento.getProfissional() != null) {
+            nomeProfissional = agendamento.getProfissional().getNome();
+        }
+        System.out.println("Profissional: " + nomeProfissional + " (ID: " + (agendamento.getProfissional() != null ? agendamento.getProfissional().getId() : "N/A") + ")");
+        
+        String nomeServico = "Serviço não informado";
+        if (agendamento.getServico() != null) {
+            nomeServico = agendamento.getServico().getNome();
+        }
+        System.out.println("Serviço: " + nomeServico + " (ID: " + (agendamento.getServico() != null ? agendamento.getServico().getId() : "N/A") + ")");
+        
+        if (agendamento.getServico() != null) {
+            System.out.println("Duração: " + agendamento.getServico().getDuracaoMinutos() + " minutos");
+            System.out.println("Valor: R$ " + agendamento.getServico().getPreco());
+        }
+        System.out.println("----------------------------------------");
     }
 
     private void deletar(Scanner scanner) {
         System.out.print("Digite o ID do Agendamento a ser deletado: ");
         Long id = scanner.nextLong();
 
-        if (agendamentoRepository.existsById(id)) {
-            this.agendamentoRepository.deleteById(id);
-            System.out.println("Agendamento deletado com sucesso.");
+        Optional<Agendamento> agendamentoOpt = this.agendamentoRepository.findById(id);
+        
+        if (agendamentoOpt.isPresent()) {
+            Agendamento agendamento = agendamentoOpt.get();
+            
+            System.out.println("\nDetalhes do agendamento a ser deletado:");
+            exibirDetalhesAgendamento(agendamento);
+            
+            System.out.println("Tem certeza que deseja deletar este agendamento? (S/N)");
+            scanner.nextLine(); // Limpa o buffer
+            String resposta = scanner.nextLine().toUpperCase();
+            
+            if (resposta.equals("S")) {
+                this.agendamentoRepository.deleteById(id);
+                System.out.println("Agendamento deletado com sucesso.");
+            } else {
+                System.out.println("Operação cancelada pelo usuário.");
+            }
         } else {
-            System.out.println("Agendamento com o ID " + id + " não foi encontrado.");
+            System.out.println("Agendamento com ID " + id + " não encontrado.");
         }
     }
     
+    @Transactional
     private void visualizarAgendaProfissional(Scanner scanner) {
-        System.out.print("Digite o ID do profissional: ");
+        System.out.print("Digite o ID do Profissional: ");
         Long profissionalId = scanner.nextLong();
         
         Optional<Profissional> profissionalOpt = profissionalRepository.findById(profissionalId);
         
-        if (!profissionalOpt.isPresent()) {
-            System.out.println("Profissional não encontrado.");
-            return;
-        }
-        
-        System.out.print("Digite a data (formato dd/MM/yyyy) ou deixe em branco para ver todos os agendamentos: ");
-        scanner.nextLine();
-        String dataStr = scanner.nextLine();
-        
-        List<Agendamento> agendamentos;
-        if (dataStr.isEmpty()) {
-            agendamentos = agendamentoRepository.findByProfissional(profissionalOpt.get());
-        } else {
-            LocalDate data = LocalDate.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            agendamentos = agendamentoRepository.findByProfissionalAndData(profissionalOpt.get(), data);
-        }
-        
-        if (agendamentos.isEmpty()) {
-            System.out.println("Nenhum agendamento encontrado.");
-        } else {
-            System.out.println("Agenda do profissional " + profissionalOpt.get().getNome() + ":");
-            for (Agendamento agendamento : agendamentos) {
-                System.out.println(agendamento);
+        if (profissionalOpt.isPresent()) {
+            Profissional profissional = profissionalOpt.get();
+            List<Agendamento> agendamentos = profissional.getAgendamentos();
+            
+            if (agendamentos != null && !agendamentos.isEmpty()) {
+                String nomeProfissional = "Profissional";
+                if (profissional.getUsuario() != null) {
+                    nomeProfissional = profissional.getUsuario().getNome();
+                }
+                System.out.println("\n=== Agenda do(a) Profissional " + nomeProfissional + " ===");
+                
+                // Ordenar agendamentos por data e hora
+                agendamentos.sort((a1, a2) -> {
+                    if (a1.getDataHora() == null || a2.getDataHora() == null) {
+                        return 0;
+                    }
+                    int dateCompare = a1.getDataHora().toLocalDate().compareTo(a2.getDataHora().toLocalDate());
+                    if (dateCompare == 0) {
+                        return a1.getDataHora().toLocalTime().compareTo(a2.getDataHora().toLocalTime());
+                    }
+                    return dateCompare;
+                });
+                
+                LocalDate currentDate = null;
+                for (Agendamento agendamento : agendamentos) {
+                    if (agendamento == null || agendamento.getDataHora() == null) {
+                        continue;
+                    }
+                    
+                    if (currentDate == null || !currentDate.equals(agendamento.getDataHora().toLocalDate())) {
+                        currentDate = agendamento.getDataHora().toLocalDate();
+                        System.out.println("\nData: " + currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    }
+                    System.out.println("----------------------------------------");
+                    System.out.println("Hora: " + agendamento.getDataHora().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    
+                    String nomeCliente = "Cliente não informado";
+                    if (agendamento.getCliente() != null && agendamento.getCliente().getUsuario() != null) {
+                        nomeCliente = agendamento.getCliente().getUsuario().getNome();
+                    }
+                    System.out.println("Cliente: " + nomeCliente);
+                    
+                    String nomeServico = "Serviço não informado";
+                    if (agendamento.getServico() != null) {
+                        nomeServico = agendamento.getServico().getNome();
+                    }
+                    System.out.println("Serviço: " + nomeServico);
+                    
+                    if (agendamento.getServico() != null) {
+                        System.out.println("Duração: " + agendamento.getServico().getDuracaoMinutos() + " minutos");
+                    }
+                }
+            } else {
+                System.out.println("Não há agendamentos para este profissional.");
             }
+        } else {
+            System.out.println("Profissional não encontrado.");
         }
     }
     
+    @Transactional
     private void visualizarAgendaCliente(Scanner scanner) {
-        System.out.print("Digite o ID do cliente: ");
+        System.out.print("Digite o ID do Cliente: ");
         Long clienteId = scanner.nextLong();
         
         Optional<Cliente> clienteOpt = clienteRepository.findById(clienteId);
         
-        if (!clienteOpt.isPresent()) {
-            System.out.println("Cliente não encontrado.");
-            return;
-        }
-        
-        System.out.print("Digite a data (formato dd/MM/yyyy) ou deixe em branco para ver todos os agendamentos: ");
-        scanner.nextLine(); // Limpar o buffer
-        String dataStr = scanner.nextLine();
-        
-        List<Agendamento> agendamentos;
-        if (dataStr.isEmpty()) {
-            agendamentos = agendamentoRepository.findByCliente(clienteOpt.get());
-        } else {
-            LocalDate data = LocalDate.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            agendamentos = agendamentoRepository.findByClienteAndData(clienteOpt.get(), data);
-        }
-        
-        if (agendamentos.isEmpty()) {
-            System.out.println("Nenhum agendamento encontrado.");
-        } else {
-            System.out.println("Agenda do cliente " + clienteOpt.get().getNome() + ":");
-            for (Agendamento agendamento : agendamentos) {
-                System.out.println(agendamento);
+        if (clienteOpt.isPresent()) {
+            Cliente cliente = clienteOpt.get();
+            List<Agendamento> agendamentos = cliente.getAgendamentos();
+            
+            if (agendamentos != null && !agendamentos.isEmpty()) {
+                String nomeCliente = "Cliente";
+                if (cliente.getUsuario() != null) {
+                    nomeCliente = cliente.getUsuario().getNome();
+                }
+                System.out.println("\n=== Agenda do(a) Cliente " + nomeCliente + " ===");
+                
+                // Ordenar agendamentos por data e hora
+                agendamentos.sort((a1, a2) -> {
+                    if (a1.getDataHora() == null || a2.getDataHora() == null) {
+                        return 0;
+                    }
+                    int dateCompare = a1.getDataHora().toLocalDate().compareTo(a2.getDataHora().toLocalDate());
+                    if (dateCompare == 0) {
+                        return a1.getDataHora().toLocalTime().compareTo(a2.getDataHora().toLocalTime());
+                    }
+                    return dateCompare;
+                });
+                
+                LocalDate currentDate = null;
+                for (Agendamento agendamento : agendamentos) {
+                    if (agendamento == null || agendamento.getDataHora() == null) {
+                        continue;
+                    }
+                    
+                    if (currentDate == null || !currentDate.equals(agendamento.getDataHora().toLocalDate())) {
+                        currentDate = agendamento.getDataHora().toLocalDate();
+                        System.out.println("\nData: " + currentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    }
+                    System.out.println("----------------------------------------");
+                    System.out.println("Hora: " + agendamento.getDataHora().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                    
+                    String nomeProfissional = "Profissional não informado";
+                    if (agendamento.getProfissional() != null && agendamento.getProfissional().getUsuario() != null) {
+                        nomeProfissional = agendamento.getProfissional().getUsuario().getNome();
+                    }
+                    System.out.println("Profissional: " + nomeProfissional);
+                    
+                    String nomeServico = "Serviço não informado";
+                    if (agendamento.getServico() != null) {
+                        nomeServico = agendamento.getServico().getNome();
+                    }
+                    System.out.println("Serviço: " + nomeServico);
+                    
+                    if (agendamento.getServico() != null) {
+                        System.out.println("Duração: " + agendamento.getServico().getDuracaoMinutos() + " minutos");
+                    }
+                }
+            } else {
+                System.out.println("Não há agendamentos para este cliente.");
             }
+        } else {
+            System.out.println("Cliente não encontrado.");
         }
     }
     
@@ -319,7 +450,7 @@ public class CrudAgendamentoService {
         String horaStr = scanner.nextLine();
         LocalTime hora = LocalTime.parse(horaStr, DateTimeFormatter.ofPattern("HH:mm"));
         
-        boolean disponivel = verificarDisponibilidadeHorario(profissionalOpt.get(), data, hora, servicoOpt.get().getDuracao());
+        boolean disponivel = verificarDisponibilidadeHorario(profissionalOpt.get(), data, hora, servicoOpt.get().getDuracaoMinutos());
         
         if (disponivel) {
             System.out.println("Horário disponível para agendamento.");
@@ -328,33 +459,26 @@ public class CrudAgendamentoService {
         }
     }
     
-    private boolean verificarDisponibilidadeHorario(Profissional profissional, LocalDate data, LocalTime hora, java.time.Duration duracao) {
-        return verificarDisponibilidadeHorario(profissional, data, hora, duracao, null);
+    private boolean verificarDisponibilidadeHorario(Profissional profissional, LocalDate data, LocalTime hora, Integer duracaoMinutos) {
+        LocalDateTime dataHoraInicio = data.atTime(hora);
+        LocalDateTime dataHoraFim = dataHoraInicio.plusMinutes(duracaoMinutos);
+        
+        List<Agendamento> agendamentosExistentes = agendamentoRepository.findConflitosAgendamentoIntervalo(
+                profissional.getId(), dataHoraInicio, dataHoraFim);
+        
+        return agendamentosExistentes.isEmpty();
     }
     
-    private boolean verificarDisponibilidadeHorario(Profissional profissional, LocalDate data, LocalTime hora, java.time.Duration duracao, Long agendamentoIdIgnorado) {
-        // Obter todos os agendamentos do profissional para a data especificada
-        List<Agendamento> agendamentosDoDia = agendamentoRepository.findByProfissionalAndData(profissional, data);
+    private boolean verificarDisponibilidadeHorario(Profissional profissional, LocalDate data, LocalTime hora, Integer duracaoMinutos, Long agendamentoId) {
+        LocalDateTime dataHoraInicio = data.atTime(hora);
+        LocalDateTime dataHoraFim = dataHoraInicio.plusMinutes(duracaoMinutos);
         
-        // Calcular o horário de término do agendamento proposto
-        LocalTime horaTermino = hora.plus(duracao);
+        List<Agendamento> agendamentosExistentes = agendamentoRepository.findConflitosAgendamentoIntervalo(
+                profissional.getId(), dataHoraInicio, dataHoraFim);
         
-        // Verificar se há conflito com outros agendamentos
-        for (Agendamento agendamento : agendamentosDoDia) {
-            // Ignorar o agendamento que está sendo atualizado
-            if (agendamentoIdIgnorado != null && agendamento.getId_agendamento().equals(agendamentoIdIgnorado)) {
-                continue;
-            }
-            
-            LocalTime horaInicioExistente = agendamento.getHora();
-            LocalTime horaTerminoExistente = horaInicioExistente.plus(agendamento.getServico().getDuracao());
-            
-            // Verificar se há sobreposição de horários
-            if (!(horaTermino.isBefore(horaInicioExistente) || hora.isAfter(horaTerminoExistente))) {
-                return false; // Há conflito de horário
-            }
-        }
+        // Remove o agendamento atual da lista de conflitos
+        agendamentosExistentes.removeIf(a -> a.getId().equals(agendamentoId));
         
-        return true; // Não há conflito de horário
+        return agendamentosExistentes.isEmpty();
     }
 } 

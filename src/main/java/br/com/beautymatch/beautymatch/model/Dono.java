@@ -9,46 +9,44 @@ import java.util.List;
 // @Table: Especifica o nome da tabela no banco de dados
 @Data
 @Entity
-@Table(name = "clientes")
-public class Cliente {
+@Table(name = "donos")
+public class Dono {
 
     // @Id: Indica que este é o campo chave primária
     // @GeneratedValue: Configura a geração automática do ID
     // strategy = GenerationType.IDENTITY: Usa auto-incremento do banco de dados
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_cliente;
+    private Long id_dono;
 
     @OneToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    // @OneToMany: Indica relacionamento um-para-muitos com a entidade Agendamento
-    // mappedBy = "cliente": Indica que o campo 'cliente' na classe Agendamento controla o relacionamento
-    @OneToMany(mappedBy = "cliente")
-    private List<Agendamento> agendamentos;
+    @OneToMany(mappedBy = "dono", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Salao> saloes;
 
     @Override
     public String toString() {
-        return "Cliente{" +
-                "id_cliente=" + id_cliente +
+        return "Dono{" +
+                "id_dono=" + id_dono +
                 ", usuario=" + usuario +
                 '}';
     }
 
-    public Cliente() {
+    public Dono() {
     }
     
-    public Cliente(Usuario usuario) {
+    public Dono(Usuario usuario) {
         this.usuario = usuario;
     }
 
     public Long getId() {
-        return id_cliente;
+        return id_dono;
     }
 
     public void setId(Long id) {
-        this.id_cliente = id;
+        this.id_dono = id;
     }
 
     public Usuario getUsuario() {
@@ -59,11 +57,11 @@ public class Cliente {
         this.usuario = usuario;
     }
 
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
+    public List<Salao> getSaloes() {
+        return saloes;
     }
 
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
+    public void setSaloes(List<Salao> saloes) {
+        this.saloes = saloes;
     }
-}
+} 
