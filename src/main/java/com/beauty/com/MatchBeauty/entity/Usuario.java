@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,33 +15,32 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "usuarios")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "tipo_usuario")
 public abstract class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private Long idUsuario;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String telefone;
 
-    @Column(name = "criado_em", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime criadoEm;
 
-    @Column(name = "atualizado_em")
     private LocalDateTime atualizadoEm;
 
-    // Getters e setters
-    // ...
+    public Usuario() {
+        this.criadoEm = LocalDateTime.now();
+    }
 
     public Usuario(Long idUsuario, String username, String password, String email,
                    String telefone, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
@@ -55,10 +53,14 @@ public abstract class Usuario {
         this.atualizadoEm = atualizadoEm;
     }
 
+    // Getters e setters
     public Long getIdUsuario() {
         return idUsuario;
     }
 
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
     public String getUsername() {
         return username;
