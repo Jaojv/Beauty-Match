@@ -34,4 +34,49 @@ public class Servico {
 
     // Getters e setters
     // ...
-} 
+
+    public Servico(Long idServico, String nome, BigDecimal preco, Integer duracaoEmMinutos, Salao salao) {
+        this.idServico = idServico;
+        this.nome = nome;
+        this.preco = preco;
+        this.duracaoEmMinutos = duracaoEmMinutos;
+        this.salao = salao;
+    }
+
+    public Long getIdServico() {
+        return idServico;
+    }
+
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public Integer getDuracaoEmMinutos() {
+        return duracaoEmMinutos;
+    }
+
+    public void setDuracaoEmMinutos(Integer duracaoEmMinutos) {
+        this.duracaoEmMinutos = duracaoEmMinutos;
+    }
+
+    public Salao getSalao() {
+        return salao;
+    }
+
+    public void setSalao(Salao salao) {
+        this.salao = salao;
+    }
+}

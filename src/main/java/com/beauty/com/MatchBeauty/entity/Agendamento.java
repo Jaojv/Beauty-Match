@@ -41,4 +41,59 @@ public class Agendamento {
 
     // Getters e setters
     // ...
-} 
+
+
+    public Agendamento(Long idAgendamento, Cliente cliente, Profissional profissional, Servico servico, Salao salao, StatusAgendamento status) {
+        this.idAgendamento = idAgendamento;
+        this.cliente = cliente;
+        this.profissional = profissional;
+        this.servico = servico;
+        this.salao = salao;
+        this.status = status;
+    }
+
+    public Salao getSalao() {
+        return salao;
+    }
+
+    public void setSalao(Salao salao) {
+        this.salao = salao;
+    }
+
+    public Long getIdAgendamento() {
+        return idAgendamento;
+    }
+
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Profissional getProfissional() {
+        return profissional;
+    }
+
+    public void setProfissional(Profissional profissional) {
+        this.profissional = profissional;
+    }
+
+    public Servico getServico() {
+        return servico;
+    }
+
+    public void setServico(Servico servico) {
+        this.servico = servico;
+    }
+
+    public StatusAgendamento getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusAgendamento status) {
+        this.status = status;
+    }
+}
