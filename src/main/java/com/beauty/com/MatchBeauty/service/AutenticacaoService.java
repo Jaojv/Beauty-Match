@@ -1,12 +1,13 @@
 package com.beauty.com.MatchBeauty.service;
 
-import com.beauty.com.MatchBeauty.entity.Usuario;
-import com.beauty.com.MatchBeauty.repository.UsuarioRepository;
+import java.util.Scanner;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Scanner;
+import com.beauty.com.MatchBeauty.entity.Usuario;
+import com.beauty.com.MatchBeauty.repository.UsuarioRepository;
 
 @Service
 public class AutenticacaoService {
@@ -38,16 +39,20 @@ public class AutenticacaoService {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        Usuario usuario = usuarioRepository.findByUsername(username);
-        
-        if (usuario != null && passwordEncoder.matches(password, usuario.getPassword())) {
-            usuarioLogado = usuario;
-            System.out.println("\nLogin bem-sucedido! Bem-vindo, " + usuario.getClass().getSimpleName().toUpperCase() + ".");
-            return true;
-        }
-        
-        System.out.println("\nUsuário ou senha inválidos!");
-        return false;
+        return usuarioRepository.findByUsername(username)
+            .map(usuario -> {
+                if (passwordEncoder.matches(password, usuario.getPassword())) {
+                    usuarioLogado = usuario;
+                    System.out.println("\nLogin bem-sucedido! Bem-vindo, " + usuario.getClass().getSimpleName().toUpperCase() + ".");
+                    return true;
+                }
+                System.out.println("\nUsuário ou senha inválidos!");
+                return false;
+            })
+            .orElseGet(() -> {
+                System.out.println("\nUsuário ou senha inválidos!");
+                return false;
+            });
     }
 
     public void logout() {
