@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 @Entity
 @DiscriminatorValue("CLIENTE")
 public class Cliente extends Usuario {
+    public Cliente() {
+        super();
+    }
+
     public Cliente(Long idUsuario, String username, String password, String email, String telefone, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
         super(idUsuario, username, password, email, telefone, criadoEm, atualizadoEm);
     }
