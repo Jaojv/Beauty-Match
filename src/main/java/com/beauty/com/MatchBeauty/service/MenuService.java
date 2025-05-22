@@ -2,6 +2,8 @@ package com.beauty.com.MatchBeauty.service;
 
 import com.beauty.com.MatchBeauty.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Scanner;
@@ -19,7 +21,17 @@ public class MenuService {
     }
 
     public void exibirMenu() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("\nSessão expirada. Por favor, faça login novamente.");
+            return;
+        }
+
         Usuario usuario = autenticacaoService.getUsuarioLogado();
+        if (usuario == null) {
+            System.out.println("\nErro ao carregar informações do usuário. Por favor, faça login novamente.");
+            return;
+        }
         
         if (usuario instanceof Administrador) {
             exibirMenuAdministrador();

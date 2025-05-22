@@ -18,17 +18,35 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("Tentando carregar usuário por username: " + username);
+        
         Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com username: " + username));
+                .orElseThrow(() -> {
+                    System.out.println("Usuário não encontrado: " + username);
+                    return new UsernameNotFoundException("Usuário não encontrado com username: " + username);
+                });
 
-        return UserPrincipal.create(usuario);
+        System.out.println("Usuário encontrado: " + usuario.getClass().getSimpleName());
+        UserDetails userDetails = UserPrincipal.create(usuario);
+        System.out.println("UserDetails criado com sucesso");
+        
+        return userDetails;
     }
 
     @Transactional
     public UserDetails loadUserById(Long id) {
+        System.out.println("Tentando carregar usuário por id: " + id);
+        
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com id: " + id));
+                .orElseThrow(() -> {
+                    System.out.println("Usuário não encontrado com id: " + id);
+                    return new UsernameNotFoundException("Usuário não encontrado com id: " + id);
+                });
 
-        return UserPrincipal.create(usuario);
+        System.out.println("Usuário encontrado: " + usuario.getClass().getSimpleName());
+        UserDetails userDetails = UserPrincipal.create(usuario);
+        System.out.println("UserDetails criado com sucesso");
+        
+        return userDetails;
     }
 } 

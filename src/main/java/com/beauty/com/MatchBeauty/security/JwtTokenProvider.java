@@ -1,20 +1,24 @@
 package com.beauty.com.MatchBeauty.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwt.secret}")
-    private String jwtSecret;
+    private final SecretKey key;
+    private final int jwtExpirationInMs;
 
-    @Value("${app.jwt.expiration}")
-    private int jwtExpirationInMs;
+    public JwtTokenProvider(@Value("${app.jwt.expiration}") int jwtExpirationInMs) {
+        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        this.jwtExpirationInMs = jwtExpirationInMs;
+    }
 
     public String generateToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -28,13 +32,14 @@ public class JwtTokenProvider {
                 .claim("tipo", userPrincipal.getTipoUsuario())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .signWith(key)
                 .compact();
     }
 
     public Long getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
@@ -43,7 +48,10 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
             System.err.println("Assinatura JWT inválida");
