@@ -8,11 +8,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.beauty.com.MatchBeauty.entity.Admin;
+import com.beauty.com.MatchBeauty.entity.Cliente;
+import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.entity.Usuario;
+import com.beauty.com.MatchBeauty.entity.Proprietario;
+import com.beauty.com.MatchBeauty.repository.AdminRepository;
+import com.beauty.com.MatchBeauty.repository.ClienteRepository;
+import com.beauty.com.MatchBeauty.repository.ProfissionalRepository;
 import com.beauty.com.MatchBeauty.repository.UsuarioRepository;
 import com.beauty.com.MatchBeauty.security.JwtTokenProvider;
+import com.beauty.com.MatchBeauty.security.UserPrincipal;
+import org.springframework.http.ResponseEntity;
 
 @Service
 public class AutenticacaoService {
@@ -23,17 +33,29 @@ public class AutenticacaoService {
     private final Scanner scanner;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
+    private final AdminRepository adminRepository;
+    private final ClienteRepository clienteRepository;
+    private final ProfissionalRepository profissionalRepository;
+    private final PasswordEncoder springPasswordEncoder;
 
     @Autowired
     public AutenticacaoService(
             UsuarioRepository usuarioRepository,
             AuthenticationManager authenticationManager,
-            JwtTokenProvider tokenProvider) {
+            JwtTokenProvider tokenProvider,
+            AdminRepository adminRepository,
+            ClienteRepository clienteRepository,
+            ProfissionalRepository profissionalRepository,
+            PasswordEncoder springPasswordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.scanner = new Scanner(System.in);
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
+        this.adminRepository = adminRepository;
+        this.clienteRepository = clienteRepository;
+        this.profissionalRepository = profissionalRepository;
+        this.springPasswordEncoder = springPasswordEncoder;
     }
 
     public Usuario getUsuarioLogado() {
@@ -113,5 +135,71 @@ public class AutenticacaoService {
             return tokenProvider.generateToken(authentication);
         }
         return null;
+    }
+
+    public Usuario criarUsuario(String username, String password, String nome, String email, String tipoUsuario) {
+        // Verificar se o usuário já existe
+        if (usuarioRepository.findByUsername(username).isPresent()) {
+            throw new RuntimeException("Username já está em uso");
+        }
+
+        // Criar usuário baseado no tipo
+        Usuario usuario;
+        switch (tipoUsuario.toUpperCase()) {
+            case "ADMIN":
+                usuario = new Admin();
+                break;
+            case "CLIENTE":
+                usuario = new Cliente();
+                break;
+            case "PROFISSIONAL":
+                usuario = new Profissional();
+                break;
+            case "PROPRIETARIO":
+                usuario = new Proprietario();
+                break;
+            default:
+                throw new RuntimeException("Tipo de usuário inválido");
+        }
+
+        // Configurar dados do usuário
+        usuario.setUsername(username);
+        usuario.setPassword(passwordEncoder.encode(password));
+        usuario.setNome(nome);
+        usuario.setEmail(email);
+
+        // Salvar usuário
+        return usuarioRepository.save(usuario);
+    }
+
+    public String login(String username, String password) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+        return tokenProvider.generateToken(authentication);
+    }
+
+    public Admin registrarAdmin(Admin admin) {
+        if (usuarioRepository.findByUsername(admin.getUsername()).isPresent()) {
+            throw new RuntimeException("Username já existe");
+        }
+        admin.setPassword(springPasswordEncoder.encode(admin.getPassword()));
+        return adminRepository.save(admin);
+    }
+
+    public Cliente registrarCliente(Cliente cliente) {
+        if (usuarioRepository.findByUsername(cliente.getUsername()).isPresent()) {
+            throw new RuntimeException("Username já existe");
+        }
+        cliente.setPassword(springPasswordEncoder.encode(cliente.getPassword()));
+        return clienteRepository.save(cliente);
+    }
+
+    public Profissional registrarProfissional(Profissional profissional) {
+        if (usuarioRepository.findByUsername(profissional.getUsername()).isPresent()) {
+            throw new RuntimeException("Username já existe");
+        }
+        profissional.setPassword(springPasswordEncoder.encode(profissional.getPassword()));
+        return profissionalRepository.save(profissional);
     }
 } 

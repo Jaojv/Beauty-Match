@@ -1,12 +1,16 @@
 package com.beauty.com.MatchBeauty.entity;
 
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
-@DiscriminatorValue("CLIENTE")
+@Table(name = "cliente")
 public class Cliente extends Usuario {
     public Cliente() {
         super();

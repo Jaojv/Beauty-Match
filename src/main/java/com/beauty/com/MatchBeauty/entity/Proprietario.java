@@ -13,9 +13,16 @@ public class Proprietario extends Usuario {
         super();
     }
 
-    public Proprietario(Long idUsuario, String username, String password, String email, String telefone, 
+    public Proprietario(Long idUsuario, String username, String password, String email, String nome, String telefone, 
                        LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
-        super(idUsuario, username, password, email, telefone, criadoEm, atualizadoEm);
+        super(idUsuario, username, password, email, nome, telefone, criadoEm, atualizadoEm);
     }
-    // Pode adicionar métodos específicos de Proprietario se necessário
+
+    // Métodos específicos do Proprietario
+    public void atualizarDados(String nome, String email, String telefone) {
+        this.setNome(nome);
+        this.setEmail(email);
+        this.setTelefone(telefone);
+        this.setAtualizadoEm(LocalDateTime.now());
+    }
 } 

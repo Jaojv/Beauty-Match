@@ -1,6 +1,8 @@
 package com.beauty.com.MatchBeauty.entity;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -11,15 +13,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+@Data
 @Entity
-@Table(name = "usuarios")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_usuario")
-public abstract class Usuario {
+@Table(name = "usuario")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario")
     private Long idUsuario;
 
     @Column(unique = true, nullable = false)
@@ -28,18 +33,23 @@ public abstract class Usuario {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private String nome;
 
     private String telefone;
 
     @Column(nullable = false)
     private LocalDateTime criadoEm;
 
+    @Column(nullable = false)
     private LocalDateTime atualizadoEm;
 
     public Usuario() {
         this.criadoEm = LocalDateTime.now();
+        this.atualizadoEm = LocalDateTime.now();
     }
 
     public Usuario(Long idUsuario, String username, String password, String email,
@@ -48,6 +58,18 @@ public abstract class Usuario {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.telefone = telefone;
+        this.criadoEm = criadoEm;
+        this.atualizadoEm = atualizadoEm;
+    }
+
+    public Usuario(Long idUsuario, String username, String password, String email,
+                   String nome, String telefone, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
+        this.idUsuario = idUsuario;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.nome = nome;
         this.telefone = telefone;
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
@@ -86,6 +108,14 @@ public abstract class Usuario {
         this.email = email;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     public String getTelefone() {
         return telefone;
     }
@@ -108,5 +138,30 @@ public abstract class Usuario {
 
     public void setAtualizadoEm(LocalDateTime atualizadoEm) {
         this.atualizadoEm = atualizadoEm;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

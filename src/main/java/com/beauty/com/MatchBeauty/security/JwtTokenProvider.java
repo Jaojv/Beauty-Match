@@ -1,36 +1,48 @@
 package com.beauty.com.MatchBeauty.security;
 
+import com.beauty.com.MatchBeauty.entity.Usuario;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-    private final SecretKey key;
-    private final int jwtExpirationInMs;
+    private final Key key;
+    private final long jwtExpiration;
 
-    public JwtTokenProvider(@Value("${app.jwt.expiration}") int jwtExpirationInMs) {
+    public JwtTokenProvider() {
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-        this.jwtExpirationInMs = jwtExpirationInMs;
+        this.jwtExpiration = 900000; // 15 minutos
+    }
+
+    public JwtTokenProvider(@Value("${app.jwt.expiration}") long jwtExpiration) {
+        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        this.jwtExpiration = jwtExpiration;
     }
 
     public String generateToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        Long idUsuario;
+        if (principal instanceof UserPrincipal) {
+            idUsuario = ((UserPrincipal) principal).getId();
+        } else if (principal instanceof Usuario) {
+            idUsuario = ((Usuario) principal).getIdUsuario();
+        } else {
+            throw new RuntimeException("Tipo de usuário não suportado para geração de token");
+        }
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
-                .claim("username", userPrincipal.getUsername())
-                .claim("tipo", userPrincipal.getTipoUsuario())
-                .setIssuedAt(new Date())
+                .setSubject(Long.toString(idUsuario))
+                .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key)
                 .compact();
@@ -46,24 +58,15 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
-    public boolean validateToken(String authToken) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(authToken);
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (SignatureException ex) {
-            System.err.println("Assinatura JWT inválida");
-        } catch (MalformedJwtException ex) {
-            System.err.println("Token JWT malformado");
-        } catch (ExpiredJwtException ex) {
-            System.err.println("Token JWT expirado");
-        } catch (UnsupportedJwtException ex) {
-            System.err.println("Token JWT não suportado");
-        } catch (IllegalArgumentException ex) {
-            System.err.println("Claims JWT vazios");
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
         }
-        return false;
     }
 } 
