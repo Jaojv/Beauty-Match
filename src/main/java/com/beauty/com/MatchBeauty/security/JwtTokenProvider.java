@@ -5,10 +5,13 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -29,10 +32,16 @@ public class JwtTokenProvider {
     public String generateToken(Authentication authentication) {
         Object principal = authentication.getPrincipal();
         Long idUsuario;
+        Collection<? extends GrantedAuthority> authorities;
+        
         if (principal instanceof UserPrincipal) {
-            idUsuario = ((UserPrincipal) principal).getId();
+            UserPrincipal userPrincipal = (UserPrincipal) principal;
+            idUsuario = userPrincipal.getId();
+            authorities = userPrincipal.getAuthorities();
         } else if (principal instanceof Usuario) {
-            idUsuario = ((Usuario) principal).getIdUsuario();
+            Usuario usuario = (Usuario) principal;
+            idUsuario = usuario.getIdUsuario();
+            authorities = usuario.getAuthorities();
         } else {
             throw new RuntimeException("Tipo de usuário não suportado para geração de token");
         }
@@ -42,6 +51,9 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(Long.toString(idUsuario))
+                .claim("authorities", authorities.stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()))
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key)
@@ -68,5 +80,9 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public Key getKey() {
+        return key;
     }
 } 

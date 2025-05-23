@@ -20,7 +20,8 @@ public class UserPrincipal implements UserDetails {
         this.username = username;
         this.password = password;
         this.tipoUsuario = tipoUsuario;
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + tipoUsuario));
+        String role = tipoUsuario.equals("ADMINISTRADOR") ? "ADMIN" : tipoUsuario;
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
     public static UserPrincipal create(Usuario usuario) {

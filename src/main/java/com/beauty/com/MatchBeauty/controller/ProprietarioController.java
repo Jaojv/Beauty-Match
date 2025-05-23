@@ -1,14 +1,14 @@
 package com.beauty.com.MatchBeauty.controller;
 
-import com.beauty.com.MatchBeauty.dto.ProprietarioDTO;
 import com.beauty.com.MatchBeauty.entity.Proprietario;
+import com.beauty.com.MatchBeauty.security.SecurityService;
 import com.beauty.com.MatchBeauty.service.ProprietarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/proprietarios")
@@ -17,57 +17,47 @@ public class ProprietarioController {
     @Autowired
     private ProprietarioService proprietarioService;
 
+    @Autowired
+    private SecurityService securityService;
+
     @GetMapping
-    public ResponseEntity<List<ProprietarioDTO>> listarProprietarios() {
-        List<Proprietario> proprietarios = proprietarioService.listarTodos();
-        List<ProprietarioDTO> proprietariosDTO = proprietarios.stream()
-                .map(this::converterParaDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(proprietariosDTO);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Proprietario>> listarProprietarios() {
+        return ResponseEntity.ok(proprietarioService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProprietarioDTO> buscarProprietario(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isProprietarioLogado(#id)")
+    public ResponseEntity<Proprietario> buscarProprietario(@PathVariable Long id) {
         Proprietario proprietario = proprietarioService.buscarPorId(id);
-        return ResponseEntity.ok(converterParaDTO(proprietario));
+        if (proprietario != null) {
+            return ResponseEntity.ok(proprietario);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<ProprietarioDTO> criarProprietario(@RequestBody ProprietarioDTO proprietarioDTO) {
-        Proprietario proprietario = proprietarioService.criar(converterParaEntidade(proprietarioDTO));
-        return ResponseEntity.ok(converterParaDTO(proprietario));
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Proprietario> criarProprietario(@RequestBody Proprietario proprietario) {
+        Proprietario novoProprietario = proprietarioService.criar(proprietario);
+        return ResponseEntity.ok(novoProprietario);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProprietarioDTO> atualizarProprietario(@PathVariable Long id, 
-                                                               @RequestBody ProprietarioDTO proprietarioDTO) {
-        Proprietario proprietario = proprietarioService.atualizar(id, converterParaEntidade(proprietarioDTO));
-        return ResponseEntity.ok(converterParaDTO(proprietario));
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isProprietarioLogado(#id)")
+    public ResponseEntity<Proprietario> atualizarProprietario(@PathVariable Long id, @RequestBody Proprietario proprietario) {
+        proprietario.setIdUsuario(id);
+        Proprietario proprietarioAtualizado = proprietarioService.atualizar(id, proprietario);
+        if (proprietarioAtualizado != null) {
+            return ResponseEntity.ok(proprietarioAtualizado);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isProprietarioLogado(#id)")
     public ResponseEntity<Void> deletarProprietario(@PathVariable Long id) {
         proprietarioService.deletar(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    private ProprietarioDTO converterParaDTO(Proprietario proprietario) {
-        return new ProprietarioDTO(
-            proprietario.getIdUsuario(),
-            proprietario.getUsername(),
-            proprietario.getNome(),
-            proprietario.getEmail(),
-            proprietario.getTelefone()
-        );
-    }
-
-    private Proprietario converterParaEntidade(ProprietarioDTO dto) {
-        Proprietario proprietario = new Proprietario();
-        proprietario.setIdUsuario(dto.getIdUsuario());
-        proprietario.setUsername(dto.getUsername());
-        proprietario.setNome(dto.getNome());
-        proprietario.setEmail(dto.getEmail());
-        proprietario.setTelefone(dto.getTelefone());
-        return proprietario;
+        return ResponseEntity.ok().build();
     }
 } 

@@ -21,6 +21,7 @@ public class AdminController {
     private SecurityService securityService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Admin>> listarAdmins() {
         return ResponseEntity.ok(adminService.listarAdmins());
     }
@@ -36,6 +37,7 @@ public class AdminController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Admin> criarAdmin(@RequestBody Admin admin) {
         Admin novoAdmin = adminService.criarAdmin(admin);
         return ResponseEntity.ok(novoAdmin);
