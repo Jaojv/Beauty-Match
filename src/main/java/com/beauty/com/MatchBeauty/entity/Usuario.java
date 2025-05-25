@@ -47,6 +47,9 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private LocalDateTime atualizadoEm;
 
+    @Column(name = "tipo_usuario")
+    private String tipoUsuario;
+
     public Usuario() {
         this.criadoEm = LocalDateTime.now();
         this.atualizadoEm = LocalDateTime.now();
@@ -138,6 +141,14 @@ public class Usuario implements UserDetails {
 
     public void setAtualizadoEm(LocalDateTime atualizadoEm) {
         this.atualizadoEm = atualizadoEm;
+    }
+
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
     @Override
