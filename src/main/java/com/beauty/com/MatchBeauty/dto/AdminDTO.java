@@ -1,18 +1,12 @@
 package com.beauty.com.MatchBeauty.dto;
 
-import lombok.Data;
-
-@Data
-public class ProprietarioDTO {
+public class AdminDTO {
     private String username;
     private String password;
     private String email;
     private String telefone;
     private String nome;
-    private String cnpj;
-    private String razaoSocial;
-    private String endereco;
-    private String horarioFuncionamento;
+    private String nivelAcesso;
 
     public String getUsername() {
         return username;
@@ -54,35 +48,11 @@ public class ProprietarioDTO {
         this.nome = nome;
     }
 
-    public String getCnpj() {
-        return cnpj;
+    public String getNivelAcesso() {
+        return nivelAcesso;
     }
 
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
-
-    public String getRazaoSocial() {
-        return razaoSocial;
-    }
-
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
-    public String getHorarioFuncionamento() {
-        return horarioFuncionamento;
-    }
-
-    public void setHorarioFuncionamento(String horarioFuncionamento) {
-        this.horarioFuncionamento = horarioFuncionamento;
+    public void setNivelAcesso(String nivelAcesso) {
+        this.nivelAcesso = nivelAcesso;
     }
 } 

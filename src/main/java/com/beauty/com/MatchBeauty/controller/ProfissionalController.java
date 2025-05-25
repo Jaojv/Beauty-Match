@@ -1,5 +1,6 @@
 package com.beauty.com.MatchBeauty.controller;
 
+import com.beauty.com.MatchBeauty.dto.ProfissionalDTO;
 import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.security.SecurityService;
 import com.beauty.com.MatchBeauty.service.ProfissionalService;
@@ -38,20 +39,44 @@ public class ProfissionalController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Profissional> criarProfissional(@RequestBody Profissional profissional) {
+    public ResponseEntity<Profissional> criarProfissional(@RequestBody ProfissionalDTO dto) {
+        Profissional profissional = new Profissional();
+        profissional.setUsername(dto.getUsername());
+        profissional.setPassword(dto.getPassword());
+        profissional.setEmail(dto.getEmail());
+        profissional.setTelefone(dto.getTelefone());
+        profissional.setNome(dto.getNome());
+        profissional.setCpf(dto.getCpf());
+        profissional.setEspecialidade(dto.getEspecialidade());
+        profissional.setBiografia(dto.getBiografia());
+        profissional.setHorarioTrabalho(dto.getHorarioTrabalho());
+        profissional.setDiasTrabalho(dto.getDiasTrabalho());
+        
         Profissional novoProfissional = profissionalService.criarProfissional(profissional);
         return ResponseEntity.ok(novoProfissional);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isProfissionalLogado(#id)")
-    public ResponseEntity<Profissional> atualizarProfissional(@PathVariable Long id, @RequestBody Profissional profissional) {
-        profissional.setIdUsuario(id);
-        Profissional profissionalAtualizado = profissionalService.atualizarProfissional(profissional);
-        if (profissionalAtualizado != null) {
-            return ResponseEntity.ok(profissionalAtualizado);
+    public ResponseEntity<Profissional> atualizarProfissional(@PathVariable Long id, @RequestBody ProfissionalDTO dto) {
+        Profissional profissional = profissionalService.buscarProfissional(id);
+        if (profissional == null) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        profissional.setUsername(dto.getUsername());
+        profissional.setPassword(dto.getPassword());
+        profissional.setEmail(dto.getEmail());
+        profissional.setTelefone(dto.getTelefone());
+        profissional.setNome(dto.getNome());
+        profissional.setCpf(dto.getCpf());
+        profissional.setEspecialidade(dto.getEspecialidade());
+        profissional.setBiografia(dto.getBiografia());
+        profissional.setHorarioTrabalho(dto.getHorarioTrabalho());
+        profissional.setDiasTrabalho(dto.getDiasTrabalho());
+
+        Profissional profissionalAtualizado = profissionalService.atualizarProfissional(profissional);
+        return ResponseEntity.ok(profissionalAtualizado);
     }
 
     @DeleteMapping("/{id}")

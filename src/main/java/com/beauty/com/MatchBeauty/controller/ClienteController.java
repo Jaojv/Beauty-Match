@@ -1,5 +1,6 @@
 package com.beauty.com.MatchBeauty.controller;
 
+import com.beauty.com.MatchBeauty.dto.ClienteDTO;
 import com.beauty.com.MatchBeauty.entity.Cliente;
 import com.beauty.com.MatchBeauty.security.SecurityService;
 import com.beauty.com.MatchBeauty.service.ClienteService;
@@ -38,28 +39,48 @@ public class ClienteController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Cliente> criarCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> criarCliente(@RequestBody ClienteDTO dto) {
+        Cliente cliente = new Cliente();
+        cliente.setUsername(dto.getUsername());
+        cliente.setPassword(dto.getPassword());
+        cliente.setEmail(dto.getEmail());
+        cliente.setTelefone(dto.getTelefone());
+        cliente.setNome(dto.getNome());
+        cliente.setCpf(dto.getCpf());
+        cliente.setDataNascimento(dto.getDataNascimento());
+        cliente.setEndereco(dto.getEndereco());
+        cliente.setPreferencias(dto.getPreferencias());
+        
         Cliente novoCliente = clienteService.criarCliente(cliente);
         return ResponseEntity.ok(novoCliente);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
-    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
-        cliente.setIdUsuario(id);
-        Cliente clienteAtualizado = clienteService.atualizarCliente(cliente);
-        if (clienteAtualizado != null) {
-            return ResponseEntity.ok(clienteAtualizado);
+    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO dto) {
+        Cliente cliente = clienteService.buscarCliente(id);
+        if (cliente == null) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        cliente.setUsername(dto.getUsername());
+        cliente.setPassword(dto.getPassword());
+        cliente.setEmail(dto.getEmail());
+        cliente.setTelefone(dto.getTelefone());
+        cliente.setNome(dto.getNome());
+        cliente.setCpf(dto.getCpf());
+        cliente.setDataNascimento(dto.getDataNascimento());
+        cliente.setEndereco(dto.getEndereco());
+        cliente.setPreferencias(dto.getPreferencias());
+
+        Cliente clienteAtualizado = clienteService.atualizarCliente(cliente);
+        return ResponseEntity.ok(clienteAtualizado);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
     public ResponseEntity<Void> deletarCliente(@PathVariable Long id) {
-        if (clienteService.deletarCliente(id)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+        clienteService.deletarCliente(id);
+        return ResponseEntity.ok().build();
     }
 } 

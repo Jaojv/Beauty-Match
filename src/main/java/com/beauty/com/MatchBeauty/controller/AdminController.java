@@ -1,5 +1,6 @@
 package com.beauty.com.MatchBeauty.controller;
 
+import com.beauty.com.MatchBeauty.dto.AdminDTO;
 import com.beauty.com.MatchBeauty.entity.Admin;
 import com.beauty.com.MatchBeauty.security.SecurityService;
 import com.beauty.com.MatchBeauty.service.AdminService;
@@ -38,20 +39,36 @@ public class AdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Admin> criarAdmin(@RequestBody Admin admin) {
+    public ResponseEntity<Admin> criarAdmin(@RequestBody AdminDTO dto) {
+        Admin admin = new Admin();
+        admin.setUsername(dto.getUsername());
+        admin.setPassword(dto.getPassword());
+        admin.setEmail(dto.getEmail());
+        admin.setTelefone(dto.getTelefone());
+        admin.setNome(dto.getNome());
+        admin.setNivelAcesso(dto.getNivelAcesso());
+        
         Admin novoAdmin = adminService.criarAdmin(admin);
         return ResponseEntity.ok(novoAdmin);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and @securityService.isAdminLogado(#id)")
-    public ResponseEntity<Admin> atualizarAdmin(@PathVariable Long id, @RequestBody Admin admin) {
-        admin.setIdUsuario(id);
-        Admin adminAtualizado = adminService.atualizarAdmin(admin);
-        if (adminAtualizado != null) {
-            return ResponseEntity.ok(adminAtualizado);
+    public ResponseEntity<Admin> atualizarAdmin(@PathVariable Long id, @RequestBody AdminDTO dto) {
+        Admin admin = adminService.buscarAdmin(id);
+        if (admin == null) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        admin.setUsername(dto.getUsername());
+        admin.setPassword(dto.getPassword());
+        admin.setEmail(dto.getEmail());
+        admin.setTelefone(dto.getTelefone());
+        admin.setNome(dto.getNome());
+        admin.setNivelAcesso(dto.getNivelAcesso());
+
+        Admin adminAtualizado = adminService.atualizarAdmin(admin);
+        return ResponseEntity.ok(adminAtualizado);
     }
 
     @DeleteMapping("/{id}")
