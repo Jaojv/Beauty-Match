@@ -1,6 +1,7 @@
 package com.beauty.com.MatchBeauty.service;
 
 import com.beauty.com.MatchBeauty.entity.Admin;
+import com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario;
 import com.beauty.com.MatchBeauty.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,14 +28,14 @@ public class AdminService {
 
     public Admin criarAdmin(Admin admin) {
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-        admin.setTipoUsuario("ADMINISTRADOR");
+        admin.setTipoUsuario(TipoUsuario.ADMIN);
         return adminRepository.save(admin);
     }
 
     public Admin atualizarAdmin(Admin admin) {
         if (adminRepository.existsById(admin.getIdUsuario())) {
             admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-            admin.setTipoUsuario("ADMINISTRADOR");
+            admin.setTipoUsuario(TipoUsuario.ADMIN);
             return adminRepository.save(admin);
         }
         return null;
