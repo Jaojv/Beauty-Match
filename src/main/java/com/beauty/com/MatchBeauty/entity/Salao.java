@@ -1,7 +1,6 @@
 package com.beauty.com.MatchBeauty.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import java.util.List;
 @Table(name = "salao")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Salao {
     
     @Id
@@ -42,4 +40,16 @@ public class Salao {
     
     @OneToMany(mappedBy = "salao", cascade = CascadeType.ALL)
     private List<Agendamento> agendamentos;
+
+    public Salao(Long id, String nome, String endereco, String telefone, String descricao, String horarioFuncionamento, Usuario proprietario, List<Servico> servicos, List<Agendamento> agendamentos) {
+        this.id = id;
+        this.nome = nome;
+        this.endereco = endereco;
+        this.telefone = telefone;
+        this.descricao = descricao;
+        this.horarioFuncionamento = horarioFuncionamento;
+        this.proprietario = proprietario;
+        this.servicos = servicos;
+        this.agendamentos = agendamentos;
+    }
 }

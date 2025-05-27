@@ -17,6 +17,8 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 @Data
 @Entity
@@ -47,8 +49,9 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private LocalDateTime atualizadoEm;
 
-    @Column(name = "tipo_usuario")
-    private String tipoUsuario;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_usuario", nullable = false)
+    private TipoUsuario tipoUsuario;
 
     public Usuario() {
         this.criadoEm = LocalDateTime.now();
@@ -143,11 +146,11 @@ public class Usuario implements UserDetails {
         this.atualizadoEm = atualizadoEm;
     }
 
-    public String getTipoUsuario() {
+    public TipoUsuario getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(String tipoUsuario) {
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 
@@ -174,5 +177,12 @@ public class Usuario implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public enum TipoUsuario {
+        ADMIN,
+        CLIENTE,
+        PROFISSIONAL,
+        PROPRIETARIO
     }
 }

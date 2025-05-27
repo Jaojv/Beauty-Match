@@ -1,7 +1,6 @@
 package com.beauty.com.MatchBeauty.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "agendamento")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Agendamento {
     
     @Id
@@ -50,5 +48,16 @@ public class Agendamento {
         CANCELADO,
         CONCLUIDO,
         FALTANTE
+    }
+
+    public Agendamento(Long id, LocalDateTime dataHora, StatusAgendamento status, Usuario cliente, Usuario profissional, Servico servico, Salao salao, String observacoes) {
+        this.id = id;
+        this.dataHora = dataHora;
+        this.status = status;
+        this.cliente = cliente;
+        this.profissional = profissional;
+        this.servico = servico;
+        this.salao = salao;
+        this.observacoes = observacoes;
     }
 }

@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +21,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "servico")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,9 +52,6 @@ public class Servico {
 
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos;
-
-    // Getters e setters
-    // ...
 
     public Servico(Long id, String nome, String descricao, BigDecimal preco, Integer duracaoMinutos, Salao salao, List<Usuario> profissionais, List<Agendamento> agendamentos) {
         this.id = id;

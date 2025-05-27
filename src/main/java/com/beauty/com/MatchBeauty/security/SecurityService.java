@@ -4,6 +4,7 @@ import com.beauty.com.MatchBeauty.entity.Admin;
 import com.beauty.com.MatchBeauty.entity.Cliente;
 import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.entity.Usuario;
+import com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class SecurityService {
             usuario.setIdUsuario(userPrincipal.getId());
             usuario.setUsername(userPrincipal.getUsername());
             usuario.setPassword(userPrincipal.getPassword());
-            usuario.setTipoUsuario(userPrincipal.getTipoUsuario());
+            usuario.setTipoUsuario(TipoUsuario.valueOf(userPrincipal.getTipoUsuario().toUpperCase()));
             // Não temos nome/email/telefone aqui, mas para comparação de id e tipo basta
             return usuario;
         } else if (principal instanceof Usuario) {
@@ -53,8 +54,8 @@ public class SecurityService {
         if (usuario == null) {
             return false;
         }
-        // Verifica se o tipo de usuário é ADMINISTRADOR ou ADMIN
-        if (!"ADMINISTRADOR".equalsIgnoreCase(usuario.getTipoUsuario()) && !"ADMIN".equalsIgnoreCase(usuario.getTipoUsuario())) {
+        // Verifica se o tipo de usuário é ADMIN
+        if (usuario.getTipoUsuario() != TipoUsuario.ADMIN) {
             return false;
         }
         return usuario.getIdUsuario().equals(idAdmin);
