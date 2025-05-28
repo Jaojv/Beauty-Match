@@ -60,4 +60,12 @@ public class Agendamento {
         this.salao = salao;
         this.observacoes = observacoes;
     }
+
+    public void setStatus(StatusAgendamento status) {
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
