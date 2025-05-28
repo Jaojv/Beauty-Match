@@ -12,7 +12,7 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
     
     List<Servico> findBySalaoId(Long salaoId);
     
-    List<Servico> findByProfissionaisId(Long profissionalId);
+    List<Servico> findByProfissionaisIdUsuario(Long profissionalId);
     
     Optional<Servico> findByNomeAndSalaoId(String nome, Long salaoId);
     

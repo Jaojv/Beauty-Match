@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface SalaoRepository extends JpaRepository<Salao, Long> {
     
-    List<Salao> findByProprietarioId(Long proprietarioId);
+    List<Salao> findByProprietarioIdUsuario(Long proprietarioId);
     
     Optional<Salao> findByNomeAndEndereco(String nome, String endereco);
     
