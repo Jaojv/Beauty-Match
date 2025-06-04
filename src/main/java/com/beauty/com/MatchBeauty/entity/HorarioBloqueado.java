@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "horario_bloqueado")
@@ -24,6 +25,12 @@ public class HorarioBloqueado {
     @ManyToOne
     @JoinColumn(name = "salao_id", referencedColumnName = "id_salao", nullable = false)
     private Salao salao;
+
+    @Column(name = "data_hora_inicio", nullable = false)
+    private LocalDateTime dataHoraInicio;
+
+    @Column(name = "data_hora_fim", nullable = false)
+    private LocalDateTime dataHoraFim;
 
     public Long getId() {
         return id;
@@ -47,5 +54,21 @@ public class HorarioBloqueado {
 
     public void setSalao(Salao salao) {
         this.salao = salao;
+    }
+
+    public LocalDateTime getDataHoraInicio() {
+        return dataHoraInicio;
+    }
+
+    public void setDataHoraInicio(LocalDateTime dataHoraInicio) {
+        this.dataHoraInicio = dataHoraInicio;
+    }
+
+    public LocalDateTime getDataHoraFim() {
+        return dataHoraFim;
+    }
+
+    public void setDataHoraFim(LocalDateTime dataHoraFim) {
+        this.dataHoraFim = dataHoraFim;
     }
 } 

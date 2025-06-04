@@ -167,6 +167,7 @@ public class AutenticacaoService {
         usuario.setPassword(passwordEncoder.encode(password));
         usuario.setNome(nome);
         usuario.setEmail(email);
+        usuario.setTipoUsuario(Usuario.TipoUsuario.valueOf(tipoUsuario.toUpperCase()));
 
         // Salvar usuário
         return usuarioRepository.save(usuario);

@@ -1,7 +1,9 @@
 package com.beauty.com.MatchBeauty.service;
 
 import com.beauty.com.MatchBeauty.entity.Salao;
+import com.beauty.com.MatchBeauty.entity.Usuario;
 import com.beauty.com.MatchBeauty.repository.SalaoRepository;
+import com.beauty.com.MatchBeauty.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,9 @@ public class SalaoService {
     @Autowired
     private SalaoRepository salaoRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public List<Salao> listarSaloes() {
         return salaoRepository.findAll();
     }
@@ -25,7 +30,12 @@ public class SalaoService {
     }
 
     @Transactional
-    public Salao criarSalao(Salao salao) {
+    public Salao criarSalao(Salao salao, Long proprietarioId) {
+        // Buscar o proprietário pelo ID
+        Usuario proprietario = usuarioRepository.findById(proprietarioId)
+            .orElseThrow(() -> new RuntimeException("Proprietário não encontrado"));
+        salao.setProprietario(proprietario);
+
         validarSalao(salao);
         if (salaoRepository.existsByNomeAndEndereco(salao.getNome(), salao.getEndereco())) {
             throw new RuntimeException("Já existe um salão com este nome e endereço");
