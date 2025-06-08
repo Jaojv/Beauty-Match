@@ -6,13 +6,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import com.beauty.com.MatchBeauty.entity.Salao;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "profissional")
+@DiscriminatorValue("PROFISSIONAL")
 public class Profissional extends Usuario {
     
     @Column(name = "cpf")
@@ -29,6 +29,10 @@ public class Profissional extends Usuario {
     
     @Column(name = "dias_trabalho")
     private String diasTrabalho;
+    
+    @ManyToOne
+    @JoinColumn(name = "salao_id")
+    private Salao salao;
     
     public Profissional() {
         super();
@@ -77,6 +81,14 @@ public class Profissional extends Usuario {
 
     public void setDiasTrabalho(String diasTrabalho) {
         this.diasTrabalho = diasTrabalho;
+    }
+
+    public Salao getSalao() {
+        return salao;
+    }
+
+    public void setSalao(Salao salao) {
+        this.salao = salao;
     }
     // Pode adicionar métodos específicos de Profissional se necessário
 } 

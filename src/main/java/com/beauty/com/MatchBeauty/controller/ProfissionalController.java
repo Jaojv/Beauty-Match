@@ -2,6 +2,8 @@ package com.beauty.com.MatchBeauty.controller;
 
 import com.beauty.com.MatchBeauty.dto.ProfissionalDTO;
 import com.beauty.com.MatchBeauty.entity.Profissional;
+import com.beauty.com.MatchBeauty.entity.Salao;
+import com.beauty.com.MatchBeauty.repository.SalaoRepository;
 import com.beauty.com.MatchBeauty.security.SecurityService;
 import com.beauty.com.MatchBeauty.service.ProfissionalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,17 +11,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/profissionais")
 public class ProfissionalController {
 
+ 
     @Autowired
     private ProfissionalService profissionalService;
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private SalaoRepository salaoRepository;
+
+
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -51,7 +60,13 @@ public class ProfissionalController {
         profissional.setBiografia(dto.getBiografia());
         profissional.setHorarioTrabalho(dto.getHorarioTrabalho());
         profissional.setDiasTrabalho(dto.getDiasTrabalho());
-        
+        profissional.setTipoUsuario(com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario.PROFISSIONAL);
+
+        // Buscar e associar o salão
+        Salao salao = salaoRepository.findById(dto.getSalaoId())
+            .orElseThrow(() -> new RuntimeException("Salão não encontrado"));
+        profissional.setSalao(salao);
+
         Profissional novoProfissional = profissionalService.criarProfissional(profissional);
         return ResponseEntity.ok(novoProfissional);
     }

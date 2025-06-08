@@ -11,6 +11,7 @@ public class ProfissionalDTO {
     private String biografia;
     private String horarioTrabalho;
     private String diasTrabalho;
+    private Long salaoId;
 
     public String getUsername() {
         return username;
@@ -90,5 +91,13 @@ public class ProfissionalDTO {
 
     public void setDiasTrabalho(String diasTrabalho) {
         this.diasTrabalho = diasTrabalho;
+    }
+
+    public Long getSalaoId() {
+        return salaoId;
+    }
+
+    public void setSalaoId(Long salaoId) {
+        this.salaoId = salaoId;
     }
 } 

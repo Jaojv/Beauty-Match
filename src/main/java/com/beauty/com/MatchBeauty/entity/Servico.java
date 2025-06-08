@@ -2,6 +2,7 @@ package com.beauty.com.MatchBeauty.entity;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.ArrayList;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,12 +16,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "servico")
 @Data
-@NoArgsConstructor
 public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,10 +47,13 @@ public class Servico {
         joinColumns = @JoinColumn(name = "servico_id"),
         inverseJoinColumns = @JoinColumn(name = "profissional_id")
     )
-    private List<Usuario> profissionais;
+    private List<Usuario> profissionais = new ArrayList<>();
 
     @OneToMany(mappedBy = "servico")
-    private List<Agendamento> agendamentos;
+    private List<Agendamento> agendamentos = new ArrayList<>();
+
+    public Servico() {
+    }
 
     public Servico(Long id, String nome, String descricao, BigDecimal preco, Integer duracaoMinutos, Salao salao, List<Usuario> profissionais, List<Agendamento> agendamentos) {
         this.id = id;
