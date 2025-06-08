@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beauty Match - Login</title>
+    <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <navbar></navbar>
+    <!--NAVBAR-->
+    <nav>
+        <span class="icon" id="menu-icon">&#9776;</span>
+        <div class="menu" id="menu">
+            <ul>
+                <li><img src="../images/user.png"><input type="text" value="" Placeholder="Usuario" readonly></li>
+                <li><a class="menu-botao" href="">Perfil</a></li>
+                <li><a class="menu-botao" href="">Agendamentos</a></li>
+                <li><a class="menu-botao" href="">Favoritos</a></li>
+                <li><a class="menu-botao" href="">Historico</a></li>
+                <li><a class="menu-botao" href="">Quiz</a></li>
+                <li><a class="menu-botao" href="">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--MAIN-->
     <main>
         <div class="container">
             <div class="main-container">
@@ -35,8 +52,11 @@
             </div>
         </div>
     </main>
+
+    <!--FOOTER-->
     <footer></footer>
+
+    <!--SCRIPT JS-->
+    <script src="../js/menu_navbar.js"></script>
 </body>
 </html>
-
-<!-- User Senha Nome Email -->
