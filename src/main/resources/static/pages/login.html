@@ -13,39 +13,39 @@
 <body>
     <!--NAVBAR-->
     <nav>
-        <a href="login.html" class="home-icon"><img src="../images/seta-voltar.png"></a>
+        <a href="../index.html" class="home-icon"><img src="../images/home.png"></a>
     </nav>
 
     <!--MAIN-->
     <main>
         <div class="container">
             <div class="main-container">
-                <h1 class="title" id="Cadastro">Cadastro</h1>
+                <h1 class="title" id="login">Login</h1>
                 <form action="" method="POST">
                 <div class="input-container">
-                    <input type="text" name="usuario" placeholder="Usuario" required>
+                    <input type="text" name="usuario" placeholder="Usuario" required> <!--Limitar caracteres no input-->
                 </div>
                 <div class="input-container">
                     <input type="password" name="senha" placeholder="Senha" required>
                 </div>
-                <div class="input-container">
-                    <input type="text" name="nome" placeholder="Nome" required>
-                </div>
-                <div class="input-container">
-                    <input type="email" name="email" placeholder="Email" required>
-                </div>
                 <div class="button-container">
-                    <button class="botao" type="submit">Cadastrar-se</button>
+                    <button class="botao" type="submit">Entrar</button>
                 </div>
-                </form>
+            </form>
+            <div class="button-container">
+                <a class="botao" href="cadastrar.html">Cadastrar-se</a>
+            </div>
             </div>
         </div>
     </main>
 
     <!--FOOTER-->
     <footer></footer>
+    <script src="js/menu_navbar.js"></script>
 
     <!--SCRIPT JS-->
-    <script src="../js/menu_navbar.js"></script>
+    <script src="js/menu_navbar.js"></script>
 </body>
 </html>
+
+

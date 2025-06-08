@@ -13,46 +13,36 @@
 <body>
     <!--NAVBAR-->
     <nav>
-        <span class="icon" id="menu-icon">&#9776;</span>
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar-shadow"></div>
+            <div class="bar-shadow"></div>
+            <div class="bar-shadow"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
         <div class="menu" id="menu">
             <ul>
-                <li><img src="images/user.png"><input type="text" value="" Placeholder="Usuario" readonly></li>
-                <li><a class="menu-botao" href="">Perfil</a></li>
                 <li><a class="menu-botao" href="">Agendamentos</a></li>
                 <li><a class="menu-botao" href="">Favoritos</a></li>
                 <li><a class="menu-botao" href="">Historico</a></li>
                 <li><a class="menu-botao" href="">Quiz</a></li>
-                <li><a class="menu-botao" href="">Logout</a></li>
+                <li><a class="menu-botao" id="logout-botao" href="">LOG OUT</a></li>
             </ul>
         </div>
+            <div class="button-container" id="button-index">
+                <a class="botao" href="pages/cadastrar.html">Cadastrar-se</a>
+                <a class="botao" href="pages/login.html">Login</a>
+            </div>
     </nav>
 
     <!--MAIN-->
     <main>
-        <div class="container">
-            <div class="main-container">
-                <h1 class="title" id="login">Login</h1>
-                <form action="" method="POST">
-                <div class="input-container">
-                    <input type="text" name="usuario" placeholder="Usuario" required> <!--Limitar caracteres no input-->
-                </div>
-                <div class="input-container">
-                    <input type="password" name="senha" placeholder="Senha" required>
-                </div>
-                <div class="button-container">
-                    <button class="botao" type="submit">Entrar</button>
-                </div>
-            </form>
-            <div class="button-container">
-                <a class="botao" href="pages/cadastrar.html">Cadastrar-se</a>
-            </div>
-            </div>
-        </div>
+        
     </main>
 
     <!--FOOTER-->
     <footer></footer>
-    <script src="js/menu_navbar.js"></script>
 
     <!--SCRIPT JS-->
     <script src="js/menu_navbar.js"></script>
