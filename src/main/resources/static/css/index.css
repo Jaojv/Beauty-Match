@@ -1,25 +1,3 @@
-body { 
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-navbar {
-    width: 100%;
-}
-
-main{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    border: 2px solid black;
-}
-
-footer{
-    width: 100%;
-}
-
 .title{
     font-family: 'Roboto Slab', sans-serif;
     color: #cc5b6f;
@@ -79,6 +57,4 @@ footer{
     background-color: #b24b5e;
 } 
 
-
-
-        
+   
