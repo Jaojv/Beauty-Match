@@ -1,0 +1,86 @@
+.title{
+    font-family: 'Roboto Slab', sans-serif;
+    color: #cc5b6f;
+    font-size: 2.5rem;
+    padding: 20px 0 0 0;
+}
+.container{
+    width: 500px;
+    height: 500px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #E6A6B1;
+    margin: 70px 0 0 0;
+}
+.main-container {
+    width: 450px;
+    height: 450px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: #ffffff; 
+}
+.container:hover{
+    box-shadow: 0 5px 15px #cc5b6f;
+    transform: scale(1.02);
+    transition: all 0.3s;
+}
+.input-container {
+    width: 300px;
+    height: 30px;
+    margin: 20px;
+} .input-container input {
+    width: 100%;
+    height: 100%;
+    border: 3px solid #cc5b6f;
+    border-radius: 30px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+.input-container input:hover{
+    font-size: 1.2em;
+    cursor: pointer;
+    box-shadow: 0 3px 10px #E6A6B1;
+}
+.botao{
+    width: 150px;
+    background-color: #cc5b6f;
+    color: white;
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 0px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 0px;
+    border: none;
+
+} .botao:hover{
+    cursor: pointer;
+    background-color: #b24b5e;
+    font-size: 1.1em;
+    box-shadow: 0 5px 10px #E6A6B1;
+} 
+
+#button-index{
+    margin: 0px 80px;
+}
+#button-index .botao{
+    width: 150px;
+    background-color: #E6A6B1;
+    margin: 0px 10px;
+} #button-index .botao:hover{
+    background-color: #ffffff;
+    color: #cc5b6f;
+    font-size: 1.1em;
+    box-shadow: 0 5px 10px #E6A6B1;
+}

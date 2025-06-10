@@ -1,7 +1,6 @@
 body { 
     margin: 0;
     padding: 0;
-    background-image: linear-gradient(#f9e7e7, #ffd1d1);
 }
 @font-face {
     font-family: HelveticaWorld;
@@ -51,9 +50,6 @@ nav .menu-icon {
     box-shadow: -15px 0px 1px #E6A6B1;
     transform: translateX(10px);
     transition: box-shadow 0.2s, transform 0.3s;
-}
-.menu-icon .bar:hover{
-    box-shadow: 0 5px 10px #E6A6B1;
 }
 
 /*Icone Home do Navbar*/
@@ -113,7 +109,7 @@ nav .menu ul li a:hover {
     background-color: #85373F;
     font-weight: bolder;
     font-size: 0.8em;
-    padding: 10px
+    padding: 10px;
 }
 #logout-botao:hover{
     color: white;
