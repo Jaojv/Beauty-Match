@@ -42,13 +42,13 @@ nav .menu-icon {
 .menu-icon .bar{
     width: 38px;
     height: 10px;
-    background-color: #fff;
+    background-color: #85373F;
     margin: 3px 0;
     border-radius: 2px;
     transition: transform 0.3s;
 }
 .menu-icon.active .bar {
-    box-shadow: -15px 0px 1px #E6A6B1;
+    box-shadow: -15px 0px 1px #dda0ac;
     transform: translateX(10px);
     transition: box-shadow 0.2s, transform 0.3s;
 }
@@ -124,6 +124,47 @@ nav .menu li img{
     vertical-align: middle;
 }
 
+.botao{
+    width: 150px;
+    background-color: #cc5b6f;
+    color: rgba(0, 0, 0, 0.7);
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 0px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 0px;
+    border: none;
+
+} .botao:hover{
+    cursor: pointer;
+    background-color: #b24b5e;
+    font-size: 1.1em;
+    box-shadow: 0 5px 10px #E6A6B1;
+} 
+
+#button-index{
+    margin: 0px 80px;
+}
+#button-index .botao{
+    width: 150px;
+    background-color: #E6A6B1;
+    margin: 0px 10px;
+} #button-index .botao:hover{
+    background-color: #ffffff;
+    color: #cc5b6f;
+    font-size: 1.1em;
+    box-shadow: 0 5px 10px #E6A6B1;
+}
+
+.darkmode img{
+    width: 17px;
+    height: 17px;
+}
+
 /*Main*/
 main{
     display: flex;
@@ -147,8 +188,32 @@ body.dark-mode {
   transition: 0.3s;
 }
 
-nav.dark-mode {
+body.dark-mode nav{
   background-color: #632b36;
-  color: white;
-  transition: 0.3s;
+}
+
+body.dark-mode nav .home-icon img {
+  opacity: 0.8;
+}
+
+body.dark-mode #button-index .botao{
+    background-color: #884b55;
+    color: white;
+}
+
+body.dark-mode #button-index .botao:hover{
+    box-shadow: 0 5px 10px #4e222a;
+    color: #4e222a;
+}
+
+body.dark-mode .darkmode img{
+    filter: invert(1);
+}
+body.dark-mode .menu-icon .bar{
+  background-color: #ffffff;
+}
+
+body.dark-mode 
+.menu-icon.active .bar {
+    box-shadow: -15px 0px 1px #E6A6B1;
 }
