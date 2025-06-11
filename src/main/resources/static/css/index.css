@@ -72,3 +72,9 @@ main{
     font-size: 1.1em;
     box-shadow: 0 5px 10px #E6A6B1;
 }
+
+.darkmode img{
+    width: 20px;
+    height: 20px;
+}
+
