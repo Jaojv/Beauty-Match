@@ -4,8 +4,8 @@ import com.beauty.com.MatchBeauty.entity.Servico;
 import com.beauty.com.MatchBeauty.repository.ServicoRepository;
 import com.beauty.com.MatchBeauty.dto.ServicoDTO;
 import com.beauty.com.MatchBeauty.entity.Salao;
-import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.repository.SalaoRepository;
+import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.repository.ProfissionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +23,7 @@ public class ServicoService {
 
     @Autowired
     private ProfissionalRepository profissionalRepository;
+
 
     public List<Servico> listarServicos() {
         return servicoRepository.findAll();
@@ -43,13 +44,6 @@ public class ServicoService {
         Salao salao = salaoRepository.findById(dto.getSalaoId())
             .orElseThrow(() -> new RuntimeException("Salão não encontrado"));
         servico.setSalao(salao);
-
-        // Buscar e setar os profissionais (se houver)
-        if (dto.getProfissionaisIds() != null && !dto.getProfissionaisIds().isEmpty()) {
-            List<Profissional> profissionais = profissionalRepository.findAllById(dto.getProfissionaisIds());
-            // Corrigir: Servico espera List<Usuario>, então faz cast
-            servico.setProfissionais(new java.util.ArrayList<>(profissionais));
-        }
 
         return servicoRepository.save(servico);
     }
@@ -74,7 +68,14 @@ public class ServicoService {
     }
 
     public List<Servico> buscarServicosPorProfissional(Long profissionalId) {
-        return servicoRepository.findByProfissionaisIdUsuario(profissionalId);
+        Profissional profissional = profissionalRepository.findById(profissionalId)
+            .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+            
+        if (profissional.getSalao() == null) {
+            throw new RuntimeException("Profissional não está vinculado a um salão");
+        }
+        
+        return servicoRepository.findBySalaoId(profissional.getSalao().getId());
     }
 
     public Servico buscarServicoPorNomeESalao(String nome, Long salaoId) {

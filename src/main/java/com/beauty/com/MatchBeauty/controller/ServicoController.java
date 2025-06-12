@@ -31,11 +31,6 @@ public class ServicoController {
         response.setDuracaoMinutos(servicoSalvo.getDuracaoMinutos());
         response.setPreco(servicoSalvo.getPreco());
         response.setSalaoId(servicoSalvo.getSalao() != null ? servicoSalvo.getSalao().getId() : null);
-        response.setProfissionaisIds(
-            servicoSalvo.getProfissionais() != null ?
-                servicoSalvo.getProfissionais().stream().map(p -> p.getIdUsuario()).collect(java.util.stream.Collectors.toList())
-                : null
-        );
         return ResponseEntity.ok(response);
     }
 

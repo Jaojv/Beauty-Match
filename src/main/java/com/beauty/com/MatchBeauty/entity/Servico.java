@@ -12,8 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
@@ -41,28 +39,19 @@ public class Servico {
     @JoinColumn(name = "salao_id", nullable = false)
     private Salao salao;
 
-    @ManyToMany
-    @JoinTable(
-        name = "servico_profissional",
-        joinColumns = @JoinColumn(name = "servico_id"),
-        inverseJoinColumns = @JoinColumn(name = "profissional_id")
-    )
-    private List<Usuario> profissionais = new ArrayList<>();
-
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos = new ArrayList<>();
 
     public Servico() {
     }
 
-    public Servico(Long id, String nome, String descricao, BigDecimal preco, Integer duracaoMinutos, Salao salao, List<Usuario> profissionais, List<Agendamento> agendamentos) {
+    public Servico(Long id, String nome, String descricao, BigDecimal preco, Integer duracaoMinutos, Salao salao, List<Agendamento> agendamentos) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.duracaoMinutos = duracaoMinutos;
         this.salao = salao;
-        this.profissionais = profissionais;
         this.agendamentos = agendamentos;
     }
 
@@ -108,14 +97,6 @@ public class Servico {
 
     public void setSalao(Salao salao) {
         this.salao = salao;
-    }
-
-    public List<Usuario> getProfissionais() {
-        return profissionais;
-    }
-
-    public void setProfissionais(List<Usuario> profissionais) {
-        this.profissionais = profissionais;
     }
 
     public List<Agendamento> getAgendamentos() {

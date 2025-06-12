@@ -2,7 +2,11 @@ package com.beauty.com.MatchBeauty.controller;
 
 import com.beauty.com.MatchBeauty.dto.SalaoDTO;
 import com.beauty.com.MatchBeauty.dto.UsuarioDTO;
+import com.beauty.com.MatchBeauty.dto.ServicoDTO;
+import com.beauty.com.MatchBeauty.dto.ProfissionalDTO;
 import com.beauty.com.MatchBeauty.entity.Salao;
+import com.beauty.com.MatchBeauty.entity.Servico;
+import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.service.SalaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +102,52 @@ public class SalaoController {
         return salaoService.buscarSalaoPorNomeEEndereco(nome, endereco)
             .map(salao -> ResponseEntity.ok(converterParaDTO(salao)))
             .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{id}/servicos")
+    public ResponseEntity<List<ServicoDTO.Response>> listarServicosSalao(@PathVariable Long id) {
+        try {
+            List<Servico> servicos = salaoService.listarServicos(id);
+            List<ServicoDTO.Response> servicosDTO = servicos.stream()
+                .map(this::converterServicoParaDTO)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(servicosDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}/profissionais")
+    public ResponseEntity<List<ProfissionalDTO>> listarProfissionaisSalao(@PathVariable Long id) {
+        try {
+            List<Profissional> profissionais = salaoService.listarProfissionais(id);
+            List<ProfissionalDTO> profissionaisDTO = profissionais.stream()
+                .map(this::converterProfissionalParaDTO)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(profissionaisDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
+        ServicoDTO.Response dto = new ServicoDTO.Response();
+        dto.setId(servico.getId());
+        dto.setNome(servico.getNome());
+        dto.setDescricao(servico.getDescricao());
+        dto.setDuracaoMinutos(servico.getDuracaoMinutos());
+        dto.setPreco(servico.getPreco());
+        return dto;
+    }
+
+    private ProfissionalDTO converterProfissionalParaDTO(Profissional profissional) {
+        ProfissionalDTO dto = new ProfissionalDTO();
+        dto.setNome(profissional.getNome());
+        dto.setEspecialidade(profissional.getEspecialidade());
+        dto.setBiografia(profissional.getBiografia());
+        dto.setHorarioTrabalho(profissional.getHorarioTrabalho());
+        dto.setDiasTrabalho(profissional.getDiasTrabalho());
+        return dto;
     }
 
     private SalaoDTO.Response converterParaDTO(Salao salao) {

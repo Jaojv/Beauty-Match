@@ -2,6 +2,8 @@ package com.beauty.com.MatchBeauty.service;
 
 import com.beauty.com.MatchBeauty.entity.Salao;
 import com.beauty.com.MatchBeauty.entity.Usuario;
+import com.beauty.com.MatchBeauty.entity.Servico;
+import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.repository.SalaoRepository;
 import com.beauty.com.MatchBeauty.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +84,16 @@ public class SalaoService {
 
     public Optional<Salao> buscarSalaoPorNomeEEndereco(String nome, String endereco) {
         return salaoRepository.findByNomeAndEndereco(nome, endereco);
+    }
+
+    public List<Servico> listarServicos(Long salaoId) {
+        Salao salao = buscarSalao(salaoId);
+        return salao.getServicos();
+    }
+
+    public List<Profissional> listarProfissionais(Long salaoId) {
+        Salao salao = buscarSalao(salaoId);
+        return salao.getProfissionais();
     }
 
     private void validarSalao(Salao salao) {
