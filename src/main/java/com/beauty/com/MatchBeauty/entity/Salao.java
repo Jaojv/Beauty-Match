@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "salao")
@@ -42,6 +43,9 @@ public class Salao {
     @OneToMany(mappedBy = "salao", cascade = CascadeType.ALL)
     private List<Agendamento> agendamentos;
 
+    @OneToMany(mappedBy = "salao")
+    private List<Profissional> profissionais;
+
     public Salao(Long id, String nome, String endereco, String telefone, String descricao, String horarioFuncionamento, Usuario proprietario, List<Servico> servicos, List<Agendamento> agendamentos) {
         this.id = id;
         this.nome = nome;
@@ -52,6 +56,7 @@ public class Salao {
         this.proprietario = proprietario;
         this.servicos = servicos;
         this.agendamentos = agendamentos;
+        this.profissionais = new ArrayList<>();
     }
 
     public Long getId() {
@@ -124,5 +129,13 @@ public class Salao {
 
     public void setAgendamentos(List<Agendamento> agendamentos) {
         this.agendamentos = agendamentos;
+    }
+
+    public List<Profissional> getProfissionais() {
+        return profissionais;
+    }
+
+    public void setProfissionais(List<Profissional> profissionais) {
+        this.profissionais = profissionais;
     }
 }

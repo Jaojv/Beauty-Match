@@ -1,24 +1,28 @@
 package com.beauty.com.MatchBeauty.controller;
 
 import com.beauty.com.MatchBeauty.dto.ProfissionalDTO;
+import com.beauty.com.MatchBeauty.dto.ServicoDTO;
 import com.beauty.com.MatchBeauty.entity.Profissional;
+import com.beauty.com.MatchBeauty.entity.Servico;
 import com.beauty.com.MatchBeauty.entity.Salao;
 import com.beauty.com.MatchBeauty.repository.SalaoRepository;
 import com.beauty.com.MatchBeauty.security.SecurityService;
 import com.beauty.com.MatchBeauty.service.ProfissionalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/profissionais")
 public class ProfissionalController {
 
- 
     @Autowired
     private ProfissionalService profissionalService;
 
@@ -27,8 +31,6 @@ public class ProfissionalController {
 
     @Autowired
     private SalaoRepository salaoRepository;
-
-
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -101,5 +103,40 @@ public class ProfissionalController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/servicos")
+    public ResponseEntity<List<ServicoDTO.Response>> listarServicosProfissional(@PathVariable Long id) {
+        try {
+            List<Servico> servicos = profissionalService.listarServicos(id);
+            List<ServicoDTO.Response> servicosDTO = servicos.stream()
+                .map(this::converterServicoParaDTO)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(servicosDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}/disponibilidade")
+    public ResponseEntity<Map<String, List<String>>> verificarDisponibilidade(
+            @PathVariable Long id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+        try {
+            Map<String, List<String>> disponibilidade = profissionalService.verificarHorariosDisponiveis(id, data);
+            return ResponseEntity.ok(disponibilidade);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
+        ServicoDTO.Response dto = new ServicoDTO.Response();
+        dto.setId(servico.getId());
+        dto.setNome(servico.getNome());
+        dto.setDescricao(servico.getDescricao());
+        dto.setDuracaoMinutos(servico.getDuracaoMinutos());
+        dto.setPreco(servico.getPreco());
+        return dto;
     }
 } 

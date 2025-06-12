@@ -1,6 +1,7 @@
 package com.beauty.com.MatchBeauty.dto;
 
 public class ProfissionalDTO {
+    private Long id;
     private String username;
     private String password;
     private String email;
@@ -12,6 +13,14 @@ public class ProfissionalDTO {
     private String horarioTrabalho;
     private String diasTrabalho;
     private Long salaoId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

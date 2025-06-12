@@ -22,23 +22,23 @@ public class Agendamento {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusAgendamento status;
-    
+
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Usuario cliente;
-    
+
     @ManyToOne
     @JoinColumn(name = "profissional_id", nullable = false)
     private Usuario profissional;
-    
+
     @ManyToOne
     @JoinColumn(name = "servico_id", nullable = false)
     private Servico servico;
-    
+
     @ManyToOne
     @JoinColumn(name = "salao_id", nullable = false)
     private Salao salao;
-    
+
     @Column
     private String observacoes;
     
