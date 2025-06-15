@@ -14,10 +14,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "servico")
-@Data
 public class Servico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Servico {
     @Column(nullable = false)
     private String nome;
 
-    @Column
+    @Column(nullable = false)
     private String descricao;
 
     @Column(nullable = false)
@@ -39,10 +39,17 @@ public class Servico {
     @JoinColumn(name = "salao_id", nullable = false)
     private Salao salao;
 
+    @Column
+    private String imagem;
+
+    @Column(nullable = false)
+    private Boolean ativo = true;
+
     @OneToMany(mappedBy = "servico")
     private List<Agendamento> agendamentos = new ArrayList<>();
 
     public Servico() {
+        this.agendamentos = new ArrayList<>();
     }
 
     public Servico(Long id, String nome, String descricao, BigDecimal preco, Integer duracaoMinutos, Salao salao, List<Agendamento> agendamentos) {
@@ -57,6 +64,10 @@ public class Servico {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {

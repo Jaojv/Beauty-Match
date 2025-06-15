@@ -36,4 +36,25 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
         LocalDateTime inicio, 
         LocalDateTime fim
     );
+
+    List<Agendamento> findByClienteIdUsuarioAndStatusAndDataHoraBetween(
+        Long clienteId,
+        StatusAgendamento status,
+        LocalDateTime inicio,
+        LocalDateTime fim
+    );
+
+    List<Agendamento> findByProfissionalIdUsuarioAndStatusAndDataHoraBetween(
+        Long profissionalId,
+        StatusAgendamento status,
+        LocalDateTime inicio,
+        LocalDateTime fim
+    );
+
+    List<Agendamento> findBySalaoIdAndStatusAndDataHoraBetween(
+        Long salaoId,
+        StatusAgendamento status,
+        LocalDateTime inicio,
+        LocalDateTime fim
+    );
 } 

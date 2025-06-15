@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/saloes")
@@ -159,21 +160,28 @@ public class SalaoController {
         response.setDescricao(salao.getDescricao());
         response.setHorarioFuncionamento(salao.getHorarioFuncionamento());
         
-        UsuarioDTO.Response proprietarioResponse = new UsuarioDTO.Response();
-        proprietarioResponse.setId(salao.getProprietario().getIdUsuario());
-        proprietarioResponse.setUsername(salao.getProprietario().getUsername());
-        proprietarioResponse.setNome(salao.getProprietario().getNome());
-        proprietarioResponse.setEmail(salao.getProprietario().getEmail());
+        UsuarioDTO.Response proprietarioResponse = new UsuarioDTO.Response(
+            salao.getProprietario().getIdUsuario(),
+            salao.getProprietario().getUsername(),
+            salao.getProprietario().getNome(),
+            salao.getProprietario().getEmail(),
+            salao.getProprietario().getTipoUsuario()
+        );
         proprietarioResponse.setTelefone(salao.getProprietario().getTelefone());
-        proprietarioResponse.setTipoUsuario(salao.getProprietario().getTipoUsuario());
         response.setProprietario(proprietarioResponse);
         
         return response;
     }
 
     private Salao converterParaEntidade(SalaoDTO.Request dto) {
-        Salao salao = new Salao(null, dto.getNome(), dto.getEndereco(), dto.getTelefone(), 
-            dto.getDescricao(), dto.getHorarioFuncionamento(), null, List.of(), List.of());
+        Salao salao = new Salao();
+        salao.setNome(dto.getNome());
+        salao.setEndereco(dto.getEndereco());
+        salao.setTelefone(dto.getTelefone());
+        salao.setDescricao(dto.getDescricao());
+        salao.setHorarioFuncionamento(dto.getHorarioFuncionamento());
+        salao.setServicos(new ArrayList<>());
+        salao.setAgendamentos(new ArrayList<>());
         return salao;
     }
 } 
