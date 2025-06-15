@@ -1,0 +1,41 @@
+
+body.dark-mode nav{
+  background-color: #632b36;
+}
+
+body.dark-mode {
+  background-color: #313131;
+  color: white;
+  transition: 0.3s;
+}
+
+
+body.dark-mode nav .home-icon img {
+  opacity: 0.8;
+}
+
+body.dark-mode .menu-icon .bar{
+  background-color: #ffffff;
+}
+
+body.dark-mode .menu-icon.active .bar {
+    box-shadow: -15px 0px 1px #E6A6B1;
+}
+
+body.dark-mode #button-index .botao{
+    background-color: #884b55;
+    color: white;
+}
+
+body.dark-mode #button-index .botao:hover{
+    box-shadow: 0 5px 10px #4e222a;
+    color: #4e222a;
+}
+
+body.dark-mode .darkmode img{
+    filter: invert(1);
+}
+
+body.dark-mode footer {
+  background-color: #632b36;
+}
