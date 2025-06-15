@@ -75,24 +75,19 @@ nav .perfil img.logout-img:hover {
 
 /* Modal de perfil */
 .modal-perfil {
-    display: none; 
+    display: none;
     position: fixed;
     z-index: 2000;
-    top: 80px; 
-    right: 10px;
-    left: auto;
-    width: auto;
-    height: auto;
-    min-width: 300px;
-    align-items: flex-start;
+    top: 0; /* Mudou de 80px para 0 */
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3); 
+    display: flex;
+    justify-content: flex-end; 
+    align-items: flex-start;   
 }
-.modal-perfil .modal-conteudo {
-    background: #fff;
-    padding: 30px 40px;
-    border-radius: 12px;
-    min-width: 300px;
-    position: relative;
-}
+
 .fechar-modal {
     position: absolute;
     top: 10px; right: 15px;
@@ -100,4 +95,16 @@ nav .perfil img.logout-img:hover {
     color: #cc5b6f;
     cursor: pointer;
 }
+
+.modal-perfil .modal-conteudo {
+    padding: 30px 40px;
+    min-width: 320px;
+    position: relative;
+    margin: 80px 15px 0 0;
+    color: black ;
+    background: #fff;
+    border: 2px solid #B24B5E;
+    border-radius: 12px;
+}
+
 
