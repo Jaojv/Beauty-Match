@@ -2,7 +2,6 @@ package com.beauty.com.MatchBeauty.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "salao")
 @Data
-@NoArgsConstructor
 public class Salao {
     
     @Id
@@ -27,36 +25,31 @@ public class Salao {
     @Column(nullable = false)
     private String telefone;
     
-    @Column
+    @Column(nullable = false)
+    private String email;
+    
+    @Column(nullable = false)
     private String descricao;
     
-    @Column
+    @Column(nullable = false)
     private String horarioFuncionamento;
     
     @ManyToOne
     @JoinColumn(name = "proprietario_id", nullable = false)
     private Usuario proprietario;
     
-    @OneToMany(mappedBy = "salao", cascade = CascadeType.ALL)
-    private List<Servico> servicos;
+    @OneToMany(mappedBy = "salao")
+    private List<Servico> servicos = new ArrayList<>();
     
-    @OneToMany(mappedBy = "salao", cascade = CascadeType.ALL)
-    private List<Agendamento> agendamentos;
+    @OneToMany(mappedBy = "salao")
+    private List<Agendamento> agendamentos = new ArrayList<>();
 
     @OneToMany(mappedBy = "salao")
     private List<Profissional> profissionais;
 
-    public Salao(Long id, String nome, String endereco, String telefone, String descricao, String horarioFuncionamento, Usuario proprietario, List<Servico> servicos, List<Agendamento> agendamentos) {
-        this.id = id;
-        this.nome = nome;
-        this.endereco = endereco;
-        this.telefone = telefone;
-        this.descricao = descricao;
-        this.horarioFuncionamento = horarioFuncionamento;
-        this.proprietario = proprietario;
-        this.servicos = servicos;
-        this.agendamentos = agendamentos;
-        this.profissionais = new ArrayList<>();
+    public Salao() {
+        this.servicos = new ArrayList<>();
+        this.agendamentos = new ArrayList<>();
     }
 
     public Long getId() {
@@ -89,6 +82,14 @@ public class Salao {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDescricao() {
