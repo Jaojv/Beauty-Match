@@ -72,3 +72,32 @@ nav .perfil img.logout-img:hover {
     transition: all 0.2s;
     filter: invert(1);
 }
+
+/* Modal de perfil */
+.modal-perfil {
+    display: none; 
+    position: fixed;
+    z-index: 2000;
+    top: 80px; 
+    right: 10px;
+    left: auto;
+    width: auto;
+    height: auto;
+    min-width: 300px;
+    align-items: flex-start;
+}
+.modal-perfil .modal-conteudo {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    min-width: 300px;
+    position: relative;
+}
+.fechar-modal {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 2em;
+    color: #cc5b6f;
+    cursor: pointer;
+}
+
