@@ -160,9 +160,25 @@ nav .menu li img{
     box-shadow: 0 5px 10px #E6A6B1;
 }
 
-.darkmode img{
-    width: 17px;
-    height: 17px;
+#darkmode-botao{
+    width: 70px;
+    height: 45px;
+    background-color: #E6A6B1;
+    color: rgba(0, 0, 0, 0.7);
+    border-radius: 100px;
+    display: inline-block;
+    margin: 10px 0px;
+    border: none;
+    z-index: 1000;
+    position: fixed;
+    right: 30px;
+    bottom: 10px;
+}
+.darkmode img {
+    padding: 10px;
+    width: 23px;
+    height: 23px;
+    filter: invert(18%) sepia(32%) saturate(1172%) hue-rotate(308deg) brightness(92%) contrast(92%);
 }
 
 /*Main*/
@@ -170,7 +186,7 @@ main{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 /*Footer*/
