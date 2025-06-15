@@ -139,7 +139,7 @@ nav .perfil img.logout-img:hover {
     width: 150px;
     height: 150px;
     border-radius: 80px;
-    box-shadow: 0px 0px 10px black;
+    box-shadow: -3px 5px 1px #B24B5E;
 }
 
 .dados-modal table{
@@ -147,14 +147,20 @@ nav .perfil img.logout-img:hover {
     margin: 30px 0;
 }
 
+.dados-modal tr:hover{
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.2s;
+}
 .dados-modal .label{
     text-align: center;
-    font-size: 1.2em;
+    font-size: 1.1em;
     background-color: #E6A6B1;
     color: black;
     font-weight: bold;
     border-radius: 10px;
     height: 30px;
+    font-family: 'Inter', sans-serif;
 }
 
 .dados-modal input{
@@ -162,7 +168,12 @@ nav .perfil img.logout-img:hover {
     border: none;
     outline: none;
     text-align: left;
+    background-color: transparent;
 }
 
-
+.modal-conteudo #editar-perfil{
+    background-color: #B24B5E;
+    transform: scale(1.02);
+    transition: all 0.2s;
+}
 
