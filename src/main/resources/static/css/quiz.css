@@ -2,6 +2,7 @@
 .container img{
     width: 350px;
     height: 200px;
+    margin-top: 30px;
 }
 
 .container{
@@ -22,6 +23,7 @@
     width: 200px;
     height: 200px;
     padding: 10px;
+    margin-top: 0px;
 }
 
 .card:hover{

@@ -78,7 +78,7 @@ nav .perfil img.logout-img:hover {
     display: none;
     position: fixed;
     z-index: 2000;
-    top: 0; /* Mudou de 80px para 0 */
+    top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
