@@ -171,9 +171,25 @@ nav .perfil img.logout-img:hover {
     background-color: transparent;
 }
 
-.modal-conteudo #editar-perfil{
-    background-color: #B24B5E;
-    transform: scale(1.02);
-    transition: all 0.2s;
+#editar-perfil{
+    width: 150px;
+    background-color: #cc5b6f;
+    color: white;
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 0px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 0px;
+    border: none;
 }
 
+#editar-perfil:hover{
+    cursor: pointer;
+    background-color: #B24B5E;
+    transform: scale(1.04);
+    transition: all 0.2s;
+}
