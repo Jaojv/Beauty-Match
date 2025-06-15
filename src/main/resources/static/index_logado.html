@@ -6,6 +6,7 @@
     <title>Beauty Match - Login</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/index_logado.css">
     <link rel="stylesheet" href="css/darkmode.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,8 +31,13 @@
             </ul>
         </div>
             <div class="button-container" id="button-index">
-                <a class="botao" href="pages/cadastrar.html">Cadastrar-se</a>
-                <a class="botao" href="pages/login.html">Login</a>
+                <div class="perfil">
+                    <a class="botao_logado" href="">
+                        <input type="text" value="User" readonly>
+                        <img class="perfil-img" src="images/user.png" alt="Perfil">
+                    </a>
+                    <a href=""><img class="logout-img" src="images/logout.png"></a>
+                </div>
             </div>
     </nav>
 
@@ -68,6 +74,7 @@
     <!--SCRIPT JS-->
     <script src="js/darkmode.js"></script>
     <script src="js/menu_navbar.js"></script>
+    <script src="js/perfil_usuario.js"></script>
 </body>
 </html>
 

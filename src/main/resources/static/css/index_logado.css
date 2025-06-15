@@ -1,0 +1,74 @@
+
+/*Logado*/
+
+
+nav .perfil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav .botao_logado{
+    width: 250px;
+    height: 40px;
+    background-color: #f1ebebee;
+    color: rgba(0, 0, 0, 0.9);
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 0px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 0px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    
+
+} nav .botao_logado:hover{
+    cursor: pointer;
+    background-color: #fffefe;
+    transform: scale(1.03);
+    transition: all 0.2s;
+} 
+
+nav .botao_logado input {
+    width: 65%;
+    height: 30px;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    outline: none;
+    border: none;
+    padding: 0 10px;
+}
+
+nav .perfil img.logout-img {
+    width: 40px;
+    height: 40px;
+    filter: invert(0.9);
+    margin: 10px 0 0 20px;
+} 
+
+nav .perfil img.perfil-img {
+    filter: none;
+    width: 50px;
+    height: 50px;
+    margin-left: 5px;
+}
+
+nav .perfil img.perfil-img:hover {
+    transform: scale(1.03);
+    transition: all 0.2s;
+}
+
+nav .perfil img.logout-img:hover {
+    transform: scale(1.09);
+    transition: all 0.2s;
+    filter: invert(1);
+}
