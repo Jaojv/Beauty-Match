@@ -31,6 +31,7 @@
             </ul>
         </div>
             <div class="button-container" id="button-index">
+                <!-- Perfil do usuário Cadastrado-->
                 <div class="perfil">
                     <a class="botao_logado" href="">
                         <input type="text" value="User" readonly>
@@ -40,15 +41,15 @@
                     <div id="modal-perfil" class="modal-perfil">
                         <div class="modal-conteudo">
                             <span class="fechar-modal" id="fechar-modal">&times;</span>
-                            <div class="head-modal">
-                                <h2>Perfil do Usuário</h2>
-                                <img class="perfil-img" src="images/usuario.png" alt="Perfil">
+                            <div class="titulo-modal">
+                                <img src="images/usuario.png">
+                                <h2>Perfil</h2>
                             </div>
                             <div class="img-modal">
-                                <img class="perfil-img" src="images/user.png" alt="Perfil">
+                                <img class="perfil-img" id="foto-perfil" src="images/user.png" alt="Perfil">
                             </div>
-
-                            <table>
+                            <div class="dados-modal">
+                                <table>
                                 <tr>
                                     <td class="label">Nome:</td>
                                     <td><input type="text" value="Malu" readonly></td>
@@ -61,7 +62,8 @@
                                     <td class="label">Senha:</td>
                                     <td><input type="password" value="Malu123" readonly></td>
                                 </tr>
-                            </table>
+                                </table>
+                            </div>
                             <button class="botao">Editar Perfil</button>
                         </div>
                     </div>

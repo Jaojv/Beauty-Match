@@ -9,7 +9,6 @@ body.dark-mode {
   transition: 0.3s;
 }
 
-
 body.dark-mode nav .home-icon img {
   opacity: 0.8;
 }
