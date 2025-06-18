@@ -12,6 +12,8 @@ import com.beauty.com.MatchBeauty.service.HorarioTrabalhoService;
 import com.beauty.com.MatchBeauty.service.ProfissionalService;
 import com.beauty.com.MatchBeauty.service.SalaoService;
 import com.beauty.com.MatchBeauty.service.ServicoService;
+import com.beauty.com.MatchBeauty.service.ProprietarioService;
+import com.beauty.com.MatchBeauty.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +52,9 @@ public class AgendamentoController {
     @Autowired
     private HorarioTrabalhoService horarioTrabalhoService;
 
+    @Autowired
+    private ProprietarioService proprietarioService;
+
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarTodosAgendamentos() {
@@ -68,22 +73,21 @@ public class AgendamentoController {
             return ResponseEntity.notFound().build();
         }
         
-        // Verificar se o usuário tem permissão para ver este agendamento
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
-        if (usuarioLogado.getTipoUsuario().equals("CLIENTE") && 
-            !agendamento.getCliente().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        String tipoUsuario = userPrincipal.getTipoUsuario();
+        Usuario usuarioLogado;
+        if ("CLIENTE".equalsIgnoreCase(tipoUsuario)) {
+            usuarioLogado = clienteService.buscarCliente(usuarioId);
+        } else if ("PROFISSIONAL".equalsIgnoreCase(tipoUsuario)) {
+            usuarioLogado = profissionalService.buscarProfissional(usuarioId);
+        } else if ("PROPRIETARIO".equalsIgnoreCase(tipoUsuario)) {
+            usuarioLogado = proprietarioService.buscarPorId(usuarioId);
+        } else {
+            usuarioLogado = null;
         }
-        
-        if (usuarioLogado.getTipoUsuario().equals("PROFISSIONAL") && 
-            !agendamento.getProfissional().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        
-        if (usuarioLogado.getTipoUsuario().equals("PROPRIETARIO") && 
-            !agendamento.getSalao().getProprietario().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if (usuarioLogado == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         
@@ -94,9 +98,9 @@ public class AgendamentoController {
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosPorClienteLogado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
-        List<Agendamento> agendamentos = agendamentoService.buscarAgendamentosPorCliente(usuarioLogado.getIdUsuario());
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        List<Agendamento> agendamentos = agendamentoService.buscarAgendamentosPorCliente(usuarioId);
         List<AgendamentoDTO.Response> agendamentosDTO = agendamentos.stream()
                 .map(AgendamentoDTO.Response::fromEntity)
                 .collect(Collectors.toList());
@@ -107,9 +111,9 @@ public class AgendamentoController {
     @PreAuthorize("hasRole('PROFISSIONAL')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosPorProfissionalLogado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
-        List<Agendamento> agendamentos = agendamentoService.buscarAgendamentosPorProfissional(usuarioLogado.getIdUsuario());
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        List<Agendamento> agendamentos = agendamentoService.buscarAgendamentosPorProfissional(usuarioId);
         List<AgendamentoDTO.Response> agendamentosDTO = agendamentos.stream()
                 .map(AgendamentoDTO.Response::fromEntity)
                 .collect(Collectors.toList());
@@ -120,22 +124,18 @@ public class AgendamentoController {
     @PreAuthorize("hasRole('PROPRIETARIO')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosPorSalaoDoProprietarioLogado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
-        // Buscar salões do proprietário
-        List<Long> salaoIds = salaoService.buscarSaloesPorProprietario(usuarioLogado.getIdUsuario())
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        List<Long> salaoIds = salaoService.buscarSaloesPorProprietario(usuarioId)
                 .stream()
                 .map(salao -> salao.getId())
                 .collect(Collectors.toList());
-        
         if (salaoIds.isEmpty()) {
             return ResponseEntity.ok(List.of());
         }
-        
         List<Agendamento> agendamentos = salaoIds.stream()
                 .flatMap(salaoId -> agendamentoService.buscarAgendamentosPorSalao(salaoId).stream())
                 .collect(Collectors.toList());
-        
         List<AgendamentoDTO.Response> agendamentosDTO = agendamentos.stream()
                 .map(AgendamentoDTO.Response::fromEntity)
                 .collect(Collectors.toList());
@@ -146,13 +146,12 @@ public class AgendamentoController {
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosAtivosPorClienteLogado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
-        List<Agendamento> todosAgendamentos = agendamentoService.buscarAgendamentosPorCliente(usuarioLogado.getIdUsuario());
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        List<Agendamento> todosAgendamentos = agendamentoService.buscarAgendamentosPorCliente(usuarioId);
         List<Agendamento> agendamentosAtivos = todosAgendamentos.stream()
                 .filter(a -> a.getStatus() == StatusAgendamento.AGENDADO)
                 .collect(Collectors.toList());
-        
         List<AgendamentoDTO.Response> agendamentosDTO = agendamentosAtivos.stream()
                 .map(AgendamentoDTO.Response::fromEntity)
                 .collect(Collectors.toList());
@@ -166,26 +165,22 @@ public class AgendamentoController {
         @RequestParam(required = false) String dataFim
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         LocalDateTime inicio = dataInicio != null ? 
             LocalDateTime.parse(dataInicio, DateTimeFormatter.ISO_DATE_TIME) :
             LocalDateTime.now().minusMonths(1);
-            
         LocalDateTime fim = dataFim != null ? 
             LocalDateTime.parse(dataFim, DateTimeFormatter.ISO_DATE_TIME) :
             LocalDateTime.now();
-        
         List<Agendamento> historico = agendamentoService.buscarHistoricoCliente(
-            usuarioLogado.getIdUsuario(),
+            usuarioId,
             inicio,
             fim
         );
-        
         List<AgendamentoDTO.Response> agendamentosDTO = historico.stream()
             .map(AgendamentoDTO.Response::fromEntity)
             .collect(Collectors.toList());
-            
         return ResponseEntity.ok(agendamentosDTO);
     }
 
@@ -196,26 +191,22 @@ public class AgendamentoController {
         @RequestParam(required = false) String dataFim
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         LocalDateTime inicio = dataInicio != null ? 
             LocalDateTime.parse(dataInicio, DateTimeFormatter.ISO_DATE_TIME) :
             LocalDateTime.now().minusMonths(1);
-            
         LocalDateTime fim = dataFim != null ? 
             LocalDateTime.parse(dataFim, DateTimeFormatter.ISO_DATE_TIME) :
             LocalDateTime.now();
-        
         List<Agendamento> historico = agendamentoService.buscarHistoricoProfissional(
-            usuarioLogado.getIdUsuario(),
+            usuarioId,
             inicio,
             fim
         );
-        
         List<AgendamentoDTO.Response> agendamentosDTO = historico.stream()
             .map(AgendamentoDTO.Response::fromEntity)
             .collect(Collectors.toList());
-            
         return ResponseEntity.ok(agendamentosDTO);
     }
 
@@ -227,35 +218,28 @@ public class AgendamentoController {
         @RequestParam(required = false) String dataFim
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
-        // Verificar se o salão pertence ao proprietário
-        boolean salaoPertenceProprietario = salaoService.buscarSaloesPorProprietario(usuarioLogado.getIdUsuario())
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        boolean salaoPertenceProprietario = salaoService.buscarSaloesPorProprietario(usuarioId)
             .stream()
             .anyMatch(salao -> salao.getId().equals(salaoId));
-            
         if (!salaoPertenceProprietario) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        
         LocalDateTime inicio = dataInicio != null ? 
             LocalDateTime.parse(dataInicio, DateTimeFormatter.ISO_DATE_TIME) :
             LocalDateTime.now().minusMonths(1);
-            
         LocalDateTime fim = dataFim != null ? 
             LocalDateTime.parse(dataFim, DateTimeFormatter.ISO_DATE_TIME) :
             LocalDateTime.now();
-        
         List<Agendamento> historico = agendamentoService.buscarHistoricoSalao(
             salaoId,
             inicio,
             fim
         );
-        
         List<AgendamentoDTO.Response> agendamentosDTO = historico.stream()
             .map(AgendamentoDTO.Response::fromEntity)
             .collect(Collectors.toList());
-            
         return ResponseEntity.ok(agendamentosDTO);
     }
 
@@ -266,7 +250,8 @@ public class AgendamentoController {
         @RequestParam(required = false) String dataFim
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         
         LocalDateTime inicio = dataInicio != null ? 
             LocalDateTime.parse(dataInicio, DateTimeFormatter.ISO_DATE_TIME) :
@@ -277,7 +262,7 @@ public class AgendamentoController {
             LocalDateTime.now();
         
         AgendamentoService.AgendamentoEstatisticas estatisticas = agendamentoService.buscarEstatisticasCliente(
-            usuarioLogado.getIdUsuario(),
+            usuarioId,
             inicio,
             fim
         );
@@ -292,7 +277,8 @@ public class AgendamentoController {
         @RequestParam(required = false) String dataFim
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         
         LocalDateTime inicio = dataInicio != null ? 
             LocalDateTime.parse(dataInicio, DateTimeFormatter.ISO_DATE_TIME) :
@@ -303,7 +289,7 @@ public class AgendamentoController {
             LocalDateTime.now();
         
         AgendamentoService.AgendamentoEstatisticas estatisticas = agendamentoService.buscarEstatisticasProfissional(
-            usuarioLogado.getIdUsuario(),
+            usuarioId,
             inicio,
             fim
         );
@@ -319,10 +305,10 @@ public class AgendamentoController {
         @RequestParam(required = false) String dataFim
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         
-        // Verificar se o salão pertence ao proprietário
-        boolean salaoPertenceProprietario = salaoService.buscarSaloesPorProprietario(usuarioLogado.getIdUsuario())
+        boolean salaoPertenceProprietario = salaoService.buscarSaloesPorProprietario(usuarioId)
             .stream()
             .anyMatch(salao -> salao.getId().equals(salaoId));
             
@@ -350,29 +336,23 @@ public class AgendamentoController {
     @PostMapping
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<AgendamentoDTO.Response> criarAgendamento(@RequestBody AgendamentoDTO.Request request) {
-        // Verificar se o cliente está logado
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
-        // Validar se o profissional já tem agendamento no mesmo horário
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         List<Agendamento> agendamentosProfissional = agendamentoService.buscarAgendamentosPorProfissional(request.getProfissionalId());
         boolean horarioOcupado = agendamentosProfissional.stream()
                 .filter(a -> a.getStatus() == StatusAgendamento.AGENDADO)
                 .anyMatch(a -> a.getDataHora().equals(request.getDataHora()));
-        
         if (horarioOcupado) {
             return ResponseEntity.badRequest().build();
         }
-        
-        // Criar o agendamento
         Agendamento agendamento = new Agendamento();
         agendamento.setDataHora(request.getDataHora());
-        agendamento.setCliente(clienteService.buscarCliente(usuarioLogado.getIdUsuario()));
+        agendamento.setCliente(clienteService.buscarCliente(usuarioId));
         agendamento.setProfissional(profissionalService.buscarProfissional(request.getProfissionalId()));
         agendamento.setServico(servicoService.buscarServico(request.getServicoId()));
         agendamento.setSalao(salaoService.buscarSalao(request.getSalaoId()));
         agendamento.setObservacoes(request.getObservacoes());
-        
         Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
         return ResponseEntity.status(HttpStatus.CREATED).body(AgendamentoDTO.Response.fromEntity(novoAgendamento));
     }
@@ -384,36 +364,28 @@ public class AgendamentoController {
         if (agendamento == null) {
             return ResponseEntity.notFound().build();
         }
-        
-        // Verificar se o usuário tem permissão para cancelar este agendamento
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        String tipoUsuario = userPrincipal.getTipoUsuario();
         boolean podeEditar = false;
-        
-        if (usuarioLogado.getTipoUsuario().equals("CLIENTE") && 
-            agendamento.getCliente().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if ("CLIENTE".equalsIgnoreCase(tipoUsuario) && 
+            agendamento.getCliente().getIdUsuario().equals(usuarioId)) {
             podeEditar = true;
         }
-        
-        if (usuarioLogado.getTipoUsuario().equals("PROFISSIONAL") && 
-            agendamento.getProfissional().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if ("PROFISSIONAL".equalsIgnoreCase(tipoUsuario) && 
+            agendamento.getProfissional().getIdUsuario().equals(usuarioId)) {
             podeEditar = true;
         }
-        
-        if (usuarioLogado.getTipoUsuario().equals("PROPRIETARIO") && 
-            agendamento.getSalao().getProprietario().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if ("PROPRIETARIO".equalsIgnoreCase(tipoUsuario) && 
+            agendamento.getSalao().getProprietario().getIdUsuario().equals(usuarioId)) {
             podeEditar = true;
         }
-        
         if (!podeEditar) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        
-        // Cancelar agendamento
         agendamento.setStatus(StatusAgendamento.CANCELADO);
         Agendamento agendamentoAtualizado = agendamentoService.atualizarAgendamento(agendamento);
-        
         return ResponseEntity.ok(AgendamentoDTO.Response.fromEntity(agendamentoAtualizado));
     }
 
@@ -425,19 +397,19 @@ public class AgendamentoController {
             return ResponseEntity.notFound().build();
         }
         
-        // Verificar se o usuário tem permissão para concluir este agendamento
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
-        
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
+        String tipoUsuario = userPrincipal.getTipoUsuario();
         boolean podeEditar = false;
         
-        if (usuarioLogado.getTipoUsuario().equals("PROFISSIONAL") && 
-            agendamento.getProfissional().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if ("PROFISSIONAL".equalsIgnoreCase(tipoUsuario) && 
+            agendamento.getProfissional().getIdUsuario().equals(usuarioId)) {
             podeEditar = true;
         }
         
-        if (usuarioLogado.getTipoUsuario().equals("PROPRIETARIO") && 
-            agendamento.getSalao().getProprietario().getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if ("PROPRIETARIO".equalsIgnoreCase(tipoUsuario) && 
+            agendamento.getSalao().getProprietario().getIdUsuario().equals(usuarioId)) {
             podeEditar = true;
         }
         
@@ -445,7 +417,6 @@ public class AgendamentoController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         
-        // Concluir agendamento
         agendamento.setStatus(StatusAgendamento.CONCLUIDO);
         Agendamento agendamentoAtualizado = agendamentoService.atualizarAgendamento(agendamento);
         
@@ -458,23 +429,19 @@ public class AgendamentoController {
             @RequestParam Long salaoId,
             @RequestParam String data) {
         
-        // Converter a string de data para LocalDate
         LocalDate localDate = LocalDate.parse(data, DateTimeFormatter.ISO_DATE);
         
-        // Buscar agendamentos do profissional para esta data
         LocalDateTime inicioDia = localDate.atStartOfDay();
         LocalDateTime fimDia = localDate.atTime(23, 59, 59);
         
         List<Agendamento> agendamentosDoDia = agendamentoService.buscarAgendamentosPorProfissionalEPeriodo(
                 profissionalId, inicioDia, fimDia);
         
-        // Horários padrão de funcionamento (exemplo: 8h às 18h, com intervalos de 1h)
         List<LocalDateTime> todosHorarios = new ArrayList<>();
         for (int hora = 8; hora <= 18; hora++) {
             todosHorarios.add(localDate.atTime(hora, 0));
         }
         
-        // Filtrar horários já agendados
         List<LocalDateTime> horariosDisponiveis = todosHorarios.stream()
                 .filter(horario -> agendamentosDoDia.stream()
                         .noneMatch(a -> a.getDataHora().equals(horario) && 
@@ -491,27 +458,24 @@ public class AgendamentoController {
         @RequestParam String dataHora
     ) {
         try {
-            // Verificar se o usuário tem permissão para bloquear horários
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+            UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+            Long usuarioId = userPrincipal.getId();
             
-            // Buscar o profissional
             Usuario profissional = profissionalService.buscarProfissional(profissionalId);
             if (profissional == null) {
                 return ResponseEntity.notFound().build();
             }
             
-            // Validar permissões
             boolean podeBloquear = false;
             
-            if (usuarioLogado.getTipoUsuario().equals("PROFISSIONAL") && 
-                profissional.getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+            if (userPrincipal.getTipoUsuario().equals("PROFISSIONAL") && 
+                profissional.getIdUsuario().equals(usuarioId)) {
                 podeBloquear = true;
             }
             
-            if (usuarioLogado.getTipoUsuario().equals("PROPRIETARIO")) {
-                // Verificar se o profissional pertence a algum salão do proprietário
-                boolean profissionalPertenceSalao = salaoService.buscarSaloesPorProprietario(usuarioLogado.getIdUsuario())
+            if (userPrincipal.getTipoUsuario().equals("PROPRIETARIO")) {
+                boolean profissionalPertenceSalao = salaoService.buscarSaloesPorProprietario(usuarioId)
                     .stream()
                     .anyMatch(salao -> salao.getProfissionais().contains(profissional));
                 
@@ -524,10 +488,8 @@ public class AgendamentoController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             
-            // Converter a data/hora
             LocalDateTime dataHoraLocal = LocalDateTime.parse(dataHora, DateTimeFormatter.ISO_DATE_TIME);
             
-            // Bloquear o horário
             HorarioTrabalho horarioBloqueado = horarioTrabalhoService.bloquearHorario(profissional, dataHoraLocal);
             if (horarioBloqueado == null) {
                 return ResponseEntity.badRequest().build();
@@ -545,27 +507,24 @@ public class AgendamentoController {
         @RequestParam Long profissionalId,
         @RequestParam String dataHora
     ) {
-        // Verificar se o usuário tem permissão para desbloquear horários
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         
-        // Buscar o profissional
         Usuario profissional = profissionalService.buscarProfissional(profissionalId);
         if (profissional == null) {
             return ResponseEntity.notFound().build();
         }
         
-        // Validar permissões
         boolean podeDesbloquear = false;
         
-        if (usuarioLogado.getTipoUsuario().equals("PROFISSIONAL") && 
-            profissional.getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if (userPrincipal.getTipoUsuario().equals("PROFISSIONAL") && 
+            profissional.getIdUsuario().equals(usuarioId)) {
             podeDesbloquear = true;
         }
         
-        if (usuarioLogado.getTipoUsuario().equals("PROPRIETARIO")) {
-            // Verificar se o profissional pertence a algum salão do proprietário
-            boolean profissionalPertenceSalao = salaoService.buscarSaloesPorProprietario(usuarioLogado.getIdUsuario())
+        if (userPrincipal.getTipoUsuario().equals("PROPRIETARIO")) {
+            boolean profissionalPertenceSalao = salaoService.buscarSaloesPorProprietario(usuarioId)
                 .stream()
                 .anyMatch(salao -> salao.getProfissionais().contains(profissional));
             
@@ -578,10 +537,8 @@ public class AgendamentoController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         
-        // Converter a data/hora
         LocalDateTime dataHoraLocal = LocalDateTime.parse(dataHora, DateTimeFormatter.ISO_DATE_TIME);
         
-        // Desbloquear o horário
         HorarioTrabalho horarioDesbloqueado = horarioTrabalhoService.desbloquearHorario(profissional, dataHoraLocal);
         if (horarioDesbloqueado == null) {
             return ResponseEntity.badRequest().build();
@@ -597,27 +554,24 @@ public class AgendamentoController {
         @RequestParam(required = false) String dataInicio,
         @RequestParam(required = false) String dataFim
     ) {
-        // Verificar se o usuário tem permissão para ver horários bloqueados
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Usuario usuarioLogado = (Usuario) auth.getPrincipal();
+        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+        Long usuarioId = userPrincipal.getId();
         
-        // Buscar o profissional
         Usuario profissional = profissionalService.buscarProfissional(profissionalId);
         if (profissional == null) {
             return ResponseEntity.notFound().build();
         }
         
-        // Validar permissões
         boolean podeVer = false;
         
-        if (usuarioLogado.getTipoUsuario().equals("PROFISSIONAL") && 
-            profissional.getIdUsuario().equals(usuarioLogado.getIdUsuario())) {
+        if (userPrincipal.getTipoUsuario().equals("PROFISSIONAL") && 
+            profissional.getIdUsuario().equals(usuarioId)) {
             podeVer = true;
         }
         
-        if (usuarioLogado.getTipoUsuario().equals("PROPRIETARIO")) {
-            // Verificar se o profissional pertence a algum salão do proprietário
-            boolean profissionalPertenceSalao = salaoService.buscarSaloesPorProprietario(usuarioLogado.getIdUsuario())
+        if (userPrincipal.getTipoUsuario().equals("PROPRIETARIO")) {
+            boolean profissionalPertenceSalao = salaoService.buscarSaloesPorProprietario(usuarioId)
                 .stream()
                 .anyMatch(salao -> salao.getProfissionais().contains(profissional));
             
@@ -630,15 +584,12 @@ public class AgendamentoController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         
-        // Buscar horários bloqueados
         List<HorarioTrabalho> horarios = horarioTrabalhoService.buscarHorariosTrabalhoProfissional(profissionalId);
         
-        // Filtrar apenas horários bloqueados
         List<HorarioTrabalho> horariosBloqueados = horarios.stream()
             .filter(HorarioTrabalho::isBloqueado)
             .collect(Collectors.toList());
         
-        // Aplicar filtro de data se fornecido
         if (dataInicio != null && dataFim != null) {
             LocalDateTime inicio = LocalDateTime.parse(dataInicio, DateTimeFormatter.ISO_DATE_TIME);
             LocalDateTime fim = LocalDateTime.parse(dataFim, DateTimeFormatter.ISO_DATE_TIME);
