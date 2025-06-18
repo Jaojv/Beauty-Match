@@ -1,0 +1,195 @@
+
+/*Logado*/
+
+
+nav .perfil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav .botao_logado{
+    width: 250px;
+    height: 40px;
+    background-color: #f1ebebee;
+    color: rgba(0, 0, 0, 0.9);
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 0px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 0px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    
+
+} nav .botao_logado:hover{
+    cursor: pointer;
+    background-color: #fffefe;
+    transform: scale(1.03);
+    transition: all 0.2s;
+} 
+
+nav .botao_logado input {
+    width: 65%;
+    height: 30px;
+    background-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    outline: none;
+    border: none;
+    padding: 0 10px;
+}
+
+nav .perfil img.logout-img {
+    width: 40px;
+    height: 40px;
+    filter: invert(0.9);
+    margin: 10px 0 0 20px;
+} 
+
+nav .perfil img.perfil-img {
+    filter: none;
+    width: 50px;
+    height: 50px;
+    margin-left: 5px;
+}
+
+nav .perfil img.perfil-img:hover {
+    transform: scale(1.03);
+    transition: all 0.2s;
+}
+
+nav .perfil img.logout-img:hover {
+    transform: scale(1.09);
+    transition: all 0.2s;
+    filter: invert(1);
+}
+
+/* Modal de perfil */
+.modal-perfil {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3); 
+    display: flex;
+    justify-content: flex-end; 
+    align-items: flex-start;   
+    text-align: center;
+}
+
+.fechar-modal {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 2em;
+    color: #cc5b6f;
+    cursor: pointer;
+}
+
+.modal-perfil .modal-conteudo {
+    padding: 30px 40px;
+    min-width: 320px;
+    position: relative;
+    margin: 80px 15px 0 0;
+    color: black ;
+    background: #fff;
+    border: 2px solid #B24B5E;
+    border-radius: 12px;
+}
+
+.modal-conteudo .titulo-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 50px 30px 0;
+} 
+
+.titulo-modal h2 {
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+    /*color: #B24B5E;*/
+    color: black;
+}
+
+.titulo-modal img{
+    width: 30px;
+    height: 30px;
+    margin: 0 5px 0 50px;
+} 
+
+.img-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-modal #foto-perfil{
+    width: 150px;
+    height: 150px;
+    border-radius: 80px;
+    box-shadow: -3px 5px 1px #B24B5E;
+}
+
+.dados-modal table{
+    width: 350px;
+    margin: 30px 0;
+}
+
+.dados-modal tr:hover{
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: all 0.2s;
+}
+.dados-modal .label{
+    text-align: center;
+    font-size: 1.1em;
+    background-color: #E6A6B1;
+    color: black;
+    font-weight: bold;
+    border-radius: 10px;
+    height: 30px;
+    font-family: 'Inter', sans-serif;
+}
+
+.dados-modal input{
+    font-size: 1.2em;
+    border: none;
+    outline: none;
+    text-align: left;
+    background-color: transparent;
+}
+
+#editar-perfil{
+    width: 150px;
+    background-color: #cc5b6f;
+    color: white;
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 10px 0px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 10px 0px;
+    border: none;
+}
+
+#editar-perfil:hover{
+    cursor: pointer;
+    background-color: #B24B5E;
+    transform: scale(1.04);
+    transition: all 0.2s;
+}

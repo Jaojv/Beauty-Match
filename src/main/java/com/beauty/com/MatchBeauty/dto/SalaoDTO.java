@@ -1,16 +1,9 @@
 package com.beauty.com.MatchBeauty.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import java.util.List;
 
 public class SalaoDTO {
     
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Request {
         private String nome;
         private String endereco;
@@ -18,6 +11,9 @@ public class SalaoDTO {
         private String descricao;
         private String horarioFuncionamento;
         private Long proprietarioId;
+
+        public Request() {
+        }
 
         public String getNome() {
             return nome;
@@ -68,18 +64,32 @@ public class SalaoDTO {
         }
     }
     
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Response {
         private Long id;
         private String nome;
         private String endereco;
         private String telefone;
+        private String email;
         private String descricao;
         private String horarioFuncionamento;
         private UsuarioDTO.Response proprietario;
+        private List<ServicoDTO.Response> servicos;
+
+        public Response() {
+        }
+
+        public Response(Long id, String nome, String endereco, String telefone, 
+                       String email, String descricao, UsuarioDTO.Response proprietario, 
+                       List<ServicoDTO.Response> servicos) {
+            this.id = id;
+            this.nome = nome;
+            this.endereco = endereco;
+            this.telefone = telefone;
+            this.email = email;
+            this.descricao = descricao;
+            this.proprietario = proprietario;
+            this.servicos = servicos;
+        }
 
         public Long getId() {
             return id;
@@ -113,6 +123,14 @@ public class SalaoDTO {
             this.telefone = telefone;
         }
 
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
         public String getDescricao() {
             return descricao;
         }
@@ -135,6 +153,14 @@ public class SalaoDTO {
 
         public void setProprietario(UsuarioDTO.Response proprietario) {
             this.proprietario = proprietario;
+        }
+
+        public List<ServicoDTO.Response> getServicos() {
+            return servicos;
+        }
+
+        public void setServicos(List<ServicoDTO.Response> servicos) {
+            this.servicos = servicos;
         }
     }
 } 

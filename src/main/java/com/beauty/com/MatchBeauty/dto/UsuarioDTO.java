@@ -44,6 +44,14 @@ public class UsuarioDTO {
         private String telefone;
         private TipoUsuario tipoUsuario;
 
+        public Response(Long id, String nome, String email, String telefone, TipoUsuario tipoUsuario) {
+            this.id = id;
+            this.nome = nome;
+            this.email = email;
+            this.telefone = telefone;
+            this.tipoUsuario = tipoUsuario;
+        }
+
         // Getters e Setters
         public Long getId() { return id; }
         public void setId(Long id) { this.id = id; }
