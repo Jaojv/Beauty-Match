@@ -1,11 +1,13 @@
 package com.beauty.com.MatchBeauty.service;
 
+import com.beauty.com.MatchBeauty.dto.ClienteDTO;
 import com.beauty.com.MatchBeauty.entity.Cliente;
 import com.beauty.com.MatchBeauty.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClienteService {
@@ -17,17 +19,25 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-    public Cliente buscarCliente(Long id) {
-        return clienteRepository.findById(id).orElse(null);
+    public ClienteDTO buscarCliente(Long id) {
+        return clienteRepository.findById(id)
+            .map(this::converterParaDTO)
+            .orElse(null);
     }
 
-    public Cliente criarCliente(Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public ClienteDTO criarCliente(ClienteDTO dto) {
+        Cliente cliente = converterParaEntidade(dto);
+        cliente.setTipoUsuario(com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario.CLIENTE);
+        Cliente clienteSalvo = clienteRepository.save(cliente);
+        return converterParaDTO(clienteSalvo);
     }
 
-    public Cliente atualizarCliente(Cliente cliente) {
-        if (clienteRepository.existsById(cliente.getIdUsuario())) {
-            return clienteRepository.save(cliente);
+    public ClienteDTO atualizarCliente(Long id, ClienteDTO dto) {
+        if (clienteRepository.existsById(id)) {
+            Cliente cliente = converterParaEntidade(dto);
+            cliente.setIdUsuario(id);
+            Cliente clienteAtualizado = clienteRepository.save(cliente);
+            return converterParaDTO(clienteAtualizado);
         }
         return null;
     }
@@ -38,5 +48,48 @@ public class ClienteService {
             return true;
         }
         return false;
+    }
+
+    // Métodos auxiliares de conversão
+    private ClienteDTO converterParaDTO(Cliente cliente) {
+        if (cliente == null) return null;
+        
+        ClienteDTO dto = new ClienteDTO();
+        dto.setClienteId(cliente.getIdUsuario());
+        dto.setNome(cliente.getNome());
+        dto.setEmail(cliente.getEmail());
+        dto.setTelefone(cliente.getTelefone());
+        dto.setCpf(cliente.getCpf());
+        dto.setDataNascimento(cliente.getDataNascimento());
+        dto.setEndereco(cliente.getEndereco());
+        dto.setPreferencias(cliente.getPreferencias());
+        dto.setUsername(cliente.getUsername());
+        // Não incluímos a senha no DTO por segurança
+        return dto;
+    }
+
+    private Cliente converterParaEntidade(ClienteDTO dto) {
+        if (dto == null) return null;
+        
+        Cliente cliente = new Cliente();
+        // Se for atualização, o ID vem do path variable
+        if (dto.getClienteId() != null) {
+            cliente.setIdUsuario(dto.getClienteId());
+        }
+        cliente.setNome(dto.getNome());
+        cliente.setEmail(dto.getEmail());
+        cliente.setTelefone(dto.getTelefone());
+        cliente.setCpf(dto.getCpf());
+        cliente.setDataNascimento(dto.getDataNascimento());
+        cliente.setEndereco(dto.getEndereco());
+        cliente.setPreferencias(dto.getPreferencias());
+        cliente.setUsername(dto.getUsername());
+        
+        // Só atualiza a senha se ela foi fornecida
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            cliente.setPassword(dto.getPassword());
+        }
+        
+        return cliente;
     }
 } 

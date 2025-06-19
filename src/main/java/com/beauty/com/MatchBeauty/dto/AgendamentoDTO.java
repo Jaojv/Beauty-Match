@@ -79,7 +79,7 @@ public class AgendamentoDTO {
         private Long id;
         private LocalDateTime dataHora;
         private Agendamento.StatusAgendamento status;
-        private UsuarioDTO.Response cliente;
+        private ClienteDTO cliente;
         private UsuarioDTO.Response profissional;
         private ServicoDTO.Response servico;
         private SalaoDTO.Response salao;
@@ -90,7 +90,7 @@ public class AgendamentoDTO {
         }
 
         public Response(Long id, LocalDateTime dataHora, Agendamento.StatusAgendamento status,
-                       UsuarioDTO.Response cliente, UsuarioDTO.Response profissional,
+                       ClienteDTO cliente, UsuarioDTO.Response profissional,
                        ServicoDTO.Response servico, SalaoDTO.Response salao,
                        String observacoes, Double valorServico) {
             this.id = id;
@@ -107,15 +107,14 @@ public class AgendamentoDTO {
         public static Response fromEntity(Agendamento agendamento) {
             if (agendamento == null) return null;
             
-            UsuarioDTO.Response clienteDTO = null;
+            ClienteDTO clienteDTO = null;
             if (agendamento.getCliente() != null) {
-                clienteDTO = new UsuarioDTO.Response(
-                    agendamento.getCliente().getIdUsuario(),
-                    agendamento.getCliente().getNome(),
-                    agendamento.getCliente().getEmail(),
-                    agendamento.getCliente().getTelefone(),
-                    agendamento.getCliente().getTipoUsuario()
-                );
+                clienteDTO = new ClienteDTO();
+                clienteDTO.setClienteId(agendamento.getCliente().getIdUsuario());
+                clienteDTO.setNome(agendamento.getCliente().getNome());
+                clienteDTO.setEmail(agendamento.getCliente().getEmail());
+                clienteDTO.setTelefone(agendamento.getCliente().getTelefone());
+                // Adicione outros campos conforme necessário
             }
             
             UsuarioDTO.Response profissionalDTO = null;

@@ -23,14 +23,29 @@ public class ClienteController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Cliente>> listarClientes() {
-        return ResponseEntity.ok(clienteService.listarClientes());
+    public ResponseEntity<List<ClienteDTO>> listarClientes() {
+        List<Cliente> clientes = clienteService.listarClientes();
+        List<ClienteDTO> dtos = clientes.stream().map(cliente -> {
+            ClienteDTO dto = new ClienteDTO();
+            dto.setClienteId(cliente.getIdUsuario());
+            dto.setNome(cliente.getNome());
+            dto.setEmail(cliente.getEmail());
+            dto.setTelefone(cliente.getTelefone());
+            dto.setCpf(cliente.getCpf());
+            dto.setDataNascimento(cliente.getDataNascimento());
+            dto.setEndereco(cliente.getEndereco());
+            dto.setPreferencias(cliente.getPreferencias());
+            dto.setUsername(cliente.getUsername());
+            // Não retornar senha
+            return dto;
+        }).toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
-    public ResponseEntity<Cliente> buscarCliente(@PathVariable Long id) {
-        Cliente cliente = clienteService.buscarCliente(id);
+    public ResponseEntity<ClienteDTO> buscarCliente(@PathVariable Long id) {
+        ClienteDTO cliente = clienteService.buscarCliente(id);
         if (cliente != null) {
             return ResponseEntity.ok(cliente);
         }
@@ -39,48 +54,27 @@ public class ClienteController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Cliente> criarCliente(@RequestBody ClienteDTO dto) {
-        Cliente cliente = new Cliente();
-        cliente.setUsername(dto.getUsername());
-        cliente.setPassword(dto.getPassword());
-        cliente.setEmail(dto.getEmail());
-        cliente.setTelefone(dto.getTelefone());
-        cliente.setNome(dto.getNome());
-        cliente.setCpf(dto.getCpf());
-        cliente.setDataNascimento(dto.getDataNascimento());
-        cliente.setEndereco(dto.getEndereco());
-        cliente.setPreferencias(dto.getPreferencias());
-        
-        Cliente novoCliente = clienteService.criarCliente(cliente);
+    public ResponseEntity<ClienteDTO> criarCliente(@RequestBody ClienteDTO dto) {
+        ClienteDTO novoCliente = clienteService.criarCliente(dto);
         return ResponseEntity.ok(novoCliente);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
-    public ResponseEntity<Cliente> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO dto) {
-        Cliente cliente = clienteService.buscarCliente(id);
-        if (cliente == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<ClienteDTO> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO dto) {
+        ClienteDTO clienteAtualizado = clienteService.atualizarCliente(id, dto);
+        if (clienteAtualizado != null) {
+            return ResponseEntity.ok(clienteAtualizado);
         }
-
-        cliente.setUsername(dto.getUsername());
-        cliente.setPassword(dto.getPassword());
-        cliente.setEmail(dto.getEmail());
-        cliente.setTelefone(dto.getTelefone());
-        cliente.setNome(dto.getNome());
-        cliente.setCpf(dto.getCpf());
-        cliente.setDataNascimento(dto.getDataNascimento());
-        cliente.setEndereco(dto.getEndereco());
-        cliente.setPreferencias(dto.getPreferencias());
-
-        Cliente clienteAtualizado = clienteService.atualizarCliente(cliente);
-        return ResponseEntity.ok(clienteAtualizado);
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
     public ResponseEntity<Void> deletarCliente(@PathVariable Long id) {
-        clienteService.deletarCliente(id);
-        return ResponseEntity.ok().build();
+        if (clienteService.deletarCliente(id)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 } 

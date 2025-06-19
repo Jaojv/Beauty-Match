@@ -14,6 +14,7 @@ import com.beauty.com.MatchBeauty.service.SalaoService;
 import com.beauty.com.MatchBeauty.service.ServicoService;
 import com.beauty.com.MatchBeauty.service.ProprietarioService;
 import com.beauty.com.MatchBeauty.security.UserPrincipal;
+import com.beauty.com.MatchBeauty.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,9 @@ public class AgendamentoController {
 
     @Autowired
     private AgendamentoService agendamentoService;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Autowired
     private ClienteService clienteService;
@@ -79,7 +83,7 @@ public class AgendamentoController {
         String tipoUsuario = userPrincipal.getTipoUsuario();
         Usuario usuarioLogado;
         if ("CLIENTE".equalsIgnoreCase(tipoUsuario)) {
-            usuarioLogado = clienteService.buscarCliente(usuarioId);
+            usuarioLogado = clienteRepository.findById(usuarioId).orElse(null);
         } else if ("PROFISSIONAL".equalsIgnoreCase(tipoUsuario)) {
             usuarioLogado = profissionalService.buscarProfissional(usuarioId);
         } else if ("PROPRIETARIO".equalsIgnoreCase(tipoUsuario)) {
@@ -348,7 +352,7 @@ public class AgendamentoController {
         }
         Agendamento agendamento = new Agendamento();
         agendamento.setDataHora(request.getDataHora());
-        agendamento.setCliente(clienteService.buscarCliente(usuarioId));
+        agendamento.setCliente(clienteRepository.findById(usuarioId).orElse(null));
         agendamento.setProfissional(profissionalService.buscarProfissional(request.getProfissionalId()));
         agendamento.setServico(servicoService.buscarServico(request.getServicoId()));
         agendamento.setSalao(salaoService.buscarSalao(request.getSalaoId()));

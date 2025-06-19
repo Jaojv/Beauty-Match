@@ -37,7 +37,7 @@ public class UsuarioDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
-        private Long id;
+        private Long clienteId;
         private String username;
         private String nome;
         private String email;
@@ -45,7 +45,7 @@ public class UsuarioDTO {
         private TipoUsuario tipoUsuario;
 
         public Response(Long id, String nome, String email, String telefone, TipoUsuario tipoUsuario) {
-            this.id = id;
+            this.clienteId = id;
             this.nome = nome;
             this.email = email;
             this.telefone = telefone;
@@ -53,8 +53,8 @@ public class UsuarioDTO {
         }
 
         // Getters e Setters
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
+        public Long getClienteId() { return clienteId; }
+        public void setClienteId(Long clienteId) { this.clienteId = clienteId; }
         public String getUsername() { return username; }
         public void setUsername(String username) { this.username = username; }
         public String getNome() { return nome; }

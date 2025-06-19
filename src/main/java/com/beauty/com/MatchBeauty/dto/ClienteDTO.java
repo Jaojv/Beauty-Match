@@ -10,6 +10,7 @@ public class ClienteDTO {
     private String dataNascimento;
     private String endereco;
     private String preferencias;
+    private Long clienteId;
 
     public String getUsername() {
         return username;
@@ -81,5 +82,13 @@ public class ClienteDTO {
 
     public void setPreferencias(String preferencias) {
         this.preferencias = preferencias;
+    }
+
+    public Long getClienteId() {
+        return clienteId;
+    }
+
+    public void setClienteId(Long clienteId) {
+        this.clienteId = clienteId;
     }
 } 
