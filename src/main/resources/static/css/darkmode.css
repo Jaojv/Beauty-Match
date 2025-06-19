@@ -1,0 +1,69 @@
+
+body.dark-mode nav{
+  background-color: #632b36;
+}
+
+body.dark-mode {
+  background-color: #313131;
+  color: white;
+  transition: 0.3s;
+}
+
+body.dark-mode nav .home-icon img {
+  opacity: 0.8;
+}
+
+body.dark-mode .menu-icon .bar{
+  background-color: #ffffff;
+}
+
+body.dark-mode .menu-icon.active .bar {
+    box-shadow: -15px 0px 1px #E6A6B1;
+}
+
+body.dark-mode #editar-perfil{
+  background-color: #833a48;
+  color: white;
+}
+
+body.dark-mode #button-index .botao{
+  background-color: #E6A6B1;
+  color: white;
+}
+
+body.dark-mode #button-index .botao:hover{
+    box-shadow: 0 5px 10px #4e222a;
+    color: #ffffff;
+}
+
+body.dark-mode .darkmode img{
+    filter: invert(1);
+}
+
+body.dark-mode footer {
+  background-color: #632b36;
+}
+
+/*Index_lodago*/
+body.dark-mode .modal-perfil .modal-conteudo {
+  background-color: #313131;
+  color: white;
+  border: 2px solid #632b36;
+}
+
+
+body.dark-mode .dados-modal input{
+  color: white;
+}
+
+body.dark-mode .dados-modal .label{
+  background-color: #884b55; 
+  color: white;
+}
+
+body.dark-mode .titulo-modal h2{
+    filter: invert(1);
+}
+body.dark-mode .titulo-modal img{
+    filter: invert(1);
+}

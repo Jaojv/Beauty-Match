@@ -6,6 +6,7 @@
     <title>Beauty Match - Home</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/index_logado.css">
     <link rel="stylesheet" href="css/darkmode.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,8 +31,44 @@
             </ul>
         </div>
             <div class="button-container" id="button-index">
-                <a class="botao" href="pages/cadastrar.html">Cadastrar-se</a>
-                <a class="botao" href="pages/login.html">Login</a>
+                <!-- Perfil do usuário Cadastrado-->
+                <div class="perfil">
+                    <a class="botao_logado" href="">
+                        <input type="text" value="Usuario" readonly>
+                        <img class="perfil-img" src="images/user.png" alt="Perfil">
+                    </a>
+                    <!-- Modal de perfil do usuário -->
+                    <div id="modal-perfil" class="modal-perfil">
+                        <div class="modal-conteudo">
+                            <span class="fechar-modal" id="fechar-modal">&times;</span>
+                            <div class="titulo-modal">
+                                <img src="images/usuario.png">
+                                <h2>Perfil</h2>
+                            </div>
+                            <div class="img-modal">
+                                <img class="perfil-img" id="foto-perfil" src="images/user.png" alt="Perfil">
+                            </div>
+                            <div class="dados-modal">
+                                <table>
+                                <tr>
+                                    <td class="label">Nome:</td>
+                                    <td><input type="text" value="Usuario" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Email:</td>
+                                    <td><input type="email" value="usuario321@gmail.com" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Senha:</td>
+                                    <td><input type="password" value="usuario123" readonly></td>
+                                </tr>
+                                </table>
+                            </div>
+                            <button id="editar-perfil">Editar Perfil</button>
+                        </div>
+                    </div>
+                    <a href=""><img class="logout-img" src="images/logout.png"></a>
+                </div>
             </div>
     </nav>
 
@@ -39,15 +76,14 @@
     <main>
         <div class="container">
             <img src="images/logo.png" alt="Beauty Match Logo" class="logo">
-            <input type="text" class="search-bar" placeholder="Pesquise pelo nome do salão">
+            <input type="text" class="search-bar" placeholder="pesquise pelo nome do salão">
             <p>Está em dúvidas em qual estilo dá match com você?</p>
             <a class="botao" href="pages/quiz.html">Quiz</a>
         </div>
         
         <div class="topico">
-            <h1>Salões</h1>
+            <p>Salões</p>
         </div>
-
         <div class="container" id="carrossel-container">
             <div class="card"></div>
             <div class="card"></div>
@@ -69,6 +105,7 @@
     <!--SCRIPT JS-->
     <script src="js/darkmode.js"></script>
     <script src="js/menu_navbar.js"></script>
+    <script src="js/perfil_usuario.js"></script>
 </body>
 </html>
 

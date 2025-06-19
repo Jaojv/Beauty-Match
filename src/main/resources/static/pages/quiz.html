@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Match - Quiz</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/quiz.css">
+    <link rel="stylesheet" href="../css/darkmode.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!--NAVBAR-->
+    <nav>
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="menu" id="menu">
+            <ul>
+                <li><a class="menu-botao" href="../index.html">Salões</a></li>
+                <li><a class="menu-botao" href="">Agendamentos</a></li>
+                <li><a class="menu-botao" href="favoritos.html">Favoritos</a></li>
+                <li><a class="menu-botao" href="">Historico</a></li>
+                <li><a class="menu-botao" href="">Quiz</a></li>
+                <li><a class="menu-botao" id="logout-botao" href="">LOG OUT</a></li>
+            </ul>
+        </div>
+            <div class="button-container" id="button-index">
+                <a class="botao" href="cadastrar.html">Cadastrar-se</a>
+                <a class="botao" href="login.html">Login</a>
+            </div>
+    </nav>
+
+    <!--MAIN-->
+    <main>
+        <div class="container">
+            <img src="../images/logo.png" alt="Beauty Match Logo" class="logo">
+        </div>
+        
+        <div class="topico">
+            <p>Qual é seu tipo de rosto?</p>
+        </div>
+        <form action="" method="post">
+        <div class="container" id="carrossel-container">
+            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-oval.png"></div>
+            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-quadrado.png"></div>
+            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-diamante.png"></div>
+            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-redondo.png"></div>              
+        </div>
+        <button class="botao">próximo</button>
+        </form>
+    </main>
+    
+    <a class="botao" id="darkmode-botao" href=""><div class="darkmode"><img src="../images/dark.png"></div></a>
+    <!--FOOTER-->
+    <footer></footer>
+
+    <!--SCRIPT JS-->
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/menu_navbar.js"></script>
+</body>
+</html>
+
+
