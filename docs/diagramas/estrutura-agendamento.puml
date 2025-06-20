@@ -1,0 +1,86 @@
+@startuml Estrutura de Agendamento
+
+' Entidades
+class Agendamento {
+  -id: Long
+  -dataHora: LocalDateTime
+  -status: StatusAgendamento
+  -observacoes: String
+  +criar()
+  +cancelar()
+  +concluir()
+}
+
+class HorarioBloqueado {
+  -id: Long
+  -data: LocalDate
+  -horaInicio: LocalTime
+  -horaFim: LocalTime
+  -tipoBloqueio: TipoBloqueio
+  +bloquear()
+  +desbloquear()
+}
+
+class Usuario {
+  -id: Long
+  -nome: String
+  -email: String
+  -telefone: String
+  -tipo: TipoUsuario
+}
+
+class Servico {
+  -id: Long
+  -nome: String
+  -descricao: String
+  -preco: BigDecimal
+  -duracaoMinutos: Integer
+  -ativo: Boolean
+}
+
+class Salao {
+  -id: Long
+  -nome: String
+  -endereco: String
+  -telefone: String
+  -horarioInicio: LocalTime
+  -horarioFim: LocalTime
+  -intervaloMinutos: Integer
+  -ativo: Boolean
+}
+
+' Enums
+enum StatusAgendamento {
+  AGENDADO
+  CONCLUIDO
+  CANCELADO
+  FALTANTE
+}
+
+enum TipoUsuario {
+  CLIENTE
+  PROFISSIONAL
+  PROPRIETARIO
+  ADMIN
+}
+
+enum TipoBloqueio {
+  PROFISSIONAL
+  PROPRIETARIO
+}
+
+' Relacionamentos
+Agendamento "1" -- "1" Usuario : cliente
+Agendamento "1" -- "1" Usuario : profissional
+Agendamento "1" -- "1" Servico : servico
+Agendamento "1" -- "1" Salao : salao
+HorarioBloqueado "1" -- "1" Usuario : bloqueadoPor
+HorarioBloqueado "1" -- "1" Salao : salao
+Servico "1" -- "1" Salao : salao
+Usuario "1" -- "*" HorarioBloqueado : horariosBloqueados
+Usuario "1" -- "*" Agendamento : agendamentos
+Salao "1" -- "*" Usuario : profissionais
+Salao "1" -- "*" Servico : servicos
+Salao "1" -- "*" HorarioBloqueado : horariosBloqueados
+
+@enduml 
