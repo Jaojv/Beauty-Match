@@ -7,6 +7,7 @@ import com.beauty.com.MatchBeauty.dto.ProfissionalDTO;
 import com.beauty.com.MatchBeauty.entity.Salao;
 import com.beauty.com.MatchBeauty.entity.Servico;
 import com.beauty.com.MatchBeauty.entity.Profissional;
+import com.beauty.com.MatchBeauty.entity.HorarioFuncionamentoSalao;
 import com.beauty.com.MatchBeauty.service.SalaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,7 +159,14 @@ public class SalaoController {
         response.setEndereco(salao.getEndereco());
         response.setTelefone(salao.getTelefone());
         response.setDescricao(salao.getDescricao());
-        response.setHorarioFuncionamento(salao.getHorarioFuncionamento());
+        
+        // Converter horários de funcionamento para string
+        if (salao.getHorariosFuncionamento() != null && !salao.getHorariosFuncionamento().isEmpty()) {
+            String horariosStr = salao.getHorariosFuncionamento().stream()
+                .map(h -> h.getDiaSemana() + ": " + h.getHoraInicio() + " - " + h.getHoraFim())
+                .collect(Collectors.joining("; "));
+            response.setHorarioFuncionamento(horariosStr);
+        }
         
         UsuarioDTO.Response proprietarioResponse = new UsuarioDTO.Response(
             salao.getProprietario().getIdUsuario(),
@@ -179,7 +187,7 @@ public class SalaoController {
         salao.setEndereco(dto.getEndereco());
         salao.setTelefone(dto.getTelefone());
         salao.setDescricao(dto.getDescricao());
-        salao.setHorarioFuncionamento(dto.getHorarioFuncionamento());
+        // Horários de funcionamento serão configurados pelo serviço
         salao.setServicos(new ArrayList<>());
         salao.setAgendamentos(new ArrayList<>());
         return salao;

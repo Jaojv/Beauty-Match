@@ -3,9 +3,11 @@ package com.beauty.com.MatchBeauty.service;
 import com.beauty.com.MatchBeauty.entity.Agendamento;
 import com.beauty.com.MatchBeauty.entity.HorarioTrabalho;
 import com.beauty.com.MatchBeauty.entity.Usuario;
+import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.exception.AgendamentoException;
 import com.beauty.com.MatchBeauty.repository.AgendamentoRepository;
 import com.beauty.com.MatchBeauty.repository.HorarioTrabalhoRepository;
+import com.beauty.com.MatchBeauty.repository.ProfissionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,12 @@ public class HorarioTrabalhoService {
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
+    
+    @Autowired
+    private HorarioFuncionamentoSalaoService horarioFuncionamentoService;
+    
+    @Autowired
+    private ProfissionalRepository profissionalRepository;
 
     public List<HorarioTrabalho> buscarHorariosTrabalhoProfissional(Long profissionalId) {
         return horarioTrabalhoRepository.findByProfissionalIdUsuarioAndAtivoTrue(profissionalId);
@@ -53,28 +61,29 @@ public class HorarioTrabalhoService {
 
     /**
      * Verifica se um profissional está disponível em um determinado horário
+     * Agora usa os horários de funcionamento do salão
      * @param profissional Profissional a ser verificado
      * @param dataHora Data e hora do agendamento
      * @return true se o profissional estiver disponível, false caso contrário
      */
     public boolean verificarDisponibilidadeHorarioTrabalho(Usuario profissional, LocalDateTime dataHora) {
+        // Buscar o profissional para obter o salão
+        Profissional prof = profissionalRepository.findByUsuario(profissional)
+            .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+        
+        if (prof.getSalao() == null) {
+            return false; // Profissional não está associado a nenhum salão
+        }
+        
         DayOfWeek diaSemana = dataHora.getDayOfWeek();
         LocalTime hora = dataHora.toLocalTime();
         
-        List<HorarioTrabalho> horarios = horarioTrabalhoRepository
-            .findByProfissionalIdUsuarioAndDiaSemanaAndAtivoTrue(profissional.getIdUsuario(), diaSemana);
-        
-        // Se não houver horários cadastrados para o dia, o profissional não trabalha
-        if (horarios.isEmpty()) {
-            return false;
-        }
-        
-        // Verifica se o horário está dentro de algum dos períodos de trabalho
-        return horarios.stream()
-            .anyMatch(horario -> 
-                !hora.isBefore(horario.getHoraInicio()) && 
-                !hora.isAfter(horario.getHoraFim())
-            );
+        // Verifica se o horário está dentro do horário de funcionamento do salão
+        return horarioFuncionamentoService.isHorarioFuncionamento(
+            prof.getSalao().getId(), 
+            diaSemana, 
+            hora
+        );
     }
 
     /**
