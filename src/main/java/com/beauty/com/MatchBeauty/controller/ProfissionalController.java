@@ -34,23 +34,27 @@ public class ProfissionalController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Profissional>> listarProfissionais() {
-        return ResponseEntity.ok(profissionalService.listarProfissionais());
+    public ResponseEntity<List<ProfissionalDTO.Response>> listarProfissionais() {
+        List<Profissional> profissionais = profissionalService.listarProfissionais();
+        List<ProfissionalDTO.Response> response = profissionais.stream()
+            .map(ProfissionalDTO.Response::new)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isProfissionalLogado(#id)")
-    public ResponseEntity<Profissional> buscarProfissional(@PathVariable Long id) {
+    public ResponseEntity<ProfissionalDTO.Response> buscarProfissional(@PathVariable Long id) {
         Profissional profissional = profissionalService.buscarProfissional(id);
         if (profissional != null) {
-            return ResponseEntity.ok(profissional);
+            return ResponseEntity.ok(new ProfissionalDTO.Response(profissional));
         }
         return ResponseEntity.notFound().build();
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Profissional> criarProfissional(@RequestBody ProfissionalDTO dto) {
+    public ResponseEntity<ProfissionalDTO.Response> criarProfissional(@RequestBody ProfissionalDTO.Request dto) {
         Profissional profissional = new Profissional();
         profissional.setUsername(dto.getUsername());
         profissional.setPassword(dto.getPassword());
@@ -60,8 +64,6 @@ public class ProfissionalController {
         profissional.setCpf(dto.getCpf());
         profissional.setEspecialidade(dto.getEspecialidade());
         profissional.setBiografia(dto.getBiografia());
-        profissional.setHorarioTrabalho(dto.getHorarioTrabalho());
-        profissional.setDiasTrabalho(dto.getDiasTrabalho());
         profissional.setTipoUsuario(com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario.PROFISSIONAL);
 
         // Buscar e associar o salão
@@ -70,12 +72,12 @@ public class ProfissionalController {
         profissional.setSalao(salao);
 
         Profissional novoProfissional = profissionalService.criarProfissional(profissional);
-        return ResponseEntity.ok(novoProfissional);
+        return ResponseEntity.ok(new ProfissionalDTO.Response(novoProfissional));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isProfissionalLogado(#id)")
-    public ResponseEntity<Profissional> atualizarProfissional(@PathVariable Long id, @RequestBody ProfissionalDTO dto) {
+    public ResponseEntity<ProfissionalDTO.Response> atualizarProfissional(@PathVariable Long id, @RequestBody ProfissionalDTO.Request dto) {
         Profissional profissional = profissionalService.buscarProfissional(id);
         if (profissional == null) {
             return ResponseEntity.notFound().build();
@@ -89,11 +91,9 @@ public class ProfissionalController {
         profissional.setCpf(dto.getCpf());
         profissional.setEspecialidade(dto.getEspecialidade());
         profissional.setBiografia(dto.getBiografia());
-        profissional.setHorarioTrabalho(dto.getHorarioTrabalho());
-        profissional.setDiasTrabalho(dto.getDiasTrabalho());
 
         Profissional profissionalAtualizado = profissionalService.atualizarProfissional(profissional);
-        return ResponseEntity.ok(profissionalAtualizado);
+        return ResponseEntity.ok(new ProfissionalDTO.Response(profissionalAtualizado));
     }
 
     @DeleteMapping("/{id}")
@@ -131,12 +131,6 @@ public class ProfissionalController {
     }
 
     private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
-        ServicoDTO.Response dto = new ServicoDTO.Response();
-        dto.setId(servico.getId());
-        dto.setNome(servico.getNome());
-        dto.setDescricao(servico.getDescricao());
-        dto.setDuracaoMinutos(servico.getDuracaoMinutos());
-        dto.setPreco(servico.getPreco());
-        return dto;
+        return new ServicoDTO.Response(servico);
     }
 } 

@@ -11,6 +11,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import com.beauty.com.MatchBeauty.entity.Salao;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "profissional")
@@ -26,13 +29,7 @@ public class Profissional extends Usuario {
     @Column(name = "biografia")
     private String biografia;
     
-    @Column(name = "horario_trabalho")
-    private String horarioTrabalho;
-    
-    @Column(name = "dias_trabalho")
-    private String diasTrabalho;
-    
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "salao_id")
     private Salao salao;
     
@@ -67,22 +64,6 @@ public class Profissional extends Usuario {
 
     public void setBiografia(String biografia) {
         this.biografia = biografia;
-    }
-
-    public String getHorarioTrabalho() {
-        return horarioTrabalho;
-    }
-
-    public void setHorarioTrabalho(String horarioTrabalho) {
-        this.horarioTrabalho = horarioTrabalho;
-    }
-
-    public String getDiasTrabalho() {
-        return diasTrabalho;
-    }
-
-    public void setDiasTrabalho(String diasTrabalho) {
-        this.diasTrabalho = diasTrabalho;
     }
 
     public Salao getSalao() {

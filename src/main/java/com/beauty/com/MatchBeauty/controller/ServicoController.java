@@ -23,69 +23,44 @@ public class ServicoController {
 
     @PostMapping
     @Operation(summary = "Criar um novo serviço")
-    public ResponseEntity<ServicoDTO> criarServico(@Valid @RequestBody ServicoDTO servicoDTO) {
+    public ResponseEntity<ServicoDTO.Response> criarServico(@Valid @RequestBody ServicoDTO servicoDTO) {
         Servico servicoSalvo = servicoService.criarServico(servicoDTO);
-        ServicoDTO response = new ServicoDTO();
-        response.setNome(servicoSalvo.getNome());
-        response.setDescricao(servicoSalvo.getDescricao());
-        response.setDuracaoMinutos(servicoSalvo.getDuracaoMinutos());
-        response.setPreco(servicoSalvo.getPreco());
-        response.setSalaoId(servicoSalvo.getSalao() != null ? servicoSalvo.getSalao().getId() : null);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ServicoDTO.Response(servicoSalvo));
     }
 
     @GetMapping
     @Operation(summary = "Listar todos os serviços")
-    public ResponseEntity<List<ServicoDTO>> listarServicos() {
+    public ResponseEntity<List<ServicoDTO.Response>> listarServicos() {
         List<Servico> servicos = servicoService.listarServicos();
-        List<ServicoDTO> servicosDTO = servicos.stream()
-            .map(servico -> {
-                ServicoDTO dto = new ServicoDTO();
-                dto.setNome(servico.getNome());
-                dto.setDescricao(servico.getDescricao());
-                dto.setDuracaoMinutos(servico.getDuracaoMinutos());
-                dto.setPreco(servico.getPreco());
-                return dto;
-            })
+        List<ServicoDTO.Response> servicosDTO = servicos.stream()
+            .map(ServicoDTO.Response::new)
             .collect(Collectors.toList());
         return ResponseEntity.ok(servicosDTO);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar serviço por ID")
-    public ResponseEntity<ServicoDTO> buscarServicoPorId(@PathVariable Long id) {
+    public ResponseEntity<ServicoDTO.Response> buscarServicoPorId(@PathVariable Long id) {
         Servico servico = servicoService.buscarServico(id).orElse(null);
         if (servico == null) {
             return ResponseEntity.notFound().build();
         }
-        ServicoDTO dto = new ServicoDTO();
-        dto.setNome(servico.getNome());
-        dto.setDescricao(servico.getDescricao());
-        dto.setDuracaoMinutos(servico.getDuracaoMinutos());
-        dto.setPreco(servico.getPreco());
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(new ServicoDTO.Response(servico));
     }
 
     @GetMapping("/salao/{salaoId}")
     @Operation(summary = "Buscar serviços por salão")
-    public ResponseEntity<List<ServicoDTO>> buscarServicosPorSalao(@PathVariable Long salaoId) {
+    public ResponseEntity<List<ServicoDTO.Response>> buscarServicosPorSalao(@PathVariable Long salaoId) {
         List<Servico> servicos = servicoService.buscarServicosPorSalao(salaoId);
-        List<ServicoDTO> servicosDTO = servicos.stream()
-            .map(servico -> {
-                ServicoDTO dto = new ServicoDTO();
-                dto.setNome(servico.getNome());
-                dto.setDescricao(servico.getDescricao());
-                dto.setDuracaoMinutos(servico.getDuracaoMinutos());
-                dto.setPreco(servico.getPreco());
-                return dto;
-            })
+        List<ServicoDTO.Response> servicosDTO = servicos.stream()
+            .map(ServicoDTO.Response::new)
             .collect(Collectors.toList());
         return ResponseEntity.ok(servicosDTO);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar um serviço existente")
-    public ResponseEntity<ServicoDTO> atualizarServico(
+    public ResponseEntity<ServicoDTO.Response> atualizarServico(
             @PathVariable Long id,
             @Valid @RequestBody ServicoDTO servicoDTO) {
         Servico servico = servicoService.buscarServico(id).orElse(null);
@@ -100,13 +75,7 @@ public class ServicoController {
         
         Servico servicoAtualizado = servicoService.atualizarServico(servico);
         
-        ServicoDTO response = new ServicoDTO();
-        response.setNome(servicoAtualizado.getNome());
-        response.setDescricao(servicoAtualizado.getDescricao());
-        response.setDuracaoMinutos(servicoAtualizado.getDuracaoMinutos());
-        response.setPreco(servicoAtualizado.getPreco());
-        
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new ServicoDTO.Response(servicoAtualizado));
     }
 
     @DeleteMapping("/{id}")

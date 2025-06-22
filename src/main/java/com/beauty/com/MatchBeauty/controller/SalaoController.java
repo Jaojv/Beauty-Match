@@ -121,10 +121,10 @@ public class SalaoController {
     }
 
     @GetMapping("/{id}/profissionais")
-    public ResponseEntity<List<ProfissionalDTO>> listarProfissionaisSalao(@PathVariable Long id) {
+    public ResponseEntity<List<ProfissionalDTO.Response>> listarProfissionaisSalao(@PathVariable Long id) {
         try {
             List<Profissional> profissionais = salaoService.listarProfissionais(id);
-            List<ProfissionalDTO> profissionaisDTO = profissionais.stream()
+            List<ProfissionalDTO.Response> profissionaisDTO = profissionais.stream()
                 .map(this::converterProfissionalParaDTO)
                 .collect(Collectors.toList());
             return ResponseEntity.ok(profissionaisDTO);
@@ -134,23 +134,11 @@ public class SalaoController {
     }
 
     private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
-        ServicoDTO.Response dto = new ServicoDTO.Response();
-        dto.setId(servico.getId());
-        dto.setNome(servico.getNome());
-        dto.setDescricao(servico.getDescricao());
-        dto.setDuracaoMinutos(servico.getDuracaoMinutos());
-        dto.setPreco(servico.getPreco());
-        return dto;
+        return new ServicoDTO.Response(servico);
     }
 
-    private ProfissionalDTO converterProfissionalParaDTO(Profissional profissional) {
-        ProfissionalDTO dto = new ProfissionalDTO();
-        dto.setNome(profissional.getNome());
-        dto.setEspecialidade(profissional.getEspecialidade());
-        dto.setBiografia(profissional.getBiografia());
-        dto.setHorarioTrabalho(profissional.getHorarioTrabalho());
-        dto.setDiasTrabalho(profissional.getDiasTrabalho());
-        return dto;
+    private ProfissionalDTO.Response converterProfissionalParaDTO(Profissional profissional) {
+        return new ProfissionalDTO.Response(profissional);
     }
 
     private SalaoDTO.Response converterParaDTO(Salao salao) {

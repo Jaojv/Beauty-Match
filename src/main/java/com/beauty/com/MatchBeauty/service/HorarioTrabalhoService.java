@@ -67,10 +67,12 @@ public class HorarioTrabalhoService {
      * @return true se o profissional estiver disponível, false caso contrário
      */
     public boolean verificarDisponibilidadeHorarioTrabalho(Usuario profissional, LocalDateTime dataHora) {
-        // Buscar o profissional para obter o salão
-        Profissional prof = profissionalRepository.findById(profissional.getIdUsuario())
-            .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
-        
+        if (!(profissional instanceof Profissional)) {
+            // Lança uma exceção ou retorna falso se o usuário não for um profissional
+            throw new IllegalArgumentException("O usuário fornecido não é um profissional.");
+        }
+        Profissional prof = (Profissional) profissional;
+
         if (prof.getSalao() == null) {
             return false; // Profissional não está associado a nenhum salão
         }
