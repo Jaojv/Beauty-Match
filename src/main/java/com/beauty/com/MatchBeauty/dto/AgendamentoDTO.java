@@ -169,33 +169,5 @@ public class AgendamentoDTO {
                 valorServico
             );
         }
-        
-        public static Agendamento toEntity(Request request) {
-            if (request == null) return null;
-            
-            Agendamento agendamento = new Agendamento();
-            agendamento.setDataHora(request.getDataHora());
-            
-            Usuario cliente = new Usuario();
-            cliente.setIdUsuario(request.getClienteId());
-            agendamento.setCliente(cliente);
-            
-            Usuario profissional = new Usuario();
-            profissional.setIdUsuario(request.getProfissionalId());
-            agendamento.setProfissional(profissional);
-            
-            Servico servico = new Servico();
-            servico.setId(request.getServicoId());
-            agendamento.setServico(servico);
-            
-            Salao salao = new Salao();
-            salao.setId(request.getSalaoId());
-            agendamento.setSalao(salao);
-            
-            agendamento.setObservacoes(request.getObservacoes());
-            agendamento.setStatus(Agendamento.StatusAgendamento.AGENDADO);
-            
-            return agendamento;
-        }
     }
 }

@@ -4,8 +4,12 @@ import com.beauty.com.MatchBeauty.dto.AgendamentoDTO;
 import com.beauty.com.MatchBeauty.entity.Agendamento;
 import com.beauty.com.MatchBeauty.entity.Agendamento.StatusAgendamento;
 import com.beauty.com.MatchBeauty.entity.HorarioTrabalho;
+import com.beauty.com.MatchBeauty.entity.Salao;
+import com.beauty.com.MatchBeauty.entity.Servico;
 import com.beauty.com.MatchBeauty.entity.Usuario;
 import com.beauty.com.MatchBeauty.exception.AgendamentoException;
+import com.beauty.com.MatchBeauty.repository.ClienteRepository;
+import com.beauty.com.MatchBeauty.repository.UsuarioRepository;
 import com.beauty.com.MatchBeauty.service.AgendamentoService;
 import com.beauty.com.MatchBeauty.service.ClienteService;
 import com.beauty.com.MatchBeauty.service.HorarioTrabalhoService;
@@ -13,8 +17,9 @@ import com.beauty.com.MatchBeauty.service.ProfissionalService;
 import com.beauty.com.MatchBeauty.service.SalaoService;
 import com.beauty.com.MatchBeauty.service.ServicoService;
 import com.beauty.com.MatchBeauty.service.ProprietarioService;
+import com.beauty.com.MatchBeauty.service.HorarioFuncionamentoSalaoService;
 import com.beauty.com.MatchBeauty.security.UserPrincipal;
-import com.beauty.com.MatchBeauty.repository.ClienteRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +28,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,6 +47,9 @@ public class AgendamentoController {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private ClienteService clienteService;
@@ -58,6 +68,9 @@ public class AgendamentoController {
 
     @Autowired
     private ProprietarioService proprietarioService;
+
+    @Autowired
+    private HorarioFuncionamentoSalaoService horarioFuncionamentoService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -339,26 +352,39 @@ public class AgendamentoController {
 
     @PostMapping
     @PreAuthorize("hasRole('CLIENTE')")
-    public ResponseEntity<AgendamentoDTO.Response> criarAgendamento(@RequestBody AgendamentoDTO.Request request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
-        Long usuarioId = userPrincipal.getId();
-        List<Agendamento> agendamentosProfissional = agendamentoService.buscarAgendamentosPorProfissional(request.getProfissionalId());
-        boolean horarioOcupado = agendamentosProfissional.stream()
-                .filter(a -> a.getStatus() == StatusAgendamento.AGENDADO)
-                .anyMatch(a -> a.getDataHora().equals(request.getDataHora()));
-        if (horarioOcupado) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> criarAgendamento(@RequestBody AgendamentoDTO.Request request) {
+        try {
+            // Buscar as entidades pelo ID
+            Usuario cliente = usuarioRepository.findById(request.getClienteId())
+                .orElseThrow(() -> new AgendamentoException("Cliente não encontrado com ID: " + request.getClienteId()));
+            
+            Usuario profissional = usuarioRepository.findById(request.getProfissionalId())
+                .orElseThrow(() -> new AgendamentoException("Profissional não encontrado com ID: " + request.getProfissionalId()));
+
+            Servico servico = servicoService.buscarServico(request.getServicoId())
+                .orElseThrow(() -> new AgendamentoException("Serviço não encontrado com ID: " + request.getServicoId()));
+
+            Salao salao = salaoService.buscarSalao(request.getSalaoId());
+
+            // Criar o objeto Agendamento
+            Agendamento agendamento = new Agendamento();
+            agendamento.setDataHora(request.getDataHora());
+            agendamento.setCliente(cliente);
+            agendamento.setProfissional(profissional);
+            agendamento.setServico(servico);
+            agendamento.setSalao(salao);
+            agendamento.setObservacoes(request.getObservacoes());
+            agendamento.setStatus(Agendamento.StatusAgendamento.AGENDADO);
+
+            Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
+            return ResponseEntity.status(HttpStatus.CREATED).body(AgendamentoDTO.Response.fromEntity(novoAgendamento));
+        } catch (AgendamentoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // Adicionando log do erro para depuração
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao criar agendamento: " + e.getMessage());
         }
-        Agendamento agendamento = new Agendamento();
-        agendamento.setDataHora(request.getDataHora());
-        agendamento.setCliente(clienteRepository.findById(usuarioId).orElse(null));
-        agendamento.setProfissional(profissionalService.buscarProfissional(request.getProfissionalId()));
-        agendamento.setServico(servicoService.buscarServico(request.getServicoId()));
-        agendamento.setSalao(salaoService.buscarSalao(request.getSalaoId()));
-        agendamento.setObservacoes(request.getObservacoes());
-        Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
-        return ResponseEntity.status(HttpStatus.CREATED).body(AgendamentoDTO.Response.fromEntity(novoAgendamento));
     }
 
     @PutMapping("/{id}/cancelar")
@@ -427,32 +453,44 @@ public class AgendamentoController {
         return ResponseEntity.ok(AgendamentoDTO.Response.fromEntity(agendamentoAtualizado));
     }
 
+    /**
+     * Lista horários disponíveis para agendamento
+     */
     @GetMapping("/horarios-disponiveis")
-    public ResponseEntity<List<LocalDateTime>> listarHorariosDisponiveis(
-            @RequestParam Long profissionalId,
+    @Operation(summary = "Listar horários disponíveis para agendamento")
+    public ResponseEntity<List<String>> listarHorariosDisponiveis(
             @RequestParam Long salaoId,
+            @RequestParam Long profissionalId,
             @RequestParam String data) {
         
-        LocalDate localDate = LocalDate.parse(data, DateTimeFormatter.ISO_DATE);
-        
-        LocalDateTime inicioDia = localDate.atStartOfDay();
-        LocalDateTime fimDia = localDate.atTime(23, 59, 59);
-        
-        List<Agendamento> agendamentosDoDia = agendamentoService.buscarAgendamentosPorProfissionalEPeriodo(
-                profissionalId, inicioDia, fimDia);
-        
-        List<LocalDateTime> todosHorarios = new ArrayList<>();
-        for (int hora = 8; hora <= 18; hora++) {
-            todosHorarios.add(localDate.atTime(hora, 0));
-        }
-        
-        List<LocalDateTime> horariosDisponiveis = todosHorarios.stream()
-                .filter(horario -> agendamentosDoDia.stream()
-                        .noneMatch(a -> a.getDataHora().equals(horario) && 
-                                 a.getStatus() == StatusAgendamento.AGENDADO))
+        try {
+            // Converter a data string para LocalDate
+            LocalDate dataAgendamento = LocalDate.parse(data);
+            DayOfWeek diaSemana = dataAgendamento.getDayOfWeek();
+            
+            // Buscar o profissional
+            Usuario profissional = usuarioRepository.findById(profissionalId)
+                .orElseThrow(() -> new AgendamentoException("Profissional não encontrado"));
+            
+            // Gerar slots disponíveis baseados no horário de funcionamento do salão
+            List<LocalTime> slotsDisponiveis = horarioFuncionamentoService.gerarSlotsDisponiveis(salaoId, diaSemana);
+            
+            // Filtrar horários já agendados
+            List<LocalTime> horariosOcupados = agendamentoService.buscarHorariosOcupados(profissionalId, dataAgendamento);
+            
+            // Remover horários ocupados dos slots disponíveis
+            slotsDisponiveis.removeAll(horariosOcupados);
+            
+            // Converter para formato de string
+            List<String> horariosFormatados = slotsDisponiveis.stream()
+                .map(horario -> horario.format(DateTimeFormatter.ofPattern("HH:mm")))
                 .collect(Collectors.toList());
-        
-        return ResponseEntity.ok(horariosDisponiveis);
+            
+            return ResponseEntity.ok(horariosFormatados);
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/horarios/bloquear")

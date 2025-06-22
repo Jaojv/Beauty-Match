@@ -54,7 +54,7 @@ public class ServicoController {
     @GetMapping("/{id}")
     @Operation(summary = "Buscar serviço por ID")
     public ResponseEntity<ServicoDTO> buscarServicoPorId(@PathVariable Long id) {
-        Servico servico = servicoService.buscarServico(id);
+        Servico servico = servicoService.buscarServico(id).orElse(null);
         if (servico == null) {
             return ResponseEntity.notFound().build();
         }
@@ -88,7 +88,7 @@ public class ServicoController {
     public ResponseEntity<ServicoDTO> atualizarServico(
             @PathVariable Long id,
             @Valid @RequestBody ServicoDTO servicoDTO) {
-        Servico servico = servicoService.buscarServico(id);
+        Servico servico = servicoService.buscarServico(id).orElse(null);
         if (servico == null) {
             return ResponseEntity.notFound().build();
         }
