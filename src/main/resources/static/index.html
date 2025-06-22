@@ -21,25 +21,30 @@
         </div>
         <div class="menu" id="menu">
             <ul>
-                <li><a class="menu-botao" href="">Salões</a></li>
-                <li><a class="menu-botao" href="">Agendamentos</a></li>
+                <li><a class="menu-botao" href="#saloes">Salões</a></li>
+                <li><a class="menu-botao" href="#agendamentos">Agendamentos</a></li>
                 <li><a class="menu-botao" href="pages/favoritos.html">Favoritos</a></li>
-                <li><a class="menu-botao" href="">Historico</a></li>
+                <li><a class="menu-botao" href="#historico">Histórico</a></li>
                 <li><a class="menu-botao" href="pages/quiz.html">Quiz</a></li>
-                <li><a class="menu-botao" id="logout-botao" href="">LOG OUT</a></li>
+                <li><a class="menu-botao" id="logout-botao" href="#" onclick="authService.logout()">LOG OUT</a></li>
             </ul>
         </div>
-            <div class="button-container" id="button-index">
-                <a class="botao" href="pages/cadastrar.html">Cadastrar-se</a>
-                <a class="botao" href="pages/login.html">Login</a>
-            </div>
+        <div class="button-container" id="button-index">
+            <a class="botao" href="pages/cadastrar.html">Cadastrar-se</a>
+            <a class="botao" href="pages/login.html">Login</a>
+        </div>
     </nav>
 
     <!--MAIN-->
     <main>
         <div class="container">
             <img src="images/logo.png" alt="Beauty Match Logo" class="logo">
-            <input type="text" class="search-bar" placeholder="Pesquise pelo nome do salão">
+            <div class="search-container">
+                <input type="text" class="search-bar" id="searchBar" placeholder="Pesquise pelo nome do salão">
+                <button class="search-button" onclick="realizarBusca()">
+                    <img src="images/pesquisa-de-lupa.png" alt="Buscar" class="search-icon">
+                </button>
+            </div>
             <p>Está em dúvidas em qual estilo dá match com você?</p>
             <a class="botao" href="pages/quiz.html">Quiz</a>
         </div>
@@ -49,16 +54,7 @@
         </div>
 
         <div class="container" id="carrossel-container">
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-        </div>
-        <div class="container" id="carrossel-container">
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
+            <!-- Salões serão carregados dinamicamente aqui -->
         </div>
     </main>
     
@@ -67,8 +63,283 @@
     <footer></footer>
 
     <!--SCRIPT JS-->
+    <script src="js/auth.js"></script>
+    <script src="js/saloes.js"></script>
     <script src="js/darkmode.js"></script>
     <script src="js/menu_navbar.js"></script>
+    <script>
+        // Verificar autenticação e atualizar UI
+        function atualizarUIBaseadoNaAutenticacao() {
+            const buttonContainer = document.getElementById('button-index');
+            const menu = document.getElementById('menu');
+            
+            if (authService.isAuthenticated()) {
+                // Usuário logado
+                buttonContainer.style.display = 'none';
+                menu.style.display = 'block';
+                
+                // Atualizar informações do usuário no menu
+                const user = authService.getCurrentUser();
+                if (user) {
+                    // Adicionar nome do usuário ao menu se necessário
+                    console.log('Usuário logado:', user.username);
+                }
+            } else {
+                // Usuário não logado
+                buttonContainer.style.display = 'flex';
+                menu.style.display = 'none';
+            }
+        }
+
+        // Função para realizar busca
+        async function realizarBusca() {
+            const searchTerm = document.getElementById('searchBar').value.trim();
+            const container = document.getElementById('carrossel-container');
+            
+            if (!searchTerm) {
+                // Se não há termo de busca, mostrar todos os salões
+                await salaoUI.renderizarSaloes('carrossel-container');
+                return;
+            }
+            
+            try {
+                container.innerHTML = '<div class="loading">Buscando salões...</div>';
+                
+                const saloesFiltrados = await salaoUI.buscarSaloes(searchTerm);
+                
+                if (saloesFiltrados.length === 0) {
+                    container.innerHTML = '<div class="no-data">Nenhum salão encontrado para "' + searchTerm + '".</div>';
+                    return;
+                }
+                
+                const saloesHTML = saloesFiltrados.map(salao => salaoUI.criarCardSalao(salao)).join('');
+                container.innerHTML = saloesHTML;
+                
+            } catch (error) {
+                container.innerHTML = '<div class="error">Erro na busca. Tente novamente.</div>';
+                console.error('Erro na busca:', error);
+            }
+        }
+
+        // Busca em tempo real (debounced)
+        let searchTimeout;
+        document.getElementById('searchBar').addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(realizarBusca, 500);
+        });
+
+        // Carregar salões quando a página carregar
+        document.addEventListener('DOMContentLoaded', async function() {
+            atualizarUIBaseadoNaAutenticacao();
+            await salaoUI.renderizarSaloes('carrossel-container');
+        });
+
+        // Verificar autenticação periodicamente
+        setInterval(atualizarUIBaseadoNaAutenticacao, 5000);
+    </script>
+    
+    <style>
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .search-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            filter: invert(1);
+        }
+        
+        .loading, .no-data, .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            color: #d32f2f;
+        }
+        
+        .salao-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .salao-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .card-header h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+        
+        .salao-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stars {
+            color: #ffd700;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+        
+        .salao-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .salao-info {
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            filter: invert(0.5);
+        }
+        
+        .salao-horario {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .card-footer {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 90%;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .servicos-grid, .profissionais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .servico-item, .profissional-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        
+        .servico-preco {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .profissional-foto {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+    </style>
 </body>
 </html>
 

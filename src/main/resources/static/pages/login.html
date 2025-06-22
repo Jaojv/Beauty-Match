@@ -27,20 +27,28 @@
         <div class="container">
             <div class="main-container">
                 <h1 class="title" id="login">Login</h1>
-                <form action="" method="POST">
-                <div class="input-container">
-                    <input type="text" name="usuario" placeholder="Usuario" required> <!--Limitar caracteres no input-->
-                </div>
-                <div class="input-container">
-                    <input type="password" name="senha" placeholder="Senha" required>
-                </div>
+                
+                <!-- Mensagem de erro/sucesso -->
+                <div id="message" class="message" style="display: none;"></div>
+                
+                <form id="loginForm">
+                    <div class="input-container">
+                        <input type="text" name="username" id="username" placeholder="Usuário" required>
+                    </div>
+                    <div class="input-container">
+                        <input type="password" name="password" id="password" placeholder="Senha" required>
+                    </div>
+                    <div class="button-container">
+                        <button class="botao" type="submit" id="loginButton">
+                            <span id="loginText">Entrar</span>
+                            <span id="loadingText" style="display: none;">Entrando...</span>
+                        </button>
+                    </div>
+                </form>
+                
                 <div class="button-container">
-                    <button class="botao" type="submit">Entrar</button>
+                    <a class="botao" href="cadastrar.html">Cadastrar-se</a>
                 </div>
-            </form>
-            <div class="button-container">
-                <a class="botao" href="cadastrar.html">Cadastrar-se</a>
-            </div>
             </div>
         </div>
     </main>
@@ -49,7 +57,93 @@
     <footer></footer>
 
     <!--SCRIPT JS-->
+    <script src="../js/auth.js"></script>
     <script src="../js/darkmode.js"></script>
+    <script>
+        // Verificar se já está logado
+        if (authService.isAuthenticated()) {
+            redirectBasedOnUserType();
+        }
+
+        // Manipular formulário de login
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('loginButton');
+            const loginText = document.getElementById('loginText');
+            const loadingText = document.getElementById('loadingText');
+            const messageDiv = document.getElementById('message');
+            
+            // Mostrar loading
+            loginButton.disabled = true;
+            loginText.style.display = 'none';
+            loadingText.style.display = 'inline';
+            messageDiv.style.display = 'none';
+            
+            try {
+                await authService.login(username, password);
+                
+                // Login bem-sucedido
+                showMessage('Login realizado com sucesso!', 'success');
+                
+                // Redirecionar após um breve delay
+                setTimeout(() => {
+                    redirectBasedOnUserType();
+                }, 1000);
+                
+            } catch (error) {
+                // Login falhou
+                showMessage('Usuário ou senha incorretos. Tente novamente.', 'error');
+                
+                // Reativar botão
+                loginButton.disabled = false;
+                loginText.style.display = 'inline';
+                loadingText.style.display = 'none';
+            }
+        });
+        
+        // Função para mostrar mensagens
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            // Auto-hide após 5 segundos
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+    
+    <style>
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .botao:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
 </body>
 </html>
 
