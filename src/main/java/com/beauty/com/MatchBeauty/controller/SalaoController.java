@@ -53,6 +53,7 @@ public class SalaoController {
             Salao salaoCriado = salaoService.criarSalao(salao, request.getProprietarioId());
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(salaoCriado));
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -186,6 +187,7 @@ public class SalaoController {
         salao.setNome(dto.getNome());
         salao.setEndereco(dto.getEndereco());
         salao.setTelefone(dto.getTelefone());
+        salao.setEmail(dto.getEmail());
         salao.setDescricao(dto.getDescricao());
         // Horários de funcionamento serão configurados pelo serviço
         salao.setServicos(new ArrayList<>());

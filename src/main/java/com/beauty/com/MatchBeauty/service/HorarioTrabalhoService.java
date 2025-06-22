@@ -68,7 +68,7 @@ public class HorarioTrabalhoService {
      */
     public boolean verificarDisponibilidadeHorarioTrabalho(Usuario profissional, LocalDateTime dataHora) {
         // Buscar o profissional para obter o salão
-        Profissional prof = profissionalRepository.findByUsuario(profissional)
+        Profissional prof = profissionalRepository.findById(profissional.getIdUsuario())
             .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
         
         if (prof.getSalao() == null) {

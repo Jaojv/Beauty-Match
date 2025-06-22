@@ -8,6 +8,7 @@ public class SalaoDTO {
         private String nome;
         private String endereco;
         private String telefone;
+        private String email;
         private String descricao;
         private String horarioFuncionamento;
         private Long proprietarioId;
@@ -37,6 +38,14 @@ public class SalaoDTO {
 
         public void setTelefone(String telefone) {
             this.telefone = telefone;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
 
         public String getDescricao() {

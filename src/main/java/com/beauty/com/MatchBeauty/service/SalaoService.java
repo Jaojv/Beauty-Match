@@ -115,6 +115,9 @@ public class SalaoService {
         if (salao.getTelefone() == null || salao.getTelefone().trim().isEmpty()) {
             throw new RuntimeException("Telefone do salão é obrigatório");
         }
+        if (salao.getEmail() == null || salao.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email do salão é obrigatório");
+        }
         if (salao.getProprietario() == null) {
             throw new RuntimeException("Proprietário do salão é obrigatório");
         }
