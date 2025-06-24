@@ -1,0 +1,86 @@
+@startuml Fluxo de Agendamento
+
+actor Cliente
+participant "Frontend" as FE
+participant "AgendamentoController" as AC
+participant "AgendamentoService" as AS
+participant "HorarioTrabalhoService" as HTS
+database "Database" as DB
+
+== Busca de Disponibilidade ==
+
+Cliente -> FE: Seleciona salão, serviço, data e profissional
+FE -> AC: GET /api/agendamentos/disponibilidade
+AC -> AS: buscarHorariosDisponiveis()
+AS -> HTS: verificarDisponibilidadeHorarioTrabalho()
+HTS -> DB: buscarHorariosTrabalho()
+DB --> HTS: horários
+HTS --> AS: disponibilidade
+AS -> DB: buscarAgendamentosExistentes()
+DB --> AS: agendamentos
+AS --> AC: horários disponíveis
+AC --> FE: horários disponíveis
+FE --> Cliente: exibe horários disponíveis
+
+== Criação do Agendamento ==
+
+Cliente -> FE: Seleciona horário e confirma
+FE -> AC: POST /api/agendamentos
+AC -> AS: criarAgendamento()
+AS -> HTS: verificarDisponibilidadeHorarioTrabalho()
+HTS --> AS: disponibilidade
+AS -> HTS: verificarHorarioBloqueado()
+HTS --> AS: horário bloqueado
+AS -> AS: validarConflitosHorario()
+AS -> DB: save()
+DB --> AS: agendamento criado e confirmado
+AS --> AC: confirmação
+AC --> FE: confirmação
+FE --> Cliente: exibe confirmação
+
+== Conclusão do Agendamento ==
+
+alt Conclusão Manual
+    Profissional -> FE: Marca como concluído
+    FE -> AC: PUT /api/agendamentos/{id}/concluir
+    AC -> AS: concluirAgendamento()
+    AS -> DB: update()
+    DB --> AS: agendamento atualizado
+    AS --> AC: agendamento concluído
+    AC --> FE: confirmação
+    FE --> Profissional: exibe confirmação
+else Conclusão Automática
+    AS -> AS: verificarAgendamentosPassados()
+    AS -> DB: buscarAgendamentosNaoConcluidos()
+    DB --> AS: agendamentos
+    AS -> DB: update()
+    DB --> AS: agendamentos atualizados
+end
+
+== Bloqueio de Horários ==
+
+alt Bloqueio por Profissional
+    Profissional -> FE: Seleciona horários para bloquear
+    FE -> AC: POST /api/horarios/bloquear
+    AC -> AS: bloquearHorarios()
+    AS -> HTS: bloquearHorario()
+    HTS -> DB: save()
+    DB --> HTS: horários bloqueados
+    HTS --> AS: confirmação
+    AS --> AC: confirmação
+    AC --> FE: confirmação
+    FE --> Profissional: exibe confirmação
+else Bloqueio por Proprietário
+    Proprietario -> FE: Seleciona profissional e horários
+    FE -> AC: POST /api/horarios/bloquear
+    AC -> AS: bloquearHorarios()
+    AS -> HTS: bloquearHorario()
+    HTS -> DB: save()
+    DB --> HTS: horários bloqueados
+    HTS --> AS: confirmação
+    AS --> AC: confirmação
+    AC --> FE: confirmação
+    FE --> Proprietario: exibe confirmação
+end
+
+@enduml 
