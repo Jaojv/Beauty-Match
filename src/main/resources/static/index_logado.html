@@ -22,78 +22,79 @@
         </div>
         <div class="menu" id="menu">
             <ul>
-                <li><a class="menu-botao" href="#saloes">Salões</a></li>
-                <li><a class="menu-botao" href="#agendamentos">Agendamentos</a></li>
+                <li><a class="menu-botao" href="">Salões</a></li>
+                <li><a class="menu-botao" href="">Agendamentos</a></li>
                 <li><a class="menu-botao" href="pages/favoritos.html">Favoritos</a></li>
-                <li><a class="menu-botao" href="#historico">Histórico</a></li>
+                <li><a class="menu-botao" href="">Historico</a></li>
                 <li><a class="menu-botao" href="pages/quiz.html">Quiz</a></li>
-                <li><a class="menu-botao" id="logout-botao" href="#" onclick="authService.logout()">LOG OUT</a></li>
+                <li><a class="menu-botao" id="logout-botao" href="">LOG OUT</a></li>
             </ul>
         </div>
-        <div class="button-container" id="button-index">
-            <!-- Perfil do usuário Cadastrado-->
-            <div class="perfil">
-                <a class="botao_logado" href="#" onclick="abrirModalPerfil()">
-                    <input type="text" id="username-display" value="Usuário" readonly>
-                    <img class="perfil-img" src="images/user.png" alt="Perfil">
-                </a>
-                <!-- Modal de perfil do usuário -->
-                <div id="modal-perfil" class="modal-perfil">
-                    <div class="modal-conteudo">
-                        <span class="fechar-modal" id="fechar-modal" onclick="fecharModalPerfil()">&times;</span>
-                        <div class="titulo-modal">
-                            <img src="images/usuario.png">
-                            <h2>Perfil</h2>
+            <div class="button-container" id="button-index">
+                <!-- Perfil do usuário Cadastrado-->
+                <div class="perfil">
+                    <a class="botao_logado" href="">
+                        <input type="text" value="Usuario" readonly>
+                        <img class="perfil-img" src="images/user.png" alt="Perfil">
+                    </a>
+                    <!-- Modal de perfil do usuário -->
+                    <div id="modal-perfil" class="modal-perfil">
+                        <div class="modal-conteudo">
+                            <span class="fechar-modal" id="fechar-modal">&times;</span>
+                            <div class="titulo-modal">
+                                <img src="images/usuario.png">
+                                <h2>Perfil</h2>
+                            </div>
+                            <div class="img-modal">
+                                <img class="perfil-img" id="foto-perfil" src="images/user.png" alt="Perfil">
+                            </div>
+                            <div class="dados-modal">
+                                <table>
+                                <tr>
+                                    <td class="label">Nome:</td>
+                                    <td><input type="text" value="Usuario" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Email:</td>
+                                    <td><input type="email" value="usuario321@gmail.com" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Senha:</td>
+                                    <td><input type="password" value="usuario123" readonly></td>
+                                </tr>
+                                </table>
+                            </div>
+                            <button id="editar-perfil">Editar Perfil</button>
                         </div>
-                        <div class="img-modal">
-                            <img class="perfil-img" id="foto-perfil" src="images/user.png" alt="Perfil">
-                        </div>
-                        <div class="dados-modal">
-                            <table>
-                            <tr>
-                                <td class="label">Nome:</td>
-                                <td><input type="text" id="nome-perfil" value="Usuário" readonly></td>
-                            </tr>
-                            <tr>
-                                <td class="label">Email:</td>
-                                <td><input type="email" id="email-perfil" value="usuario@email.com" readonly></td>
-                            </tr>
-                            <tr>
-                                <td class="label">Usuário:</td>
-                                <td><input type="text" id="username-perfil" value="usuario" readonly></td>
-                            </tr>
-                            </table>
-                        </div>
-                        <button id="editar-perfil" onclick="editarPerfil()">Editar Perfil</button>
-                        <button id="salvar-perfil" onclick="salvarPerfil()" style="display: none;">Salvar</button>
-                        <button id="cancelar-perfil" onclick="cancelarEdicao()" style="display: none;">Cancelar</button>
                     </div>
+                    <a href=""><img class="logout-img" src="images/logout.png"></a>
                 </div>
-                <a href="#" onclick="authService.logout()"><img class="logout-img" src="images/logout.png"></a>
             </div>
-        </div>
     </nav>
 
     <!--MAIN-->
     <main>
         <div class="container">
             <img src="images/logo.png" alt="Beauty Match Logo" class="logo">
-            <div class="search-container">
-                <input type="text" class="search-bar" id="searchBar" placeholder="Pesquise pelo nome do salão">
-                <button class="search-button" onclick="realizarBusca()">
-                    <img src="images/pesquisa-de-lupa.png" alt="Buscar" class="search-icon">
-                </button>
-            </div>
+            <input type="text" class="search-bar" placeholder="pesquise pelo nome do salão">
             <p>Está em dúvidas em qual estilo dá match com você?</p>
             <a class="botao" href="pages/quiz.html">Quiz</a>
         </div>
         
         <div class="topico">
-            <h1>Salões</h1>
+            <p>Salões</p>
         </div>
-        
         <div class="container" id="carrossel-container">
-            <!-- Salões serão carregados dinamicamente aqui -->
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+        </div>
+        <div class="container" id="carrossel-container">
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
+            <div class="card"></div>
         </div>
     </main>
     
@@ -102,248 +103,9 @@
     <footer></footer>
 
     <!--SCRIPT JS-->
-    <script src="js/auth.js"></script>
-    <script src="js/saloes.js"></script>
-    <script src="js/agendamentos.js"></script>
     <script src="js/darkmode.js"></script>
     <script src="js/menu_navbar.js"></script>
-    <script>
-        // Verificar autenticação ao carregar a página
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!authService.isAuthenticated()) {
-                window.location.href = '/pages/login.html';
-                return;
-            }
-            
-            // Carregar dados do usuário
-            carregarDadosUsuario();
-            
-            // Carregar salões
-            salaoUI.renderizarSaloes('carrossel-container');
-        });
-
-        // Carregar dados do usuário logado
-        function carregarDadosUsuario() {
-            const user = authService.getCurrentUser();
-            if (user) {
-                // Atualizar display do username
-                document.getElementById('username-display').value = user.username || 'Usuário';
-                document.getElementById('nome-perfil').value = user.nome || user.username || 'Usuário';
-                document.getElementById('email-perfil').value = user.email || 'usuario@email.com';
-                document.getElementById('username-perfil').value = user.username || 'usuario';
-            }
-        }
-
-        // Função para realizar busca
-        async function realizarBusca() {
-            const searchTerm = document.getElementById('searchBar').value.trim();
-            const container = document.getElementById('carrossel-container');
-            
-            if (!searchTerm) {
-                // Se não há termo de busca, mostrar todos os salões
-                await salaoUI.renderizarSaloes('carrossel-container');
-                return;
-            }
-            
-            try {
-                container.innerHTML = '<div class="loading">Buscando salões...</div>';
-                
-                const saloesFiltrados = await salaoUI.buscarSaloes(searchTerm);
-                
-                if (saloesFiltrados.length === 0) {
-                    container.innerHTML = '<div class="no-data">Nenhum salão encontrado para "' + searchTerm + '".</div>';
-                    return;
-                }
-                
-                const saloesHTML = saloesFiltrados.map(salao => salaoUI.criarCardSalao(salao)).join('');
-                container.innerHTML = saloesHTML;
-                
-            } catch (error) {
-                container.innerHTML = '<div class="error">Erro na busca. Tente novamente.</div>';
-                console.error('Erro na busca:', error);
-            }
-        }
-
-        // Busca em tempo real (debounced)
-        let searchTimeout;
-        document.getElementById('searchBar').addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(realizarBusca, 500);
-        });
-
-        // Funções do modal de perfil
-        function abrirModalPerfil() {
-            document.getElementById('modal-perfil').style.display = 'block';
-        }
-
-        function fecharModalPerfil() {
-            document.getElementById('modal-perfil').style.display = 'none';
-        }
-
-        function editarPerfil() {
-            // Habilitar edição dos campos
-            document.getElementById('nome-perfil').readOnly = false;
-            document.getElementById('email-perfil').readOnly = false;
-            
-            // Mostrar botões de salvar/cancelar
-            document.getElementById('editar-perfil').style.display = 'none';
-            document.getElementById('salvar-perfil').style.display = 'inline-block';
-            document.getElementById('cancelar-perfil').style.display = 'inline-block';
-        }
-
-        function salvarPerfil() {
-            // Aqui você implementaria a lógica para salvar as alterações
-            alert('Funcionalidade de edição de perfil será implementada em breve!');
-            cancelarEdicao();
-        }
-
-        function cancelarEdicao() {
-            // Desabilitar edição dos campos
-            document.getElementById('nome-perfil').readOnly = true;
-            document.getElementById('email-perfil').readOnly = true;
-            
-            // Restaurar valores originais
-            carregarDadosUsuario();
-            
-            // Esconder botões de salvar/cancelar
-            document.getElementById('editar-perfil').style.display = 'inline-block';
-            document.getElementById('salvar-perfil').style.display = 'none';
-            document.getElementById('cancelar-perfil').style.display = 'none';
-        }
-
-        // Fechar modal quando clicar fora dele
-        window.onclick = function(event) {
-            const modal = document.getElementById('modal-perfil');
-            if (event.target === modal) {
-                fecharModalPerfil();
-            }
-        }
-    </script>
-    
-    <style>
-        .search-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .search-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        
-        .search-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .search-icon {
-            width: 20px;
-            height: 20px;
-            filter: invert(1);
-        }
-        
-        .loading, .no-data, .error {
-            text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            color: #666;
-        }
-        
-        .error {
-            color: #d32f2f;
-        }
-        
-        .salao-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin: 10px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .salao-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-        
-        .card-header {
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .card-header h3 {
-            margin: 0 0 10px 0;
-            font-size: 18px;
-        }
-        
-        .salao-rating {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .stars {
-            color: #ffd700;
-        }
-        
-        .card-body {
-            padding: 15px;
-        }
-        
-        .salao-description {
-            color: #666;
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-        
-        .salao-info {
-            margin-bottom: 15px;
-        }
-        
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .info-icon {
-            width: 16px;
-            height: 16px;
-            filter: invert(0.5);
-        }
-        
-        .salao-horario {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .card-footer {
-            padding: 15px;
-            display: flex;
-            gap: 10px;
-            justify-content: space-between;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: #f5f5f5;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-    </style>
+    <script src="js/perfil_usuario.js"></script>
 </body>
 </html>
 

@@ -38,11 +38,6 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Arquivos estáticos - permitir acesso público
-                .requestMatchers("/", "/index.html", "/index_logado.html", "/test-redirect.html").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/images/**", "/fonts/**").permitAll()
-                .requestMatchers("/pages/**").permitAll()
-                
                 // Endpoints públicos
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/saloes").permitAll()

@@ -14,15 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AuthController {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -35,8 +30,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        logger.info("Recebida requisição de login para usuário: {}", loginRequest.getUsername());
-        
         try {
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -65,7 +58,6 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("Usuário não autenticado corretamente");
             }
 
-            logger.info("Login bem-sucedido para usuário: {}", loginRequest.getUsername());
             return ResponseEntity.ok(new LoginResponse(
                 jwt,
                 usuario.getIdUsuario(),
@@ -73,38 +65,27 @@ public class AuthController {
                 tipoUsuario
             ));
         } catch (Exception e) {
-            logger.error("Erro no login para usuário {}: {}", loginRequest.getUsername(), e.getMessage());
             return ResponseEntity.badRequest().body("Credenciais inválidas");
         }
     }
 
     @PostMapping("/registro")
     public ResponseEntity<?> registro(@RequestBody RegistroRequest registroRequest) {
-        logger.info("Recebida requisição de registro para usuário: {}", registroRequest.getUsername());
-        logger.info("Dados do registro: username={}, nome={}, email={}, tipoUsuario={}", 
-                   registroRequest.getUsername(), registroRequest.getNome(), 
-                   registroRequest.getEmail(), registroRequest.getTipoUsuario());
-        
         try {
             // Validar dados de entrada
             if (registroRequest.getUsername() == null || registroRequest.getUsername().trim().isEmpty()) {
-                logger.warn("Username é obrigatório");
                 return ResponseEntity.badRequest().body("Username é obrigatório");
             }
             if (registroRequest.getPassword() == null || registroRequest.getPassword().trim().isEmpty()) {
-                logger.warn("Senha é obrigatória");
                 return ResponseEntity.badRequest().body("Senha é obrigatória");
             }
             if (registroRequest.getNome() == null || registroRequest.getNome().trim().isEmpty()) {
-                logger.warn("Nome é obrigatório");
                 return ResponseEntity.badRequest().body("Nome é obrigatório");
             }
             if (registroRequest.getEmail() == null || registroRequest.getEmail().trim().isEmpty()) {
-                logger.warn("Email é obrigatório");
                 return ResponseEntity.badRequest().body("Email é obrigatório");
             }
             if (registroRequest.getTipoUsuario() == null || registroRequest.getTipoUsuario().trim().isEmpty()) {
-                logger.warn("Tipo de usuário é obrigatório");
                 return ResponseEntity.badRequest().body("Tipo de usuário é obrigatório");
             }
 
@@ -146,7 +127,6 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("Usuário não autenticado corretamente");
             }
 
-            logger.info("Registro bem-sucedido para usuário: {}", registroRequest.getUsername());
             return ResponseEntity.ok(new LoginResponse(
                 jwt,
                 idUsuario,
@@ -154,22 +134,7 @@ public class AuthController {
                 tipoUsuario
             ));
         } catch (Exception e) {
-            logger.error("Erro no registro para usuário {}: {}", registroRequest.getUsername(), e.getMessage(), e);
             return ResponseEntity.badRequest().body("Erro ao realizar registro: " + e.getMessage());
         }
-    }
-
-    @PostMapping("/test")
-    public ResponseEntity<?> test(@RequestBody Object request) {
-        logger.info("Endpoint de teste chamado com sucesso");
-        logger.info("Tipo da requisição: {}", request.getClass().getSimpleName());
-        logger.info("Conteúdo da requisição: {}", request.toString());
-        return ResponseEntity.ok("Teste funcionando! Dados recebidos: " + request.toString());
-    }
-
-    @GetMapping("/health")
-    public ResponseEntity<?> health() {
-        logger.info("Health check chamado");
-        return ResponseEntity.ok("API funcionando!");
     }
 } 
