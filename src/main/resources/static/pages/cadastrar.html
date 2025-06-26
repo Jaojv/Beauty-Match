@@ -27,21 +27,24 @@
         <div class="container">
             <div class="main-container">
                 <h1 class="title" id="Cadastro">Cadastro</h1>
-                <form action="" method="POST">
+                <form id="registerForm">
                 <div class="input-container">
-                    <input type="text" name="usuario" placeholder="Usuario" required>
+                    <input type="text" name="usuario" id="username" placeholder="Usuario" required>
                 </div>
                 <div class="input-container">
-                    <input type="password" name="senha" placeholder="Senha" required>
+                    <input type="password" name="senha" id="password" placeholder="Senha" required>
                 </div>
                 <div class="input-container">
-                    <input type="text" name="nome" placeholder="Nome" required>
+                    <input type="text" name="nome" id="nome" placeholder="Nome" required>
                 </div>
                 <div class="input-container">
-                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="email" name="email" id="email" placeholder="Email" required>
                 </div>
                 <div class="button-container">
-                    <button class="botao" type="submit">Cadastrar-se</button>
+                    <button class="botao" id="registerButton" type="submit">
+                        <span id="registerText">Cadastrar-se</span>
+                        <span id="loadingText" style="display: none;">Cadastrando...</span>
+                    </button>
                 </div>
                 </form>
             </div>
@@ -52,6 +55,78 @@
     <footer></footer>
 
     <!--SCRIPT JS-->
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/validation.js"></script>
     <script src="../js/darkmode.js"></script>
+    <script>
+        // Script específico para cadastro
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            const registerButton = document.getElementById('registerButton');
+            const registerText = document.getElementById('registerText');
+            const loadingText = document.getElementById('loadingText');
+
+            registerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Obter valores dos campos
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                const nome = document.getElementById('nome').value.trim();
+                const email = document.getElementById('email').value.trim();
+
+                // Validação básica
+                if (!username || !password || !nome || !email) {
+                    alert('Por favor, preencha todos os campos');
+                    return;
+                }
+
+                // Validação de email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert('Por favor, insira um email válido');
+                    return;
+                }
+
+                // Validação de senha
+                if (password.length < 6) {
+                    alert('A senha deve ter pelo menos 6 caracteres');
+                    return;
+                }
+
+                // Mostrar loading
+                setLoading(true);
+
+                try {
+                    // Fazer cadastro
+                    const response = await apiClient.register(username, password, nome, email);
+                    
+                    alert('Cadastro realizado com sucesso! Faça login para continuar.');
+                    
+                    // Redirecionar para página de login
+                    window.location.href = 'login.html';
+                    
+                } catch (error) {
+                    console.error('Erro no cadastro:', error);
+                    alert('Erro no cadastro: ' + error.message);
+                } finally {
+                    setLoading(false);
+                }
+            });
+
+            function setLoading(loading) {
+                if (loading) {
+                    registerButton.disabled = true;
+                    registerText.style.display = 'none';
+                    loadingText.style.display = 'inline';
+                } else {
+                    registerButton.disabled = false;
+                    registerText.style.display = 'inline';
+                    loadingText.style.display = 'none';
+                }
+            }
+        });
+    </script>
 </body>
 </html>

@@ -50,6 +50,8 @@ public class AuthController {
                 usuario.setIdUsuario(userPrincipal.getId());
                 usuario.setUsername(userPrincipal.getUsername());
                 usuario.setPassword(userPrincipal.getPassword());
+                usuario.setNome(userPrincipal.getNome());
+                usuario.setEmail(userPrincipal.getEmail());
                 tipoUsuario = userPrincipal.getTipoUsuario();
             } else if (principal instanceof Usuario) {
                 usuario = (Usuario) principal;
@@ -62,6 +64,8 @@ public class AuthController {
                 jwt,
                 usuario.getIdUsuario(),
                 usuario.getUsername(),
+                usuario.getNome(),
+                usuario.getEmail(),
                 tipoUsuario
             ));
         } catch (Exception e) {
@@ -90,7 +94,7 @@ public class AuthController {
             }
 
             // Criar usuário
-            autenticacaoService.criarUsuario(
+            Usuario usuario = autenticacaoService.criarUsuario(
                 registroRequest.getUsername(),
                 registroRequest.getPassword(),
                 registroRequest.getNome(),
@@ -98,43 +102,44 @@ public class AuthController {
                 registroRequest.getTipoUsuario()
             );
 
-            // Autenticar usuário após registro
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    registroRequest.getUsername(),
-                    registroRequest.getPassword()
-                )
-            );
+            return ResponseEntity.ok("Usuário registrado com sucesso");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao realizar registro: " + e.getMessage());
+        }
+    }
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = tokenProvider.generateToken(authentication);
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(401).body("Usuário não autenticado");
+            }
 
             Object principal = authentication.getPrincipal();
-            String tipoUsuario;
-            Long idUsuario;
-            String username;
             if (principal instanceof UserPrincipal) {
                 UserPrincipal userPrincipal = (UserPrincipal) principal;
-                idUsuario = userPrincipal.getId();
-                username = userPrincipal.getUsername();
-                tipoUsuario = userPrincipal.getTipoUsuario();
-            } else if (principal instanceof Usuario) {
-                Usuario u = (Usuario) principal;
-                idUsuario = u.getIdUsuario();
-                username = u.getUsername();
-                tipoUsuario = u.getClass().getSimpleName();
+                
+                // Buscar dados completos do usuário no banco de dados
+                Usuario usuario = autenticacaoService.buscarUsuarioPorId(userPrincipal.getId());
+                
+                if (usuario != null) {
+                    return ResponseEntity.ok(new LoginResponse(
+                        null, // Não retornar token novamente
+                        usuario.getIdUsuario(),
+                        usuario.getUsername(),
+                        usuario.getNome(),
+                        usuario.getEmail(),
+                        usuario.getClass().getSimpleName().toUpperCase()
+                    ));
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
             } else {
                 return ResponseEntity.badRequest().body("Usuário não autenticado corretamente");
             }
-
-            return ResponseEntity.ok(new LoginResponse(
-                jwt,
-                idUsuario,
-                username,
-                tipoUsuario
-            ));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erro ao realizar registro: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Erro ao buscar perfil: " + e.getMessage());
         }
     }
 } 

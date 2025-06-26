@@ -203,4 +203,8 @@ public class AutenticacaoService {
         profissional.setPassword(springPasswordEncoder.encode(profissional.getPassword()));
         return profissionalRepository.save(profissional);
     }
+
+    public Usuario buscarUsuarioPorId(Long id) {
+        return usuarioRepository.findById(id).orElse(null);
+    }
 } 

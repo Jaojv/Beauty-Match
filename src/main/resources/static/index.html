@@ -6,6 +6,7 @@
     <title>Beauty Match - Home</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/index_logado.css">
     <link rel="stylesheet" href="css/darkmode.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,12 +27,50 @@
                 <li><a class="menu-botao" href="pages/favoritos.html">Favoritos</a></li>
                 <li><a class="menu-botao" href="">Historico</a></li>
                 <li><a class="menu-botao" href="pages/quiz.html">Quiz</a></li>
-                <li><a class="menu-botao" id="logout-botao" href="">LOG OUT</a></li>
             </ul>
         </div>
             <div class="button-container" id="button-index">
-                <a class="botao" href="pages/cadastrar.html">Cadastrar-se</a>
-                <a class="botao" href="pages/login.html">Login</a>
+                <!-- Perfil do usuário (visível apenas quando logado) -->
+                <div class="perfil" id="perfil-usuario" style="display: none;">
+                    <a class="botao_logado" href="">
+                        <input type="text" id="username-display" value="" readonly>
+                        <img class="perfil-img" src="images/user.png" alt="Perfil">
+                    </a>
+                    <!-- Modal de perfil do usuário -->
+                    <div id="modal-perfil" class="modal-perfil" style="display: none;">
+                        <div class="modal-conteudo">
+                            <span class="fechar-modal" id="fechar-modal">&times;</span>
+                            <div class="titulo-modal">
+                                <img src="images/usuario.png">
+                                <h2>Perfil</h2>
+                            </div>
+                            <div class="img-modal">
+                                <img class="perfil-img" id="foto-perfil" src="images/user.png" alt="Perfil">
+                            </div>
+                            <div class="dados-modal">
+                                <table>
+                                <tr>
+                                    <td class="label">Nome:</td>
+                                    <td><input type="text" id="nome-perfil" value="" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Email:</td>
+                                    <td><input type="email" id="email-perfil" value="" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Senha:</td>
+                                    <td><input type="password" id="senha-perfil" value="" readonly></td>
+                                </tr>
+                                </table>
+                            </div>
+                            <button id="editar-perfil">Editar Perfil</button>
+                        </div>
+                    </div>
+                    <a href="" id="logout-link"><img class="logout-img" src="images/logout.png"></a>
+                </div>
+                <!-- Botões de login/cadastro (visíveis apenas quando não logado) -->
+                <a class="botao" id="cadastrar-link" href="pages/cadastrar.html">Cadastrar-se</a>
+                <a class="botao" id="login-link" href="pages/login.html">Login</a>
             </div>
     </nav>
 
@@ -67,8 +106,11 @@
     <footer></footer>
 
     <!--SCRIPT JS-->
-    <script src="js/darkmode.js"></script>
     <script src="js/menu_navbar.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/darkmode.js"></script>
 </body>
 </html>
 

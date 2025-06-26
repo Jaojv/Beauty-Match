@@ -12,13 +12,17 @@ public class UserPrincipal implements UserDetails {
     private Long id;
     private String username;
     private String password;
+    private String nome;
+    private String email;
     private String tipoUsuario;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String username, String password, String tipoUsuario) {
+    public UserPrincipal(Long id, String username, String password, String nome, String email, String tipoUsuario) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.nome = nome;
+        this.email = email;
         this.tipoUsuario = tipoUsuario;
         String role = tipoUsuario.equals("ADMINISTRADOR") ? "ADMIN" : tipoUsuario;
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
@@ -29,12 +33,22 @@ public class UserPrincipal implements UserDetails {
             usuario.getIdUsuario(),
             usuario.getUsername(),
             usuario.getPassword(),
+            usuario.getNome(),
+            usuario.getEmail(),
             usuario.getClass().getSimpleName().toUpperCase()
         );
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getTipoUsuario() {

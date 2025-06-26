@@ -57,6 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userId,
                         claims.getSubject(),
                         "", // Não precisamos da senha aqui
+                        "", // Nome vazio - será buscado do banco quando necessário
+                        "", // Email vazio - será buscado do banco quando necessário
                         authorities.get(0).replace("ROLE_", "")
                     );
 

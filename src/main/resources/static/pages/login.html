@@ -26,21 +26,21 @@
     <main>
         <div class="container">
             <div class="main-container">
-                <h1 class="title" id="login">Login</h1>
-                <form action="" method="POST">
+                <h1 class="title" id="Login">Login</h1>
+                <form id="loginForm">
                 <div class="input-container">
-                    <input type="text" name="usuario" placeholder="Usuario" required> <!--Limitar caracteres no input-->
+                    <input type="text" name="usuario" id="username" placeholder="Usuario" required>
                 </div>
                 <div class="input-container">
-                    <input type="password" name="senha" placeholder="Senha" required>
+                    <input type="password" name="senha" id="password" placeholder="Senha" required>
                 </div>
                 <div class="button-container">
-                    <button class="botao" type="submit">Entrar</button>
+                    <button class="botao" id="loginButton" type="submit">
+                        <span id="loginText">Entrar</span>
+                        <span id="loadingText" style="display: none;">Entrando...</span>
+                    </button>
                 </div>
-            </form>
-            <div class="button-container">
-                <a class="botao" href="cadastrar.html">Cadastrar-se</a>
-            </div>
+                </form>
             </div>
         </div>
     </main>
@@ -49,7 +49,73 @@
     <footer></footer>
 
     <!--SCRIPT JS-->
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/validation.js"></script>
     <script src="../js/darkmode.js"></script>
+    <script>
+        // Script específico para login
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginButton = document.getElementById('loginButton');
+            const loginText = document.getElementById('loginText');
+            const loadingText = document.getElementById('loadingText');
+
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Obter valores dos campos
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                // Validação básica
+                if (!username || !password) {
+                    alert('Por favor, preencha todos os campos');
+                    return;
+                }
+
+                // Mostrar loading
+                setLoading(true);
+
+                try {
+                    // Fazer login
+                    const response = await apiClient.login(username, password);
+                    
+                    // Salvar dados de autenticação
+                    window.authManager.saveAuthData(response.token, {
+                        id: response.idUsuario,
+                        username: response.username,
+                        nome: response.nome,
+                        email: response.email,
+                        tipoUsuario: response.tipoUsuario
+                    });
+
+                    alert('Login realizado com sucesso!');
+                    
+                    // Redirecionar para página inicial
+                    window.location.href = '../index.html';
+                    
+                } catch (error) {
+                    console.error('Erro no login:', error);
+                    alert('Erro no login: ' + error.message);
+                } finally {
+                    setLoading(false);
+                }
+            });
+
+            function setLoading(loading) {
+                if (loading) {
+                    loginButton.disabled = true;
+                    loginText.style.display = 'none';
+                    loadingText.style.display = 'inline';
+                } else {
+                    loginButton.disabled = false;
+                    loginText.style.display = 'inline';
+                    loadingText.style.display = 'none';
+                }
+            }
+        });
+    </script>
 </body>
 </html>
 
