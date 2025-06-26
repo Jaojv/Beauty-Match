@@ -103,6 +103,33 @@ public class AgendamentoDTO {
             this.observacoes = observacoes;
             this.valorServico = valorServico;
         }
+
+        public Long getId() { return id; }
+        public void setId(Long id) { this.id = id; }
+
+        public LocalDateTime getDataHora() { return dataHora; }
+        public void setDataHora(LocalDateTime dataHora) { this.dataHora = dataHora; }
+
+        public Agendamento.StatusAgendamento getStatus() { return status; }
+        public void setStatus(Agendamento.StatusAgendamento status) { this.status = status; }
+
+        public ClienteDTO getCliente() { return cliente; }
+        public void setCliente(ClienteDTO cliente) { this.cliente = cliente; }
+
+        public UsuarioDTO.Response getProfissional() { return profissional; }
+        public void setProfissional(UsuarioDTO.Response profissional) { this.profissional = profissional; }
+
+        public ServicoDTO.Response getServico() { return servico; }
+        public void setServico(ServicoDTO.Response servico) { this.servico = servico; }
+
+        public SalaoDTO.Response getSalao() { return salao; }
+        public void setSalao(SalaoDTO.Response salao) { this.salao = salao; }
+
+        public String getObservacoes() { return observacoes; }
+        public void setObservacoes(String observacoes) { this.observacoes = observacoes; }
+
+        public Double getValorServico() { return valorServico; }
+        public void setValorServico(Double valorServico) { this.valorServico = valorServico; }
         
         public static Response fromEntity(Agendamento agendamento) {
             if (agendamento == null) return null;

@@ -377,7 +377,8 @@ public class AgendamentoController {
             agendamento.setStatus(Agendamento.StatusAgendamento.AGENDADO);
 
             Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
-            return ResponseEntity.status(HttpStatus.CREATED).body(AgendamentoDTO.Response.fromEntity(novoAgendamento));
+            AgendamentoDTO.Response response = AgendamentoDTO.Response.fromEntity(novoAgendamento);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AgendamentoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
