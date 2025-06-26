@@ -7,6 +7,7 @@ import com.beauty.com.MatchBeauty.dto.ProfissionalDTO;
 import com.beauty.com.MatchBeauty.entity.Salao;
 import com.beauty.com.MatchBeauty.entity.Servico;
 import com.beauty.com.MatchBeauty.entity.Profissional;
+import com.beauty.com.MatchBeauty.entity.HorarioFuncionamentoSalao;
 import com.beauty.com.MatchBeauty.service.SalaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,7 @@ public class SalaoController {
             Salao salaoCriado = salaoService.criarSalao(salao, request.getProprietarioId());
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(salaoCriado));
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -119,10 +121,10 @@ public class SalaoController {
     }
 
     @GetMapping("/{id}/profissionais")
-    public ResponseEntity<List<ProfissionalDTO>> listarProfissionaisSalao(@PathVariable Long id) {
+    public ResponseEntity<List<ProfissionalDTO.Response>> listarProfissionaisSalao(@PathVariable Long id) {
         try {
             List<Profissional> profissionais = salaoService.listarProfissionais(id);
-            List<ProfissionalDTO> profissionaisDTO = profissionais.stream()
+            List<ProfissionalDTO.Response> profissionaisDTO = profissionais.stream()
                 .map(this::converterProfissionalParaDTO)
                 .collect(Collectors.toList());
             return ResponseEntity.ok(profissionaisDTO);
@@ -132,23 +134,11 @@ public class SalaoController {
     }
 
     private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
-        ServicoDTO.Response dto = new ServicoDTO.Response();
-        dto.setId(servico.getId());
-        dto.setNome(servico.getNome());
-        dto.setDescricao(servico.getDescricao());
-        dto.setDuracaoMinutos(servico.getDuracaoMinutos());
-        dto.setPreco(servico.getPreco());
-        return dto;
+        return new ServicoDTO.Response(servico);
     }
 
-    private ProfissionalDTO converterProfissionalParaDTO(Profissional profissional) {
-        ProfissionalDTO dto = new ProfissionalDTO();
-        dto.setNome(profissional.getNome());
-        dto.setEspecialidade(profissional.getEspecialidade());
-        dto.setBiografia(profissional.getBiografia());
-        dto.setHorarioTrabalho(profissional.getHorarioTrabalho());
-        dto.setDiasTrabalho(profissional.getDiasTrabalho());
-        return dto;
+    private ProfissionalDTO.Response converterProfissionalParaDTO(Profissional profissional) {
+        return new ProfissionalDTO.Response(profissional);
     }
 
     private SalaoDTO.Response converterParaDTO(Salao salao) {
@@ -158,7 +148,14 @@ public class SalaoController {
         response.setEndereco(salao.getEndereco());
         response.setTelefone(salao.getTelefone());
         response.setDescricao(salao.getDescricao());
-        response.setHorarioFuncionamento(salao.getHorarioFuncionamento());
+        
+        // Converter horários de funcionamento para string
+        if (salao.getHorariosFuncionamento() != null && !salao.getHorariosFuncionamento().isEmpty()) {
+            String horariosStr = salao.getHorariosFuncionamento().stream()
+                .map(h -> h.getDiaSemana() + ": " + h.getHoraInicio() + " - " + h.getHoraFim())
+                .collect(Collectors.joining("; "));
+            response.setHorarioFuncionamento(horariosStr);
+        }
         
         UsuarioDTO.Response proprietarioResponse = new UsuarioDTO.Response(
             salao.getProprietario().getIdUsuario(),
@@ -178,8 +175,9 @@ public class SalaoController {
         salao.setNome(dto.getNome());
         salao.setEndereco(dto.getEndereco());
         salao.setTelefone(dto.getTelefone());
+        salao.setEmail(dto.getEmail());
         salao.setDescricao(dto.getDescricao());
-        salao.setHorarioFuncionamento(dto.getHorarioFuncionamento());
+        // Horários de funcionamento serão configurados pelo serviço
         salao.setServicos(new ArrayList<>());
         salao.setAgendamentos(new ArrayList<>());
         return salao;

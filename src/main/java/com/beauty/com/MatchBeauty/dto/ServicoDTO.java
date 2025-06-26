@@ -83,6 +83,15 @@ public class ServicoDTO {
             this.salaoId = salaoId;
         }
 
+        public Response(com.beauty.com.MatchBeauty.entity.Servico servico) {
+            this.id = servico.getId();
+            this.nome = servico.getNome();
+            this.descricao = servico.getDescricao();
+            this.preco = servico.getPreco();
+            this.duracaoMinutos = servico.getDuracaoMinutos();
+            this.salaoId = servico.getSalao() != null ? servico.getSalao().getId() : null;
+        }
+
         public Long getId() {
             return id;
         }

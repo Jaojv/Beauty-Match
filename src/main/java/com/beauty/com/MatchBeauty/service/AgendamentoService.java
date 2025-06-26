@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -411,5 +413,24 @@ public class AgendamentoService {
         public void setValorTotal(double valorTotal) {
             this.valorTotal = valorTotal;
         }
+    }
+
+    /**
+     * Busca horários ocupados por um profissional em uma data específica
+     */
+    public List<LocalTime> buscarHorariosOcupados(Long profissionalId, LocalDate data) {
+        LocalDateTime inicioDia = data.atStartOfDay();
+        LocalDateTime fimDia = data.plusDays(1).atStartOfDay();
+        
+        List<Agendamento> agendamentosDoDia = agendamentoRepository
+            .findByProfissionalIdUsuarioAndDataHoraBetween(profissionalId, inicioDia, fimDia);
+        
+        return agendamentosDoDia.stream()
+            .filter(agendamento -> 
+                agendamento.getStatus() != StatusAgendamento.CANCELADO &&
+                agendamento.getStatus() != StatusAgendamento.FALTANTE
+            )
+            .map(agendamento -> agendamento.getDataHora().toLocalTime())
+            .collect(Collectors.toList());
     }
 } 

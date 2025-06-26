@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ServicoService {
@@ -29,8 +30,8 @@ public class ServicoService {
         return servicoRepository.findAll();
     }
 
-    public Servico buscarServico(Long id) {
-        return servicoRepository.findById(id).orElse(null);
+    public Optional<Servico> buscarServico(Long id) {
+        return servicoRepository.findById(id);
     }
 
     public Servico criarServico(ServicoDTO dto) {

@@ -21,6 +21,9 @@ public class SalaoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private HorarioFuncionamentoSalaoService horarioFuncionamentoService;
 
     public List<Salao> listarSaloes() {
         return salaoRepository.findAll();
@@ -42,7 +45,14 @@ public class SalaoService {
         if (salaoRepository.existsByNomeAndEndereco(salao.getNome(), salao.getEndereco())) {
             throw new RuntimeException("Já existe um salão com este nome e endereço");
         }
-        return salaoRepository.save(salao);
+        
+        // Salva o salão primeiro
+        Salao salaoSalvo = salaoRepository.save(salao);
+        
+        // Configura os horários padrão de funcionamento automaticamente
+        horarioFuncionamentoService.configurarHorariosPadrao(salaoSalvo);
+        
+        return salaoSalvo;
     }
 
     @Transactional
@@ -63,7 +73,6 @@ public class SalaoService {
         salaoExistente.setEndereco(salaoAtualizado.getEndereco());
         salaoExistente.setTelefone(salaoAtualizado.getTelefone());
         salaoExistente.setDescricao(salaoAtualizado.getDescricao());
-        salaoExistente.setHorarioFuncionamento(salaoAtualizado.getHorarioFuncionamento());
         salaoExistente.setProprietario(salaoAtualizado.getProprietario());
 
         return salaoRepository.save(salaoExistente);
@@ -106,8 +115,8 @@ public class SalaoService {
         if (salao.getTelefone() == null || salao.getTelefone().trim().isEmpty()) {
             throw new RuntimeException("Telefone do salão é obrigatório");
         }
-        if (salao.getHorarioFuncionamento() == null || salao.getHorarioFuncionamento().trim().isEmpty()) {
-            throw new RuntimeException("Horário de funcionamento é obrigatório");
+        if (salao.getEmail() == null || salao.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email do salão é obrigatório");
         }
         if (salao.getProprietario() == null) {
             throw new RuntimeException("Proprietário do salão é obrigatório");

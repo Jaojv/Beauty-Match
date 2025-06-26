@@ -31,12 +31,12 @@ public class Salao {
     @Column(nullable = false)
     private String descricao;
     
-    @Column(nullable = false)
-    private String horarioFuncionamento;
-    
     @ManyToOne
     @JoinColumn(name = "proprietario_id", nullable = false)
     private Usuario proprietario;
+    
+    @OneToMany(mappedBy = "salao", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<HorarioFuncionamentoSalao> horariosFuncionamento = new ArrayList<>();
     
     @OneToMany(mappedBy = "salao")
     private List<Servico> servicos = new ArrayList<>();
@@ -50,6 +50,7 @@ public class Salao {
     public Salao() {
         this.servicos = new ArrayList<>();
         this.agendamentos = new ArrayList<>();
+        this.horariosFuncionamento = new ArrayList<>();
     }
 
     public Long getId() {
@@ -100,20 +101,20 @@ public class Salao {
         this.descricao = descricao;
     }
 
-    public String getHorarioFuncionamento() {
-        return horarioFuncionamento;
-    }
-
-    public void setHorarioFuncionamento(String horarioFuncionamento) {
-        this.horarioFuncionamento = horarioFuncionamento;
-    }
-
     public Usuario getProprietario() {
         return proprietario;
     }
 
     public void setProprietario(Usuario proprietario) {
         this.proprietario = proprietario;
+    }
+
+    public List<HorarioFuncionamentoSalao> getHorariosFuncionamento() {
+        return horariosFuncionamento;
+    }
+
+    public void setHorariosFuncionamento(List<HorarioFuncionamentoSalao> horariosFuncionamento) {
+        this.horariosFuncionamento = horariosFuncionamento;
     }
 
     public List<Servico> getServicos() {

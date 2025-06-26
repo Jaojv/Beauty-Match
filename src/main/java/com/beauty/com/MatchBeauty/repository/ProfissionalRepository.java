@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProfissionalRepository extends JpaRepository<Profissional, Long> {
+    // Métodos específicos do Profissional podem ser adicionados aqui
 } 
