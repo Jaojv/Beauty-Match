@@ -35,7 +35,7 @@ public class UserPrincipal implements UserDetails {
             usuario.getPassword(),
             usuario.getNome(),
             usuario.getEmail(),
-            usuario.getClass().getSimpleName().toUpperCase()
+            usuario.getTipoUsuario().name()
         );
     }
 

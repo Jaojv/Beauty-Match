@@ -3,6 +3,7 @@ package com.beauty.com.MatchBeauty.entity;
 import jakarta.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "horario_trabalho")
@@ -14,6 +15,7 @@ public class HorarioTrabalho {
     
     @ManyToOne
     @JoinColumn(name = "profissional_id", nullable = false)
+    @JsonIgnore
     private Usuario profissional;
     
     @Enumerated(EnumType.STRING)
