@@ -1,0 +1,105 @@
+body {
+    background-color: #f8f8f8;
+    font-family: "Montserrat", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+trtitle, th {
+  font-family: "Arimo", sans-serif;
+  text-decoration: underline;
+  color: #CC5B6F;
+  font-size: 30px;
+}
+
+itemtabela, td {
+  font-family: "Arimo", sans-serif;
+}
+.containertable {
+    width: 48%; /* Tabela ocupa 48% da largura */
+    font-family: "Arimo", sans-serif;
+    font-weight: bold;
+    font-style: normal;
+  overflow-y: auto;
+  margin-top: 68px;
+}
+
+.containerinformacoes {
+    width: 48%; /* Informações ocupam 48% da largura */
+    font-family: "Montserrat", sans-serif;
+    padding: 10px;
+    margin-top: 68px;
+}
+
+.itemtabelavalor {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+table {
+    width: 100%;
+}
+
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.btn-selecionar {
+    padding: 5px 10px;
+    background-color: #CC5B6F;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+  font-family: "Arimo", sans-serif;
+}
+
+.btn-selecionar:hover {
+    background-color: #45a049;
+}
+
+.nomeusuario {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.rwb-tooltip {
+    display: none;
+}
+
+#robbu-whatsapp-button:hover .rwb-tooltip {
+    display: block;
+    background-color: #25D366;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+
+.fotousuario {
+    width: 120px; /* Tamanho da imagem */
+    height: 120px; /* Tamanho da imagem */
+    border-radius: 50%; /* Deixa a imagem arredondada */
+    object-fit: cover; /* Faz a imagem cobrir o espaço sem distorcer */
+    margin-bottom: 20px; /* Espaçamento abaixo da imagem */
+}
+
+.imagem-topo {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centraliza a imagem horizontalmente */
+    margin-top: 20px; /* Espaço entre o topo da tela e a imagem */
+}
