@@ -14,21 +14,21 @@ public interface RespostaQuizRepository extends JpaRepository<RespostaQuiz, Long
     /**
      * Busca resposta do quiz por cliente
      */
-    Optional<RespostaQuiz> findByClienteId(Long clienteId);
+    Optional<RespostaQuiz> findByCliente_IdUsuario(Long clienteId);
     
     /**
      * Verifica se o cliente já respondeu o quiz
      */
-    boolean existsByClienteId(Long clienteId);
+    boolean existsByCliente_IdUsuario(Long clienteId);
     
     /**
      * Busca resposta do quiz por cliente com join fetch
      */
-    @Query("SELECT rq FROM RespostaQuiz rq WHERE rq.cliente.id = :clienteId")
+    @Query("SELECT rq FROM RespostaQuiz rq WHERE rq.cliente.idUsuario = :clienteId")
     Optional<RespostaQuiz> findByClienteIdWithCliente(@Param("clienteId") Long clienteId);
     
     /**
      * Deleta resposta do quiz por cliente (para permitir nova resposta)
      */
-    void deleteByClienteId(Long clienteId);
+    void deleteByCliente_IdUsuario(Long clienteId);
 } 
