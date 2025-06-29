@@ -1,0 +1,131 @@
+body {
+    background-color: #f8f8f8;
+    font-family: HelveticaWorld;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 20px;
+    margin-bottom: 400px;
+}
+
+.containertable {
+    min-width: 38%; /* Tabela ocupa 48% da largura */
+    max-width: 38%;
+    font-weight: bold;
+    font-style: normal;
+    overflow-y: auto;
+}
+
+.containertable input{
+    width: 100%;
+    font-size: 1.7em;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-family: HelveticaWorld;
+    font-weight: bold;
+}
+
+.containertable .preco{
+    width: 100%;
+    text-align: center;
+}
+
+
+
+
+trtitle, th {
+  font-family: "Arimo", sans-serif;
+  text-decoration: underline;
+  color: #CC5B6F;
+  font-size: 3em;
+}
+
+itemtabela, td {
+  font-family: "Arimo", sans-serif;
+}
+
+
+.containerinformacoes {
+    width: 48%; /* Informações ocupam 48% da largura */
+    font-family: "Montserrat", sans-serif;
+    padding: 30px;
+}
+
+.itemtabelavalor {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+table {
+    width: 100%;
+}
+
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.btn-selecionar {
+    padding: 5px 10px;
+    background-color: #CC5B6F;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+  font-family: "Arimo", sans-serif;
+    font-size: 1.5em;
+}
+
+.btn-selecionar:hover {
+    cursor: pointer;;
+    color: white;
+    box-shadow: 0 5px 15px #cc5b6f;
+    transform: scale(1.05);
+    transition: all 0.3s;
+}
+
+.nomeusuario {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.logoservico-container{
+    display: flex;
+    margin: 0px 0 0 15%;
+    width: 400px;
+    height: 230px;
+    border: 2px solid #CC5B6F;
+    border-radius: 50%;
+}
+.logoservico{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.logo{
+    margin: 0;
+    padding: 30px 0 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.logo img {
+    width: 300px;
+    height: 200px;
+    object-fit: contain;
+}
