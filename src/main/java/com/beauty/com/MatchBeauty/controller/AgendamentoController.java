@@ -367,16 +367,16 @@ public class AgendamentoController {
             Salao salao = salaoService.buscarSalao(request.getSalaoId());
 
             // Criar o objeto Agendamento
-            Agendamento agendamento = new Agendamento();
-            agendamento.setDataHora(request.getDataHora());
+        Agendamento agendamento = new Agendamento();
+        agendamento.setDataHora(request.getDataHora());
             agendamento.setCliente(cliente);
             agendamento.setProfissional(profissional);
             agendamento.setServico(servico);
             agendamento.setSalao(salao);
-            agendamento.setObservacoes(request.getObservacoes());
+        agendamento.setObservacoes(request.getObservacoes());
             agendamento.setStatus(Agendamento.StatusAgendamento.AGENDADO);
 
-            Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
+        Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
             AgendamentoDTO.Response response = AgendamentoDTO.Response.fromEntity(novoAgendamento);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AgendamentoException e) {
@@ -486,7 +486,7 @@ public class AgendamentoController {
             List<String> horariosFormatados = slotsDisponiveis.stream()
                 .map(horario -> horario.format(DateTimeFormatter.ofPattern("HH:mm")))
                 .collect(Collectors.toList());
-            
+        
             return ResponseEntity.ok(horariosFormatados);
             
         } catch (Exception e) {

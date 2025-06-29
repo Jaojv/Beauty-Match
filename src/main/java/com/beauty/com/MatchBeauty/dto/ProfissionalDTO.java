@@ -6,15 +6,15 @@ import com.beauty.com.MatchBeauty.entity.Salao;
 public class ProfissionalDTO {
     
     public static class Request {
-        private String username;
-        private String password;
-        private String email;
-        private String telefone;
-        private String nome;
-        private String cpf;
-        private String especialidade;
-        private String biografia;
-        private Long salaoId;
+    private String username;
+    private String password;
+    private String email;
+    private String telefone;
+    private String nome;
+    private String cpf;
+    private String especialidade;
+    private String biografia;
+    private Long salaoId;
 
         // Getters e Setters
         public String getUsername() { return username; }
