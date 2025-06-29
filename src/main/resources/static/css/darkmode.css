@@ -56,6 +56,11 @@ body.dark-mode .dados-modal input{
   color: white;
 }
 
+
+body.dark-mode .containertable  input{
+  color: white;
+}
+
 body.dark-mode .dados-modal .label{
   background-color: #884b55; 
   color: white;
