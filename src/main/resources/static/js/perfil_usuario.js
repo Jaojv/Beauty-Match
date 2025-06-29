@@ -13,15 +13,15 @@ class GerenciadorPerfil {
 
     configurarEventos() {
         // Botão de perfil para abrir modal
-        const botaoPerfil = document.querySelector('.botao_logado');
-        const modalPerfil = document.getElementById('modal-perfil');
-        const fecharModal = document.getElementById('fechar-modal');
+const botaoPerfil = document.querySelector('.botao_logado');
+const modalPerfil = document.getElementById('modal-perfil');
+const fecharModal = document.getElementById('fechar-modal');
         const botaoEditar = document.getElementById('editar-perfil');
         const inputImagem = document.getElementById('input-imagem-perfil');
 
         if (botaoPerfil && modalPerfil) {
             botaoPerfil.addEventListener('click', (e) => {
-                e.preventDefault();
+    e.preventDefault();
                 this.abrirModal();
             });
         }
@@ -29,7 +29,7 @@ class GerenciadorPerfil {
         if (fecharModal) {
             fecharModal.addEventListener('click', () => {
                 this.fecharModal();
-            });
+});
         }
 
         // Fechar modal ao clicar fora
@@ -110,7 +110,7 @@ class GerenciadorPerfil {
     fecharModal() {
         const modalPerfil = document.getElementById('modal-perfil');
         if (modalPerfil) {
-            modalPerfil.style.display = 'none';
+        modalPerfil.style.display = 'none';
             // Se estiver em modo de edição, cancelar edição
             if (this.modoEdicao) {
                 this.cancelarEdicao();
