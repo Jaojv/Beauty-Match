@@ -119,8 +119,12 @@ public class QuizController {
             @Parameter(description = "Dados da recomendação", required = true)
             @Valid @RequestBody RecomendacaoDTO recomendacaoDTO) {
         try {
-            // TODO: Implementar método no service para cadastrar recomendação
-            return ResponseEntity.status(HttpStatus.CREATED).body(recomendacaoDTO);
+            RecomendacaoDTO novaRecomendacao = quizService.cadastrarRecomendacao(recomendacaoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaRecomendacao);
+        } catch (QuizException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

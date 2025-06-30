@@ -168,4 +168,19 @@ public class QuizService {
     public boolean clienteJaRespondeu(Long clienteId) {
         return respostaQuizRepository.existsByCliente_IdUsuario(clienteId);
     }
+    
+    /**
+     * Cadastra uma nova recomendação
+     */
+    public RecomendacaoDTO cadastrarRecomendacao(RecomendacaoDTO recomendacaoDTO) {
+        // Verificar se já existe recomendação com o mesmo critério
+        if (recomendacaoRepository.existsByCriterioAndAtivoTrue(recomendacaoDTO.getCriterio())) {
+            throw new QuizException("Já existe uma recomendação com o critério: " + recomendacaoDTO.getCriterio());
+        }
+        
+        Recomendacao recomendacao = recomendacaoDTO.toEntity();
+        recomendacao = recomendacaoRepository.save(recomendacao);
+        
+        return RecomendacaoDTO.fromEntity(recomendacao);
+    }
 } 
