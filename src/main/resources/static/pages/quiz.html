@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beauty Match - Quiz</title>
+    <title>Beauty Match - Quiz de Recomendações</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/index_logado.css">
@@ -30,76 +30,163 @@
                 <li><a class="menu-botao" href="">Quiz</a></li>
             </ul>
         </div>
-            <div class="button-container" id="button-index">
-                <!-- Perfil do usuário (visível apenas quando logado) -->
-                <div class="perfil" id="perfil-usuario" style="display: none;">
-                    <a class="botao_logado" href="">
-                        <input type="text" id="username-display" value="" readonly>
-                        <img class="perfil-img" src="../images/user.png" alt="Perfil">
-                    </a>
-                    <!-- Modal de perfil do usuário -->
-                    <div id="modal-perfil" class="modal-perfil" style="display: none;">
-                        <div class="modal-conteudo">
-                            <span class="fechar-modal" id="fechar-modal">&times;</span>
-                            <div class="titulo-modal">
-                                <img src="../images/usuario.png">
-                                <h2>Perfil</h2>
-                            </div>
-                            <div class="img-modal">
-                                <img class="perfil-img" id="foto-perfil" src="../images/user.png" alt="Perfil" style="cursor: pointer;">
-                                <!-- Container para upload de imagem (visível apenas em modo de edição) -->
-                                <div id="container-imagem-perfil" style="display: none; margin-top: 10px;">
-                                    <input type="file" id="input-imagem-perfil" accept="image/*" style="display: none;">
-                                </div>
-                            </div>
-                            <div class="dados-modal">
-                                <table>
-                                <tr>
-                                    <td class="label">Nome:</td>
-                                    <td><input type="text" id="nome-perfil" value="" readonly></td>
-                                </tr>
-                                <tr>
-                                    <td class="label">Email:</td>
-                                    <td><input type="email" id="email-perfil" value="" readonly></td>
-                                </tr>
-                                <tr>
-                                    <td class="label">Senha:</td>
-                                    <td><input type="password" id="senha-perfil" value="" readonly></td>
-                                </tr>
-                                </table>
-                            </div>
-                            <button id="editar-perfil">Editar Perfil</button>
+        <div class="button-container" id="button-index">
+            <!-- Perfil do usuário (visível apenas quando logado) -->
+            <div class="perfil" id="perfil-usuario" style="display: none;">
+                <a class="botao_logado" href="">
+                    <input type="text" id="username-display" value="" readonly>
+                    <img class="perfil-img" src="../images/user.png" alt="Perfil">
+                </a>
+                <!-- Modal de perfil do usuário -->
+                <div id="modal-perfil" class="modal-perfil" style="display: none;">
+                    <div class="modal-conteudo">
+                        <span class="fechar-modal" id="fechar-modal">&times;</span>
+                        <div class="titulo-modal">
+                            <img src="../images/usuario.png">
+                            <h2>Perfil</h2>
                         </div>
+                        <div class="img-modal">
+                            <img class="perfil-img" id="foto-perfil" src="../images/user.png" alt="Perfil" style="cursor: pointer;">
+                            <!-- Container para upload de imagem (visível apenas em modo de edição) -->
+                            <div id="container-imagem-perfil" style="display: none; margin-top: 10px;">
+                                <input type="file" id="input-imagem-perfil" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="dados-modal">
+                            <table>
+                            <tr>
+                                <td class="label">Nome:</td>
+                                <td><input type="text" id="nome-perfil" value="" readonly></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Email:</td>
+                                <td><input type="email" id="email-perfil" value="" readonly></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Senha:</td>
+                                <td><input type="password" id="senha-perfil" value="" readonly></td>
+                            </tr>
+                            </table>
+                        </div>
+                        <button id="editar-perfil">Editar Perfil</button>
                     </div>
-                    <a href="" id="logout-link"><img class="logout-img" src="../images/logout.png"></a>
                 </div>
-                <!-- Botões de login/cadastro (visíveis apenas quando não logado) -->
-                <a class="botao" id="cadastrar-link" href="cadastrar.html">Cadastrar-se</a>
-                <a class="botao" id="login-link" href="login.html">Login</a>
+                <a href="" id="logout-link"><img class="logout-img" src="../images/logout.png"></a>
             </div>
+            <!-- Botões de login/cadastro (visíveis apenas quando não logado) -->
+            <a class="botao" id="cadastrar-link" href="cadastrar.html">Cadastrar-se</a>
+            <a class="botao" id="login-link" href="login.html">Login</a>
+        </div>
     </nav>
 
     <!--MAIN-->
-    <main>
-        <div class="container">
-            <img src="../images/logo.png" alt="Beauty Match Logo" class="logo">
+    <main class="quiz-main">
+        <!-- Loading -->
+        <div id="loading" class="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p id="loading-text">Carregando...</p>
+            </div>
         </div>
-        
-        <div class="topico">
-            <p>Qual é seu tipo de rosto?</p>
+
+        <!-- Mensagem de Erro -->
+        <div id="erro" class="erro-mensagem" style="display: none;">
+            <div class="erro-content">
+                <span class="erro-icon">⚠️</span>
+                <p id="erro-text">Erro ao carregar o quiz.</p>
+                <button class="erro-fechar" onclick="this.parentElement.parentElement.style.display='none'">&times;</button>
+            </div>
         </div>
-        <form action="" method="post">
-        <div class="container" id="carrossel-container">
-            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-oval.png"></div>
-            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-quadrado.png"></div>
-            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-diamante.png"></div>
-            <div class="card"><input type="hidden" value=""><img class="rosto-icon" src="../images/rosto-redondo.png"></div>              
+
+        <!-- Container Principal do Quiz -->
+        <div class="quiz-container">
+            <!-- Header do Quiz -->
+            <div class="quiz-header">
+                <div class="quiz-logo">
+                    <img src="../images/logo.png" alt="Beauty Match Logo" class="logo">
+                </div>
+                <div class="quiz-titulo">
+                    <h1>Quiz de Recomendações</h1>
+                    <p>Descubra o estilo perfeito para você</p>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="quiz-progress">
+                <div class="progress-container">
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progress-text">1 de 4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container das Perguntas -->
+            <div id="quiz-container" class="quiz-content">
+                <!-- Container da pergunta atual -->
+                <div id="pergunta-container" class="pergunta-container">
+                    <!-- Conteúdo será carregado dinamicamente pelo JavaScript -->
+                </div>
+
+                <!-- Botões de Navegação -->
+                <div class="quiz-navegacao">
+                    <button id="btn-anterior" class="botao botao-secundario" disabled>
+                        <span class="botao-icon">←</span>
+                        Anterior
+                    </button>
+                    
+                    <div class="navegacao-direita">
+                        <button id="btn-proximo" class="botao botao-primario" disabled>
+                            Próximo
+                            <span class="botao-icon">→</span>
+                        </button>
+                        
+                        <button id="btn-finalizar" class="botao botao-finalizar" style="display: none;">
+                            <span class="botao-icon">✓</span>
+                            Finalizar Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button class="botao">próximo</button>
-        </form>
     </main>
-    
-    <a class="botao" id="darkmode-botao" href=""><div class="darkmode"><img src="../images/dark.png"></div></a>
+
+    <!-- Modal de Recomendação -->
+    <div id="modal-recomendacao" class="modal-overlay" style="display: none;">
+        <div class="modal-recomendacao">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Sua Recomendação Personalizada</h2>
+                <button class="modal-fechar" onclick="document.getElementById('modal-recomendacao').style.display='none'">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="recomendacao-content">
+                    <div class="recomendacao-icon">✨</div>
+                    <div id="modal-descricao" class="recomendacao-texto">
+                        <!-- Conteúdo será carregado dinamicamente -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-refazer" class="botao botao-secundario" style="display: none;">
+                    <span class="botao-icon">🔄</span>
+                    Refazer Quiz
+                </button>
+                <button class="botao botao-primario" onclick="document.getElementById('modal-recomendacao').style.display='none'">
+                    Entendi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Dark Mode -->
+    <a class="botao" id="darkmode-botao" href="">
+        <div class="darkmode">
+            <img src="../images/dark.png">
+        </div>
+    </a>
+
     <!--FOOTER-->
     <footer></footer>
 
@@ -109,15 +196,7 @@
     <script src="../js/darkmode.js"></script>
     <script src="../js/menu_navbar.js"></script>
     <script src="../js/perfil_usuario.js"></script>
-    <script>
-        // Verificação simples de autenticação
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.authManager && !window.authManager.isAuthenticated()) {
-                window.location.href = 'login.html';
-                return;
-            }
-        });
-    </script>
+    <script src="../js/quiz.js"></script>
 </body>
 </html>
 

@@ -19,17 +19,28 @@ class QuizManager {
      */
     async init() {
         try {
+            console.log('Iniciando QuizManager...');
+            
             // Verificar se usuário está logado
             if (!this.verificarAutenticacao()) {
+                console.log('Usuário não autenticado, redirecionando...');
                 window.location.href = 'login.html';
                 return;
             }
+            
+            console.log('Usuário autenticado, clienteId:', this.clienteId);
             
             // Carregar dados do usuário
             await this.carregarDadosUsuario();
             
             // Verificar status do quiz
             await this.verificarStatusQuiz();
+            
+            // Se já respondeu, não carregar perguntas
+            if (this.quizCompleto) {
+                console.log('Quiz já respondido, mostrando recomendação existente');
+                return;
+            }
             
             // Carregar perguntas
             await this.carregarPerguntas();
@@ -39,7 +50,7 @@ class QuizManager {
             
         } catch (error) {
             console.error('Erro ao inicializar quiz:', error);
-            this.mostrarErro('Erro ao carregar o quiz. Tente novamente.');
+            this.mostrarErro(`Erro ao carregar o quiz: ${error.message}`);
         }
     }
     
@@ -50,22 +61,36 @@ class QuizManager {
         const token = localStorage.getItem('authToken');
         const userData = localStorage.getItem('userData');
         
+        console.log('=== INÍCIO DO DEBUG VERIFICAR AUTENTICAÇÃO ===');
+        console.log('Verificando autenticação...', { token: !!token, userData: !!userData });
+        
         if (!token || !userData) {
+            console.log('Token ou userData não encontrados no localStorage');
+            console.log('=== FIM DO DEBUG VERIFICAR AUTENTICAÇÃO ===');
             return false;
         }
         
         try {
             const user = JSON.parse(userData);
+            console.log('Dados do usuário:', user);
+            console.log('user.id:', user.id);
+            console.log('user.tipoUsuario:', user.tipoUsuario);
+            
             if (user.tipoUsuario !== 'CLIENTE') {
+                console.log('Usuário não é CLIENTE, tipo:', user.tipoUsuario);
                 this.mostrarErro('Apenas clientes podem acessar o quiz.');
+                console.log('=== FIM DO DEBUG VERIFICAR AUTENTICAÇÃO ===');
                 return false;
             }
             
             this.clienteId = user.id;
+            console.log('this.clienteId definido como:', this.clienteId);
+            console.log('=== FIM DO DEBUG VERIFICAR AUTENTICAÇÃO ===');
             return true;
             
         } catch (error) {
             console.error('Erro ao verificar autenticação:', error);
+            console.log('=== FIM DO DEBUG VERIFICAR AUTENTICAÇÃO ===');
             return false;
         }
     }
@@ -75,8 +100,18 @@ class QuizManager {
      */
     async carregarDadosUsuario() {
         try {
+            console.log('=== INÍCIO DO DEBUG CARREGAR DADOS USUÁRIO ===');
+            console.log('Carregando dados do usuário...');
+            
             const userData = await apiClient.getUserProfile();
-            this.clienteId = userData.id;
+            console.log('Dados do usuário carregados:', userData);
+            console.log('userData.idUsuario:', userData.idUsuario);
+            console.log('Tipo do userData.idUsuario:', typeof userData.idUsuario);
+            
+            this.clienteId = userData.idUsuario;
+            console.log('this.clienteId definido como:', this.clienteId);
+            console.log('=== FIM DO DEBUG CARREGAR DADOS USUÁRIO ===');
+            
         } catch (error) {
             console.error('Erro ao carregar dados do usuário:', error);
             throw error;
@@ -88,9 +123,9 @@ class QuizManager {
      */
     async verificarStatusQuiz() {
         try {
-            const response = await apiClient.request(`/quiz/cliente/${this.clienteId}/status`, {
-                method: 'GET'
-            });
+            console.log('Verificando status do quiz para cliente:', this.clienteId);
+            const response = await apiClient.getStatusQuiz(this.clienteId);
+            console.log('Status do quiz:', response);
             
             if (response.jaRespondeu) {
                 this.quizCompleto = true;
@@ -109,9 +144,9 @@ class QuizManager {
      */
     async carregarPerguntas() {
         try {
-            this.perguntas = await apiClient.request('/quiz/perguntas', {
-                method: 'GET'
-            });
+            console.log('Carregando perguntas...');
+            this.perguntas = await apiClient.getPerguntasQuiz();
+            console.log('Perguntas carregadas:', this.perguntas);
             
             if (!this.perguntas || this.perguntas.length === 0) {
                 throw new Error('Nenhuma pergunta encontrada');
@@ -127,10 +162,12 @@ class QuizManager {
      * Inicializa a interface do quiz
      */
     inicializarInterface() {
+        console.log('Inicializando interface...');
         this.atualizarProgressBar();
         this.mostrarPergunta();
         this.atualizarBotoesNavegacao();
         this.adicionarEventListeners();
+        console.log('Interface inicializada com sucesso');
     }
     
     /**
@@ -159,7 +196,12 @@ class QuizManager {
         const pergunta = this.perguntas[this.perguntaAtual];
         const container = document.getElementById('pergunta-container');
         
-        if (!container) return;
+        if (!container) {
+            console.error('Container de pergunta não encontrado');
+            return;
+        }
+        
+        console.log('Mostrando pergunta:', pergunta);
         
         container.innerHTML = `
             <div class="pergunta-header">
@@ -183,6 +225,7 @@ class QuizManager {
         
         // Adicionar event listeners para as alternativas
         this.adicionarEventListenersAlternativas();
+        this.atualizarSelecaoAlternativa();
     }
     
     /**
@@ -311,6 +354,32 @@ class QuizManager {
      */
     async finalizarQuiz() {
         try {
+            console.log('=== INÍCIO DO DEBUG FINALIZAR QUIZ ===');
+            console.log('this.clienteId:', this.clienteId);
+            console.log('Tipo do clienteId:', typeof this.clienteId);
+            console.log('this.respostas:', this.respostas);
+            console.log('Número de respostas:', Object.keys(this.respostas).length);
+            
+            // Verificar se clienteId está preenchido
+            if (!this.clienteId) {
+                console.error('ERRO: clienteId está nulo ou undefined!');
+                console.log('Dados do localStorage:');
+                console.log('- authToken:', !!localStorage.getItem('authToken'));
+                console.log('- userData:', localStorage.getItem('userData'));
+                
+                // Tentar recarregar dados do usuário
+                try {
+                    await this.carregarDadosUsuario();
+                    console.log('clienteId após recarregar:', this.clienteId);
+                } catch (reloadError) {
+                    console.error('Erro ao recarregar dados do usuário:', reloadError);
+                }
+                
+                if (!this.clienteId) {
+                    throw new Error('Não foi possível obter o ID do cliente. Faça login novamente.');
+                }
+            }
+            
             this.mostrarLoading('Processando suas respostas...');
             
             const respostaQuiz = {
@@ -318,10 +387,10 @@ class QuizManager {
                 respostas: this.respostas
             };
             
-            const recomendacao = await apiClient.request('/quiz/responder', {
-                method: 'POST',
-                body: JSON.stringify(respostaQuiz)
-            });
+            console.log('Payload que será enviado:', JSON.stringify(respostaQuiz, null, 2));
+            console.log('=== FIM DO DEBUG FINALIZAR QUIZ ===');
+            
+            const recomendacao = await apiClient.enviarRespostasQuiz(respostaQuiz);
             
             this.recomendacao = recomendacao;
             this.quizCompleto = true;
@@ -397,8 +466,13 @@ class QuizManager {
         this.quizCompleto = false;
         this.recomendacao = null;
         
-        // Recarregar interface
-        this.inicializarInterface();
+        // Recarregar perguntas e interface
+        this.carregarPerguntas().then(() => {
+            this.inicializarInterface();
+        }).catch(error => {
+            console.error('Erro ao recarregar perguntas:', error);
+            this.mostrarErro('Erro ao recarregar o quiz. Tente novamente.');
+        });
         
         // Fechar modal se estiver aberto
         const modal = document.getElementById('modal-recomendacao');
@@ -452,5 +526,6 @@ class QuizManager {
 
 // Inicializar quiz quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado, inicializando QuizManager...');
     new QuizManager();
 }); 
