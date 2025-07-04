@@ -214,4 +214,41 @@ public class QuizController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/debug/recomendacoes")
+    public ResponseEntity<List<RecomendacaoDTO>> listarRecomendacoesDebug() {
+        try {
+            List<RecomendacaoDTO> recomendacoes = quizService.listarRecomendacoes();
+            return ResponseEntity.ok(recomendacoes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/debug/testar-criterio")
+    public ResponseEntity<Map<String, Object>> testarCriterio(@RequestBody Map<String, String> respostas) {
+        try {
+            // Gerar critério
+            String criterio = quizService.gerarCriterioTeste(respostas);
+            
+            // Buscar recomendação
+            RecomendacaoDTO recomendacao = null;
+            try {
+                recomendacao = quizService.buscarRecomendacaoPorCriterio(criterio);
+            } catch (Exception e) {
+                // Se não encontrar, retornar erro
+            }
+            
+            Map<String, Object> resultado = new HashMap<>();
+            resultado.put("criterio", criterio);
+            resultado.put("recomendacaoEncontrada", recomendacao != null);
+            resultado.put("recomendacao", recomendacao);
+            
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            Map<String, Object> erro = new HashMap<>();
+            erro.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(erro);
+        }
+    }
 } 

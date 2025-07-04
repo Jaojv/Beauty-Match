@@ -1,7 +1,10 @@
 package com.beauty.com.MatchBeauty.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LoginResponse {
     private String token;
+    @JsonProperty("idUsuario")
     private Long idUsuario;
     private String username;
     private String nome;

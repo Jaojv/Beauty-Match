@@ -92,3 +92,23 @@ INSERT IGNORE INTO recomendacoes (criterio, descricao, ativo, created_at, update
 
 -- Recomendação padrão para combinações não mapeadas
 ('PADRAO', 'Com base nas suas características, recomendamos consultar um profissional para uma avaliação personalizada. Cada pessoa é única e merece um tratamento individualizado que valorize suas características naturais e atenda às suas preferências de estilo.', true, NOW(), NOW());
+
+-- Limpeza de dados duplicados
+-- Remover alternativas duplicadas
+DELETE a1 FROM alternativas a1
+INNER JOIN alternativas a2 
+WHERE a1.id > a2.id 
+AND a1.texto = a2.texto 
+AND a1.pergunta_id = a2.pergunta_id;
+
+-- Remover perguntas duplicadas
+DELETE p1 FROM perguntas p1
+INNER JOIN perguntas p2 
+WHERE p1.id > p2.id 
+AND p1.texto = p2.texto;
+
+-- Remover recomendações duplicadas
+DELETE r1 FROM recomendacoes r1
+INNER JOIN recomendacoes r2 
+WHERE r1.id > r2.id 
+AND r1.criterio = r2.criterio;
