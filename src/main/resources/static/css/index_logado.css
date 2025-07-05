@@ -9,8 +9,8 @@ nav .perfil {
 }
 
 nav .botao_logado{
-    width: 250px;
-    height: 40px;
+    width: 150px;
+    height: 25px;
     background-color: #f1ebebee;
     color: rgba(0, 0, 0, 0.9);
     font-family: 'Roboto Slab', sans-serif;
@@ -26,6 +26,7 @@ nav .botao_logado{
     display: flex;
     align-items: center;
     justify-content: left;
+    box-shadow: -3px 5px 1px #B24B5E;
     
 
 } nav .botao_logado:hover{
@@ -52,14 +53,14 @@ nav .perfil img.logout-img {
     width: 40px;
     height: 40px;
     filter: invert(0.9);
-    margin: 10px 0 0 20px;
+    margin: 10px 0 5px 20px;
 } 
 
 nav .perfil img.perfil-img {
     filter: none;
-    width: 50px;
-    height: 50px;
-    margin-left: 5px;
+    width: 40px;
+    height: 40px;
+    margin: 0 5px;
 }
 
 nav .perfil img.perfil-img:hover {
@@ -73,6 +74,26 @@ nav .perfil img.logout-img:hover {
     filter: invert(1);
 }
 
+nav .perfil p {
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1em;
+    color: #ffffff;
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+nav .perfil .sair_conta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+nav .perfil .sair_conta:hover {
+    cursor: pointer;
+    transform: scale(1.03);
+    transition: all 0.1s;
+}
 /* Modal de perfil */
 .modal-perfil {
     display: none;
