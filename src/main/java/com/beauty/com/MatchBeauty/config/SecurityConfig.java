@@ -47,6 +47,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/profissionais").permitAll()
                 .requestMatchers("/api/profissionais/{id}").permitAll()
                 .requestMatchers("/api/agendamentos/horarios-disponiveis").permitAll()
+                .requestMatchers("/api/quiz/perguntas").permitAll()
+                .requestMatchers("/api/quiz/recomendacao").permitAll()
+                .requestMatchers("/api/quiz/recomendacoes/{criterio}").permitAll()
+                .requestMatchers("/api/quiz/debug/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 
@@ -56,6 +60,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/profissionais/**").authenticated()
                 .requestMatchers("/api/saloes/**").authenticated()
                 .requestMatchers("/api/servicos/**").authenticated()
+                .requestMatchers("/api/quiz/**").authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             );

@@ -119,8 +119,12 @@ public class QuizController {
             @Parameter(description = "Dados da recomendação", required = true)
             @Valid @RequestBody RecomendacaoDTO recomendacaoDTO) {
         try {
-            // TODO: Implementar método no service para cadastrar recomendação
-            return ResponseEntity.status(HttpStatus.CREATED).body(recomendacaoDTO);
+            RecomendacaoDTO novaRecomendacao = quizService.cadastrarRecomendacao(recomendacaoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaRecomendacao);
+        } catch (QuizException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -208,6 +212,43 @@ public class QuizController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/debug/recomendacoes")
+    public ResponseEntity<List<RecomendacaoDTO>> listarRecomendacoesDebug() {
+        try {
+            List<RecomendacaoDTO> recomendacoes = quizService.listarRecomendacoes();
+            return ResponseEntity.ok(recomendacoes);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/debug/testar-criterio")
+    public ResponseEntity<Map<String, Object>> testarCriterio(@RequestBody Map<String, String> respostas) {
+        try {
+            // Gerar critério
+            String criterio = quizService.gerarCriterioTeste(respostas);
+            
+            // Buscar recomendação
+            RecomendacaoDTO recomendacao = null;
+            try {
+                recomendacao = quizService.buscarRecomendacaoPorCriterio(criterio);
+            } catch (Exception e) {
+                // Se não encontrar, retornar erro
+            }
+            
+            Map<String, Object> resultado = new HashMap<>();
+            resultado.put("criterio", criterio);
+            resultado.put("recomendacaoEncontrada", recomendacao != null);
+            resultado.put("recomendacao", recomendacao);
+            
+            return ResponseEntity.ok(resultado);
+        } catch (Exception e) {
+            Map<String, Object> erro = new HashMap<>();
+            erro.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(erro);
         }
     }
 } 

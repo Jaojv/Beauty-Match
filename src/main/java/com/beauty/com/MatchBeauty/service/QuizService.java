@@ -48,19 +48,29 @@ public class QuizService {
      * Salva ou atualiza as respostas do cliente e retorna a recomendação
      */
     public RecomendacaoDTO salvarRespostas(RespostaQuizDTO respostaQuizDTO) {
+        System.out.println("=== DEBUG: Iniciando salvarRespostas ===");
+        System.out.println("ClienteId: " + respostaQuizDTO.getClienteId());
+        System.out.println("Respostas: " + respostaQuizDTO.getRespostas());
+        
         // Validar se o cliente existe
         Cliente cliente = clienteRepository.findById(respostaQuizDTO.getClienteId())
                 .orElseThrow(() -> new QuizException("Cliente não encontrado"));
         
+        System.out.println("Cliente encontrado: " + cliente.getNome());
+        
         // Validar respostas
         validarRespostas(respostaQuizDTO.getRespostas());
+        System.out.println("Respostas validadas com sucesso");
         
         // Gerar critério baseado nas respostas
         String criterio = gerarCriterio(respostaQuizDTO.getRespostas());
+        System.out.println("Critério gerado: " + criterio);
         
         // Buscar recomendação
         Recomendacao recomendacao = recomendacaoRepository.findByCriterioAndAtivoTrue(criterio)
                 .orElseThrow(() -> new QuizException("Recomendação não encontrada para o critério: " + criterio));
+        
+        System.out.println("Recomendação encontrada: " + recomendacao.getCriterio());
         
         // Salvar ou atualizar resposta do quiz
         Optional<RespostaQuiz> respostaExistente = respostaQuizRepository.findByCliente_IdUsuario(respostaQuizDTO.getClienteId());
@@ -71,15 +81,18 @@ public class QuizService {
             respostaQuiz = respostaExistente.get();
             respostaQuiz.setRespostas(respostaQuizDTO.getRespostas());
             respostaQuiz.setCriterioGerado(criterio);
+            System.out.println("Atualizando resposta existente");
         } else {
             // Criar nova resposta
             respostaQuiz = new RespostaQuiz();
             respostaQuiz.setCliente(cliente);
             respostaQuiz.setRespostas(respostaQuizDTO.getRespostas());
             respostaQuiz.setCriterioGerado(criterio);
+            System.out.println("Criando nova resposta");
         }
         
         respostaQuizRepository.save(respostaQuiz);
+        System.out.println("Resposta salva com sucesso");
         
         return RecomendacaoDTO.fromEntity(recomendacao);
     }
@@ -114,22 +127,69 @@ public class QuizService {
      * Gera critério baseado nas respostas do cliente
      */
     private String gerarCriterio(Map<String, String> respostas) {
+        System.out.println("=== DEBUG: Gerando critério ===");
+        System.out.println("Respostas recebidas: " + respostas);
+        
         // Ordenar as respostas por ordem das perguntas para garantir consistência
         List<Pergunta> perguntas = perguntaRepository.findAllAtivasOrderByOrdem();
+        System.out.println("Perguntas encontradas: " + perguntas.size());
         
         StringBuilder criterio = new StringBuilder();
         
         for (Pergunta pergunta : perguntas) {
+            System.out.println("Processando pergunta: " + pergunta.getTexto());
             String resposta = respostas.get(pergunta.getTexto());
+            System.out.println("Resposta encontrada: " + resposta);
+            
             if (resposta != null) {
                 if (criterio.length() > 0) {
                     criterio.append("_");
                 }
-                criterio.append(resposta.toUpperCase().replace(" ", ""));
+                // Normalizar caracteres especiais
+                String respostaFormatada = normalizarTexto(resposta);
+                criterio.append(respostaFormatada);
+                System.out.println("Critério parcial: " + criterio.toString());
             }
         }
         
-        return criterio.toString();
+        String criterioFinal = criterio.toString();
+        System.out.println("Critério final gerado: " + criterioFinal);
+        return criterioFinal;
+    }
+    
+    /**
+     * Normaliza texto removendo acentos e caracteres especiais
+     */
+    private String normalizarTexto(String texto) {
+        if (texto == null) return "";
+        
+        return texto.toUpperCase()
+                .replace(" ", "")
+                .replace("Ã", "A")
+                .replace("Á", "A")
+                .replace("À", "A")
+                .replace("Â", "A")
+                .replace("Ã", "A")
+                .replace("Ä", "A")
+                .replace("É", "E")
+                .replace("È", "E")
+                .replace("Ê", "E")
+                .replace("Ë", "E")
+                .replace("Í", "I")
+                .replace("Ì", "I")
+                .replace("Î", "I")
+                .replace("Ï", "I")
+                .replace("Ó", "O")
+                .replace("Ò", "O")
+                .replace("Ô", "O")
+                .replace("Õ", "O")
+                .replace("Ö", "O")
+                .replace("Ú", "U")
+                .replace("Ù", "U")
+                .replace("Û", "U")
+                .replace("Ü", "U")
+                .replace("Ç", "C")
+                .replace("Ñ", "N");
     }
     
     /**
@@ -167,5 +227,27 @@ public class QuizService {
      */
     public boolean clienteJaRespondeu(Long clienteId) {
         return respostaQuizRepository.existsByCliente_IdUsuario(clienteId);
+    }
+    
+    /**
+     * Cadastra uma nova recomendação
+     */
+    public RecomendacaoDTO cadastrarRecomendacao(RecomendacaoDTO recomendacaoDTO) {
+        // Verificar se já existe recomendação com o mesmo critério
+        if (recomendacaoRepository.existsByCriterioAndAtivoTrue(recomendacaoDTO.getCriterio())) {
+            throw new QuizException("Já existe uma recomendação com o critério: " + recomendacaoDTO.getCriterio());
+        }
+        
+        Recomendacao recomendacao = recomendacaoDTO.toEntity();
+        recomendacao = recomendacaoRepository.save(recomendacao);
+        
+        return RecomendacaoDTO.fromEntity(recomendacao);
+    }
+    
+    /**
+     * Método público para testar a geração de critério
+     */
+    public String gerarCriterioTeste(Map<String, String> respostas) {
+        return gerarCriterio(respostas);
     }
 } 
