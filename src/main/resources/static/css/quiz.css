@@ -710,9 +710,9 @@
     
     body.dark-mode .quiz-progress {
         background: #3d3d3d;
-        border-bottom-color: #4d4d4d;
+        border-bottom-color: #3f3f3f;
     }
-    
+
     body.dark-mode .progress-bar-container {
         background: #4d4d4d;
     }
