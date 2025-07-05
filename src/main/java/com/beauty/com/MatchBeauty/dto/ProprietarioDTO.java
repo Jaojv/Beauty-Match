@@ -1,17 +1,35 @@
 package com.beauty.com.MatchBeauty.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class ProprietarioDTO {
+    @NotBlank(message = "Username é obrigatório")
     private String username;
+    
+    @NotBlank(message = "Password é obrigatório")
     private String password;
+    
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email deve ser válido")
     private String email;
+    
     private String telefone;
+    
+    @NotBlank(message = "Nome é obrigatório")
     private String nome;
+    
+    @NotBlank(message = "CNPJ é obrigatório")
     private String cnpj;
+    
+    @NotBlank(message = "Razão Social é obrigatório")
     private String razaoSocial;
+    
     private String endereco;
+    
     private String horarioFuncionamento;
 
     public String getUsername() {
