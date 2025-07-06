@@ -129,6 +129,15 @@ class ApiClient {
             method: 'GET'
         });
     }
+
+    /**
+     * Limpa as respostas do quiz de um cliente (permite refazer)
+     */
+    async limparRespostasQuiz(clienteId) {
+        return this.request(`/quiz/cliente/${clienteId}/respostas`, {
+            method: 'DELETE'
+        });
+    }
 }
 
 // Instância global do cliente API

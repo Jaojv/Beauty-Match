@@ -129,7 +129,7 @@ class QuizManager {
             
             if (response.jaRespondeu) {
                 this.quizCompleto = true;
-                this.recomendacao = response.resposta;
+                this.recomendacao = response.recomendacao;
                 this.mostrarRecomendacaoExistente();
             }
             
@@ -441,10 +441,18 @@ class QuizManager {
                     </div>
                     <div class="recomendacao-existente">
                         <h3>Sua Recomendação Personalizada</h3>
-                        <p>${this.recomendacao.descricao}</p>
+                        <div class="recomendacao-content">
+                            <div class="recomendacao-icon">✨</div>
+                            <div class="recomendacao-texto">
+                                ${this.recomendacao.descricao.replace(/\n/g, '<br>')}
+                            </div>
+                        </div>
                     </div>
                     <div class="quiz-completo-acoes">
-                        <button id="btn-refazer" class="botao botao-secundario">Refazer Quiz</button>
+                        <button id="btn-refazer" class="botao botao-secundario">
+                            <span class="botao-icon">🔄</span>
+                            Refazer Quiz
+                        </button>
                     </div>
                 </div>
             `;
@@ -460,24 +468,75 @@ class QuizManager {
     /**
      * Refaz o quiz
      */
-    refazerQuiz() {
-        this.respostas = {};
-        this.perguntaAtual = 0;
-        this.quizCompleto = false;
-        this.recomendacao = null;
-        
-        // Recarregar perguntas e interface
-        this.carregarPerguntas().then(() => {
+    async refazerQuiz() {
+        try {
+            console.log('Iniciando refazer quiz...');
+            
+            // Mostrar loading
+            this.mostrarLoading('Preparando novo quiz...');
+            
+            // Limpar respostas no backend
+            await apiClient.limparRespostasQuiz(this.clienteId);
+            console.log('Respostas limpas no backend');
+            
+            // Resetar estado local
+            this.respostas = {};
+            this.perguntaAtual = 0;
+            this.quizCompleto = false;
+            this.recomendacao = null;
+            
+            // Recarregar perguntas
+            await this.carregarPerguntas();
+            
+            // Restaurar interface original
+            this.restaurarInterfaceOriginal();
+            
+            // Inicializar interface
             this.inicializarInterface();
-        }).catch(error => {
-            console.error('Erro ao recarregar perguntas:', error);
-            this.mostrarErro('Erro ao recarregar o quiz. Tente novamente.');
-        });
+            
+            this.ocultarLoading();
+            console.log('Quiz reiniciado com sucesso');
+            
+        } catch (error) {
+            console.error('Erro ao refazer quiz:', error);
+            this.ocultarLoading();
+            this.mostrarErro('Erro ao reiniciar o quiz. Tente novamente.');
+        }
+    }
+    
+    /**
+     * Restaura a interface original do quiz
+     */
+    restaurarInterfaceOriginal() {
+        const container = document.getElementById('quiz-container');
         
-        // Fechar modal se estiver aberto
-        const modal = document.getElementById('modal-recomendacao');
-        if (modal) {
-            modal.style.display = 'none';
+        if (container) {
+            container.innerHTML = `
+                <!-- Container da pergunta atual -->
+                <div id="pergunta-container" class="pergunta-container">
+                    <!-- Conteúdo será carregado dinamicamente pelo JavaScript -->
+                </div>
+
+                <!-- Botões de Navegação -->
+                <div class="quiz-navegacao">
+                    <button id="btn-anterior" class="botao botao-secundario" disabled>
+                        <span class="botao-icon">←</span>
+                        Anterior
+                    </button>
+                    
+                    <div class="navegacao-direita">
+                        <button id="btn-proximo" class="botao botao-primario" disabled>
+                            Próximo
+                            <span class="botao-icon">→</span>
+                        </button>
+                        
+                        <button id="btn-finalizar" class="botao botao-finalizar" style="display: none;">
+                            <span class="botao-icon">✓</span>
+                            Finalizar Quiz
+                        </button>
+                    </div>
+                </div>
+            `;
         }
     }
     

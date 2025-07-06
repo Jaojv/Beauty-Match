@@ -179,6 +179,10 @@ public class QuizController {
             if (jaRespondeu) {
                 RespostaQuizDTO resposta = quizService.buscarRespostaPorCliente(clienteId);
                 response.put("resposta", resposta);
+                if (resposta != null && resposta.getCriterioGerado() != null) {
+                    RecomendacaoDTO recomendacao = quizService.buscarRecomendacaoPorCriterio(resposta.getCriterioGerado());
+                    response.put("recomendacao", recomendacao);
+                }
             }
             
             return ResponseEntity.ok(response);
@@ -249,6 +253,33 @@ public class QuizController {
             Map<String, Object> erro = new HashMap<>();
             erro.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(erro);
+        }
+    }
+    
+    /**
+     * Limpa as respostas do quiz de um cliente (permite refazer)
+     */
+    @DeleteMapping("/cliente/{clienteId}/respostas")
+    @PreAuthorize("hasRole('CLIENTE')")
+    @Operation(summary = "Limpar respostas do quiz", description = "Remove as respostas do quiz de um cliente para permitir nova resposta")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Respostas removidas com sucesso"),
+        @ApiResponse(responseCode = "401", description = "Não autorizado"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado"),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    public ResponseEntity<Map<String, String>> limparRespostasQuiz(
+            @Parameter(description = "ID do cliente", required = true)
+            @PathVariable Long clienteId) {
+        try {
+            quizService.limparRespostasQuiz(clienteId);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Respostas do quiz removidas com sucesso");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 } 

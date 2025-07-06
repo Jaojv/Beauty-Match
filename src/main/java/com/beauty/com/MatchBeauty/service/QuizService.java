@@ -250,4 +250,17 @@ public class QuizService {
     public String gerarCriterioTeste(Map<String, String> respostas) {
         return gerarCriterio(respostas);
     }
+    
+    /**
+     * Limpa as respostas do quiz de um cliente
+     */
+    public void limparRespostasQuiz(Long clienteId) {
+        // Verificar se o cliente existe
+        if (!clienteRepository.existsById(clienteId)) {
+            throw new QuizException("Cliente não encontrado");
+        }
+        
+        // Deletar respostas existentes
+        respostaQuizRepository.deleteByCliente_IdUsuario(clienteId);
+    }
 } 
