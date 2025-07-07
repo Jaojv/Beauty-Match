@@ -38,9 +38,9 @@
 }
 
 .quiz-logo .logo {
-    width: 120px;
+    width: 200px;
     height: auto;
-    filter: brightness(0) invert(1);
+    margin: 10px 0 0 0;
 }
 
 .quiz-titulo h1 {
@@ -166,7 +166,7 @@
     font-size: 1.1rem;
     color: #2c3e50;
     font-weight: 500;
-    margin-left: 15px;
+    margin-left: 35px;
 }
 
 .alternativa-item::before {
@@ -681,79 +681,79 @@
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
-    .quiz-main {
+    body.dark-mode .quiz-main {
         background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
     }
     
-    .quiz-container {
+    body.dark-mode .quiz-container {
         background: #2d2d2d;
         color: #ffffff;
     }
     
-    .pergunta-titulo {
+    body.dark-mode .pergunta-titulo {
         color: #ffffff;
     }
     
-    .alternativa-item {
+    body.dark-mode .alternativa-item {
         background: #3d3d3d;
         border-color: #4d4d4d;
         color: #ffffff;
     }
     
-    .alternativa-item:hover {
+    body.dark-mode .alternativa-item:hover {
         background: #4d4d4d;
     }
     
-    .alternativa-texto {
+    body.dark-mode .alternativa-texto {
         color: #ffffff;
     }
     
-    .quiz-progress {
+    body.dark-mode .quiz-progress {
         background: #3d3d3d;
-        border-bottom-color: #4d4d4d;
+        border-bottom-color: #3f3f3f;
     }
-    
-    .progress-bar-container {
+
+    body.dark-mode .progress-bar-container {
         background: #4d4d4d;
     }
     
-    .quiz-navegacao {
+    body.dark-mode .quiz-navegacao {
         border-top-color: #4d4d4d;
     }
     
-    .botao-secundario {
+    body.dark-mode .botao-secundario {
         background: #3d3d3d;
         color: #ffffff;
         border-color: #4d4d4d;
     }
     
-    .botao-secundario:hover:not(:disabled) {
+    body.dark-mode .botao-secundario:hover:not(:disabled) {
         background: #4d4d4d;
     }
     
-    .modal-recomendacao {
+    body.dark-mode .modal-recomendacao {
         background: #2d2d2d;
         color: #ffffff;
     }
     
-    .recomendacao-texto {
+    body.dark-mode .recomendacao-texto {
         color: #ffffff;
     }
     
-    .modal-footer {
+    body.dark-mode .modal-footer {
         border-top-color: #4d4d4d;
     }
     
-    .quiz-completo-header p {
+    body.dark-mode .quiz-completo-header p {
         color: #cccccc;
     }
     
-    .recomendacao-existente {
+    body.dark-mode .recomendacao-existente {
         background: #3d3d3d;
         color: #ffffff;
     }
     
-    .recomendacao-existente p {
+    body.dark-mode .recomendacao-existente p {
         color: #ffffff;
     }
 }
