@@ -162,9 +162,8 @@ public class QuizService {
      */
     private String normalizarTexto(String texto) {
         if (texto == null) return "";
-        
         return texto.toUpperCase()
-                .replace(" ", "")
+                .replace(" ", "_")
                 .replace("Ã", "A")
                 .replace("Á", "A")
                 .replace("À", "A")
