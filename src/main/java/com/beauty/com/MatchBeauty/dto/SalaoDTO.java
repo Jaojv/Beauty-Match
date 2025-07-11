@@ -10,6 +10,7 @@ public class SalaoDTO {
         private String telefone;
         private String email;
         private String descricao;
+        private String imagemUrl;
         private String horarioFuncionamento;
         private Long proprietarioId;
 
@@ -80,6 +81,7 @@ public class SalaoDTO {
         private String telefone;
         private String email;
         private String descricao;
+        private String imagemUrl;
         private String horarioFuncionamento;
         private UsuarioDTO.Response proprietario;
         private List<ServicoDTO.Response> servicos;
@@ -146,6 +148,14 @@ public class SalaoDTO {
 
         public void setDescricao(String descricao) {
             this.descricao = descricao;
+        }
+
+        public String getImagemUrl() {
+            return imagemUrl;
+        }
+
+        public void setImagemUrl(String imagemUrl) {
+            this.imagemUrl = imagemUrl;
         }
 
         public String getHorarioFuncionamento() {

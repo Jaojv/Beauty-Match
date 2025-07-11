@@ -31,6 +31,9 @@ public class Salao {
     @Column(nullable = false)
     private String descricao;
     
+    @Column
+    private String imagemUrl;
+    
     @ManyToOne
     @JoinColumn(name = "proprietario_id", nullable = false)
     private Usuario proprietario;
@@ -99,6 +102,14 @@ public class Salao {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getImagemUrl() {
+        return imagemUrl;
+    }
+
+    public void setImagemUrl(String imagemUrl) {
+        this.imagemUrl = imagemUrl;
     }
 
     public Usuario getProprietario() {
