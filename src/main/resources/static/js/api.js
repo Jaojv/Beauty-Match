@@ -138,6 +138,19 @@ class ApiClient {
             method: 'DELETE'
         });
     }
+
+    // =========================================================================
+    // MÉTODOS DE SALÃO
+    // =========================================================================
+
+    /**
+     * Busca todos os salões cadastrados
+     */
+    async getSaloes() {
+        return this.request('/saloes', {
+            method: 'GET'
+        });
+    }
 }
 
 // Instância global do cliente API
