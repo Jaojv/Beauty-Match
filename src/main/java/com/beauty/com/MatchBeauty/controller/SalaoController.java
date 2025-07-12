@@ -9,11 +9,13 @@ import com.beauty.com.MatchBeauty.entity.Servico;
 import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.entity.HorarioFuncionamentoSalao;
 import com.beauty.com.MatchBeauty.service.SalaoService;
+import com.beauty.com.MatchBeauty.service.FileUploadService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +28,9 @@ public class SalaoController {
 
     @Autowired
     private SalaoService salaoService;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
     @GetMapping
     public ResponseEntity<List<SalaoDTO.Response>> listarSaloes() {
@@ -133,6 +138,27 @@ public class SalaoController {
         }
     }
 
+    @PostMapping("/{id}/imagem")
+    public ResponseEntity<SalaoDTO.Response> uploadImagemSalao(
+            @PathVariable Long id,
+            @RequestParam("imagem") MultipartFile imagem) {
+        try {
+            // Upload da imagem
+            String imagemUrl = fileUploadService.uploadImagemSalao(imagem);
+            
+            // Buscar salão e atualizar imagemUrl
+            Salao salao = salaoService.buscarSalao(id);
+            salao.setImagemUrl(imagemUrl);
+            Salao salaoAtualizado = salaoService.atualizarSalao(id, salao);
+            
+            return ResponseEntity.ok(converterParaDTO(salaoAtualizado));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
         return new ServicoDTO.Response(servico);
     }
@@ -148,6 +174,7 @@ public class SalaoController {
         response.setEndereco(salao.getEndereco());
         response.setTelefone(salao.getTelefone());
         response.setDescricao(salao.getDescricao());
+        response.setImagemUrl(salao.getImagemUrl());
         
         // Converter horários de funcionamento para string
         if (salao.getHorariosFuncionamento() != null && !salao.getHorariosFuncionamento().isEmpty()) {
@@ -177,6 +204,7 @@ public class SalaoController {
         salao.setTelefone(dto.getTelefone());
         salao.setEmail(dto.getEmail());
         salao.setDescricao(dto.getDescricao());
+        salao.setImagemUrl(dto.getImagemUrl());
         // Horários de funcionamento serão configurados pelo serviço
         salao.setServicos(new ArrayList<>());
         salao.setAgendamentos(new ArrayList<>());

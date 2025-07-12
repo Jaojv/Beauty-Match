@@ -57,6 +57,14 @@ public class SalaoDTO {
             this.descricao = descricao;
         }
 
+        public String getImagemUrl() {
+            return imagemUrl;
+        }
+
+        public void setImagemUrl(String imagemUrl) {
+            this.imagemUrl = imagemUrl;
+        }
+
         public String getHorarioFuncionamento() {
             return horarioFuncionamento;
         }
