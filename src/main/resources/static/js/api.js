@@ -151,6 +151,24 @@ class ApiClient {
             method: 'GET'
         });
     }
+
+    /**
+     * Busca um salão específico por ID
+     */
+    async getSalao(id) {
+        return this.request(`/saloes/${id}`, {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Busca serviços de um salão específico
+     */
+    async getServicosSalao(salaoId) {
+        return this.request(`/servicos/salao/${salaoId}`, {
+            method: 'GET'
+        });
+    }
 }
 
 // Instância global do cliente API
