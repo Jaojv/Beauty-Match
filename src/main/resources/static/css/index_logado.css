@@ -6,6 +6,8 @@ nav .perfil {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 1100;
 }
 
 nav .botao_logado{
@@ -87,6 +89,8 @@ nav .perfil .sair_conta {
     align-items: center;
     justify-content: center;
     flex-direction: row;
+    position: relative;
+    z-index: 1100;
 }
 
 nav .perfil .sair_conta:hover {

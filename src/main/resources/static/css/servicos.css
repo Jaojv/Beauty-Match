@@ -1,60 +1,57 @@
 body {
-    background-color: #f8f8f8;
-    font-family: HelveticaWorld;
+    background-color: #2d2d2d;
+    font-family: HelveticaWorld, Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
 .container {
+    width: 1000px;
+    margin: 40px auto 0 auto;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 0 20px;
-    margin-bottom: 400px;
 }
 
 .containertable {
-    min-width: 38%; /* Tabela ocupa 48% da largura */
-    max-width: 38%;
+    width: 48%;
+    background: #232323;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 30px 20px;
     font-weight: bold;
     font-style: normal;
     overflow-y: auto;
 }
 
-.containertable input{
+.containertable input {
     width: 100%;
-    font-size: 1.7em;
+    font-size: 1.2em;
     background-color: transparent;
     border: none;
     outline: none;
-    font-family: HelveticaWorld;
+    font-family: HelveticaWorld, Arial, sans-serif;
     font-weight: bold;
+    color: #fff;
 }
 
-.containertable .preco{
+.containertable .preco {
     width: 100%;
     text-align: center;
 }
 
-
-
-
 trtitle, th {
-  font-family: "Arimo", sans-serif;
-  text-decoration: underline;
-  color: #CC5B6F;
-  font-size: 3em;
+    font-family: "Arimo", sans-serif;
+    text-decoration: underline;
+    color: #CC5B6F;
+    font-size: 2em;
+    background: transparent;
 }
 
-itemtabela, td {
-  font-family: "Arimo", sans-serif;
-}
-
-
-.containerinformacoes {
-    width: 48%; /* Informações ocupam 48% da largura */
-    font-family: "Montserrat", sans-serif;
-    padding: 30px;
+.itemtabela, td {
+    font-family: "Arimo", sans-serif;
+    color: #fff;
 }
 
 .itemtabelavalor {
@@ -64,68 +61,92 @@ itemtabela, td {
 
 table {
     width: 100%;
+    border-collapse: collapse;
 }
-
 
 th, td {
     padding: 10px;
     text-align: left;
 }
 
-.btn-selecionar {
+.btn-selecionar, .btn-agendar {
     padding: 5px 10px;
     background-color: #CC5B6F;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 10px;
-  font-family: "Arimo", sans-serif;
-    font-size: 1.5em;
-}
-
-.btn-selecionar:hover {
-    cursor: pointer;;
-    color: white;
-    box-shadow: 0 5px 15px #cc5b6f;
-    transform: scale(1.05);
+    font-family: "Arimo", sans-serif;
+    font-size: 1em;
     transition: all 0.3s;
 }
 
+.btn-selecionar:hover, .btn-agendar:hover {
+    box-shadow: 0 5px 15px #cc5b6f;
+    transform: scale(1.05);
+}
+
 .nomeusuario {
-    font-size: 24px;
+    font-size: 1.5em;
     font-weight: bold;
+    color: #fff;
 }
 
 p {
-    font-size: 16px;
+    font-size: 1em;
     margin: 5px 0;
+    color: #fff;
 }
 
-.logoservico-container{
+.logoservico-container {
     display: flex;
-    margin: 0px 0 0 15%;
-    width: 400px;
-    height: 230px;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 220px;
     border: 2px solid #CC5B6F;
     border-radius: 50%;
+    background: #232323;
+    margin: 0 auto 16px auto;
+    overflow: hidden;
 }
-.logoservico{
+
+.logoservico {
     width: 100%;
     height: 100%;
+    object-fit: cover;
     border-radius: 50%;
 }
 
-.logo{
+.containerinformacoes {
+    width: 350px;
+    background: #232323;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 24px 18px;
+    margin: 0 auto;
+    color: #fff;
+}
+
+.logo {
     margin: 0;
     padding: 30px 0 0 0;
     display: flex;
     justify-content: center;
     align-items: center;
-
+    z-index: 2;
 }
 
 .logo img {
-    width: 300px;
-    height: 200px;
+    width: 180px;
+    height: 120px;
     object-fit: contain;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #6b232e;
+    width: 100%;
 }

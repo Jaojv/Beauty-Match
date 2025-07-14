@@ -46,47 +46,26 @@
         <!-- (Tabela) -->
         <div class="containertable">
             <table>
-                <tr class="trtitle">
-                    <th>Serviços</th>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Corte" readonly></td>
-                    <td><input type="text" value="3.00" class="preco" readonly></td>
-                    <td><button class="btn-selecionar">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Mão" readonly></td>
-                    <td class="itemtabela"><input type="text" value="3.00" class="preco" readonly></td>
-                    <td><button class="btn-selecionar">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Pé e Mão" readonly></td>
-                    <td><input type="text" value="3.50" class="preco" readonly></td>
-                    <td><button class="btn-selecionar">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Sombrancelha" readonly></td>
-                    <td class="itemtabela"><input type="text" value="4.50" class="preco" readonly></td>
-                    <td><button class="btn-selecionar">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Matização" readonly></td>
-                    <td><input type="text" value="5.00" class="preco" readonly></td>
-                    <td><button class="btn-selecionar">Selecionar</button></td>
-                </tr>
+                <tbody id="servicos-list">
+                    <tr class="trtitle">
+                        <th>Serviços</th>
+                    </tr>
+                    <!-- Os serviços serão carregados dinamicamente aqui pelo JS -->
+                </tbody>
             </table>
         </div>
 
         <!-- Informações -->
       <!--Alterar imagem e info para input depois-->
       <div class="logoservico-container">
-        <img src="../images/rosto-oval.png" class="logoservico"> 
+        <img id="imagem-salao" src="../images/logo.png" class="logoservico" alt="Logo do salão">
       </div>
         <div class="containerinformacoes"> 
-            <h1 class="nomeusuario"> Pica Atrás </h1>
-            <p><i class="fas fa-map-marker-alt"></i> Rua Tapaxanas, 200 - Ribeirão das Neves</p>
-            <p><i class="fas fa-phone-alt"></i> <i> 31 9-9523-4442 </p>
-            <p class="negritoitalico"><i class="fas fa-envelope"></i> <b> picaatras@gmail.com <b> </p>
+            <h1 id="nome-salao">Carregando...</h1>
+            <p id="endereco-salao"><i class="fas fa-map-marker-alt"></i> Carregando...</p>
+            <p id="telefone-salao"><i class="fas fa-phone-alt"></i> <i> Carregando... </i></p>
+            <p id="email-salao" class="negritoitalico"><i class="fas fa-envelope"></i> <b> Carregando... </b></p>
+            <div id="agendar-container"></div>
         </div>
     </div>
     
@@ -99,6 +78,7 @@
     <script src="../js/darkmode.js"></script>
     <script src="../js/menu_navbar.js"></script>
     <script src="../js/perfil_usuario.js"></script>
+    <script src="../js/servicos.js"></script>
     <script>
         // Verificação simples de autenticação
         document.addEventListener('DOMContentLoaded', function() {
