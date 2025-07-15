@@ -173,6 +173,7 @@ public class SalaoController {
         response.setNome(salao.getNome());
         response.setEndereco(salao.getEndereco());
         response.setTelefone(salao.getTelefone());
+        response.setEmail(salao.getEmail()); // Correção aplicada aqui
         response.setDescricao(salao.getDescricao());
         response.setImagemUrl(salao.getImagemUrl());
         
