@@ -14,27 +14,27 @@ async function carregarDadosSalao(salaoId) {
         console.log('✅ ServicosJS: Dados do salão carregados:', salao.nome);
         
         // Atualizar informações do salão
-        const nomeElement = document.querySelector('.nomeusuario');
+        const nomeElement = document.getElementById('nome-salao');
         if (nomeElement) {
-            nomeElement.textContent = salao.nome;
+            nomeElement.textContent = salao.nome ?? '';
             console.log('🔧 ServicosJS: Nome do salão atualizado');
         }
 
-        const enderecoElement = document.querySelector('.containerinformacoes p:nth-child(2)');
+        const enderecoElement = document.getElementById('endereco-salao');
         if (enderecoElement) {
-            enderecoElement.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${salao.endereco}`;
+            enderecoElement.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${salao.endereco ?? ''}`;
             console.log('🔧 ServicosJS: Endereço atualizado');
         }
 
-        const telefoneElement = document.querySelector('.containerinformacoes p:nth-child(3)');
+        const telefoneElement = document.getElementById('telefone-salao');
         if (telefoneElement) {
-            telefoneElement.innerHTML = `<i class="fas fa-phone-alt"></i> <i> ${salao.telefone} </i>`;
+            telefoneElement.innerHTML = `<i class="fas fa-phone-alt"></i> <i> ${salao.telefone ?? ''} </i>`;
             console.log('🔧 ServicosJS: Telefone atualizado');
         }
 
-        const emailElement = document.querySelector('.containerinformacoes p:nth-child(4)');
+        const emailElement = document.getElementById('email-salao');
         if (emailElement) {
-            emailElement.innerHTML = `<i class="fas fa-envelope"></i> <b> ${salao.email} </b>`;
+            emailElement.innerHTML = `<i class="fas fa-envelope"></i> <b> ${salao.email ?? ''} </b>`;
             console.log('🔧 ServicosJS: Email atualizado');
         }
 
