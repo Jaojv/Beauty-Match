@@ -75,4 +75,8 @@ public class ProfissionalService {
         
         return disponibilidade;
     }
+
+    public List<Profissional> buscarProfissionaisPorSalao(Long salaoId) {
+        return profissionalRepository.findBySalao_Id(salaoId);
+    }
 } 

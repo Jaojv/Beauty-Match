@@ -132,6 +132,19 @@ public class ProfissionalController {
         }
     }
 
+    @GetMapping("/salao/{salaoId}")
+    public ResponseEntity<List<ProfissionalDTO.Response>> buscarProfissionaisPorSalao(@PathVariable Long salaoId) {
+        try {
+            List<Profissional> profissionais = profissionalService.buscarProfissionaisPorSalao(salaoId);
+            List<ProfissionalDTO.Response> response = profissionais.stream()
+                .map(ProfissionalDTO.Response::new)
+                .collect(Collectors.toList());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
         return new ServicoDTO.Response(servico);
     }
