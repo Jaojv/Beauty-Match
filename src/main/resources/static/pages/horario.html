@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beauty Match - Serviço</title>
+    <title>Beauty Match - Agendamento</title>
     <link rel="stylesheet" href="../css/servicos.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/index_logado.css">
@@ -13,182 +13,160 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Aleo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 </head>
 <body>
-     <!--NAVBAR-->
+    <!--NAVBAR-->
     <nav>
-      <div class="menu-icon" id="menu-icon">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-      </div>
-      <div class="menu" id="menu">
-          <ul>
-              <li><a class="menu-botao" href="../index.html">Salões</a></li>
-              <li><a class="menu-botao" href="">Agendamentos</a></li>
-              <li><a class="menu-botao" href="">Favoritos</a></li>
-              <li><a class="menu-botao" href="">Historico</a></li>
-              <li><a class="menu-botao" href="quiz.html">Quiz</a></li>
-          </ul>
-      </div>
-          <div class="button-container" id="button-index">
-              <!-- Perfil do usuário (visível apenas quando logado) -->
-              <div class="perfil" id="perfil-usuario" style="display: none;">
-                  <a class="botao_logado" href="">
-                      <input type="text" id="username-display" value="" readonly>
-                      <img class="perfil-img" src="../images/user.png" alt="Perfil">
-                  </a>
-                  <!-- Modal de perfil do usuário -->
-                  <div id="modal-perfil" class="modal-perfil" style="display: none;">
-                      <div class="modal-conteudo">
-                          <span class="fechar-modal" id="fechar-modal">&times;</span>
-                          <div class="titulo-modal">
-                              <img src="../images/usuario.png">
-                              <h2>Perfil</h2>
-                          </div>
-                          <div class="img-modal">
-                              <img class="perfil-img" id="foto-perfil" src="../images/user.png" alt="Perfil" style="cursor: pointer;">
-                              <!-- Container para upload de imagem (visível apenas em modo de edição) -->
-                              <div id="container-imagem-perfil" style="display: none; margin-top: 10px;">
-                                  <input type="file" id="input-imagem-perfil" accept="image/*" style="display: none;">
-                              </div>
-                          </div>
-                          <div class="dados-modal">
-                              <table>
-                              <tr>
-                                  <td class="label">Nome:</td>
-                                  <td><input type="text" id="nome-perfil" value="" readonly></td>
-                              </tr>
-                              <tr>
-                                  <td class="label">Email:</td>
-                                  <td><input type="email" id="email-perfil" value="" readonly></td>
-                              </tr>
-                              <tr>
-                                  <td class="label">Senha:</td>
-                                  <td><input type="password" id="senha-perfil" value="" readonly></td>
-                              </tr>
-                              </table>
-                          </div>
-                          <button id="editar-perfil">Editar Perfil</button>
-                      </div>
-                  </div>
-                    <div class="sair_conta">
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="menu" id="menu">
+            <ul>
+                <li><a class="menu-botao" href="../index.html">Salões</a></li>
+                <li><a class="menu-botao" href="">Agendamentos</a></li>
+                <li><a class="menu-botao" href="">Favoritos</a></li>
+                <li><a class="menu-botao" href="">Historico</a></li>
+                <li><a class="menu-botao" href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+        <div class="button-container" id="button-index">
+            <!-- Perfil do usuário (visível apenas quando logado) -->
+            <div class="perfil" id="perfil-usuario" style="display: none;">
+                <a class="botao_logado" href="">
+                    <input type="text" id="username-display" value="" readonly>
+                    <img class="perfil-img" src="../images/user.png" alt="Perfil">
+                </a>
+                <!-- Modal de perfil do usuário -->
+                <div id="modal-perfil" class="modal-perfil" style="display: none;">
+                    <div class="modal-conteudo">
+                        <span class="fechar-modal" id="fechar-modal-perfil">&times;</span>
+                        <div class="titulo-modal">
+                            <img src="../images/usuario.png">
+                            <h2>Perfil</h2>
+                        </div>
+                        <div class="img-modal">
+                            <img class="perfil-img" id="foto-perfil" src="../images/user.png" alt="Perfil" style="cursor: pointer;">
+                            <div id="container-imagem-perfil" style="display: none; margin-top: 10px;">
+                                <input type="file" id="input-imagem-perfil" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="dados-modal">
+                            <table>
+                                <tr>
+                                    <td class="label">Nome:</td>
+                                    <td><input type="text" id="nome-perfil" value="" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Email:</td>
+                                    <td><input type="email" id="email-perfil" value="" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Senha:</td>
+                                    <td><input type="password" id="senha-perfil" value="" readonly></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <button id="editar-perfil">Editar Perfil</button>
+                    </div>
+                </div>
+                <div class="sair_conta">
                     <a href="" id="logout-link"><img class="logout-img" src="../images/logout.png"></a>
                     <p>Sair</p>
-                    </div>
-              </div>
-              <!-- Botões de login/cadastro (visíveis apenas quando não logado) -->
-              <a class="botao" id="cadastrar-link" href="cadastrar.html">Cadastrar-se</a>
-              <a class="botao" id="login-link" href="login.html">Login</a>
-          </div>
-  </nav>
+                </div>
+            </div>
+            <!-- Botões de login/cadastro (visíveis apenas quando não logado) -->
+            <a class="botao" id="cadastrar-link" href="cadastrar.html">Cadastrar-se</a>
+            <a class="botao" id="login-link" href="login.html">Login</a>
+        </div>
+    </nav>
     
-      <div class="logo">
+    <div class="logo">
         <img src="../images/logo.png"> 
-      </div><main>
-  <!-- Nossa Logo -->
-    <div class="container">
-        <!-- (Tabela) -->
-        <div class="containertable">
-            <form action="" method="post">
-            <table>
-                <tr class="trtitle">
-                    <th>Serviços</th>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Corte" readonly></td>
-                    <td><input type="text" value="3.00" class="preco" readonly></td>
-                    <td><button class="btn-selecionar" type="button">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Mão" readonly></td>
-                    <td class="itemtabela"><input type="text" value="3.00" class="preco" readonly></td>
-                    <td><button class="btn-selecionar" type="button">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Pé e Mão" readonly></td>
-                    <td><input type="text" value="3.50" class="preco" readonly></td>
-                    <td><button class="btn-selecionar" type="button">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Sombrancelha" readonly></td>
-                    <td class="itemtabela"><input type="text" value="4.50" class="preco" readonly></td>
-                    <td><button class="btn-selecionar" type="button">Selecionar</button></td>
-                </tr>
-                <tr class="itemtabela"> 
-                    <td><input type="text" value="Matização" readonly></td>
-                    <td><input type="text" value="5.00" class="preco" readonly></td>
-                    <td><button class="btn-selecionar"  type="button">Selecionar</button></td>
-                </tr>
-                </form>
-            </table>
-        </div>
-
-        
-
-        <!-- Informações -->
-      <!--Alterar imagem e info para input depois-->
-      <div class="logoservico-container">
-        <img src="../images/rosto-oval.png" class="logoservico"> 
-      </div>
-        <div class="containerinformacoes"> 
-            <h1 class="nomeusuario"> Pica Atrás </h1>
-            <p><i class="fas fa-map-marker-alt"></i> Rua Tapaxanas, 200 - Ribeirão das Neves</p>
-            <p><i class="fas fa-phone-alt"></i> <i> 31 9-9523-4442 </p>
-            <p class="negritoitalico"><i class="fas fa-envelope"></i> <b> picaatras@gmail.com <b> </p>
-        </div>
     </div>
     
-    
-    <!-- Modal de Agendamento -->
-    <div id="modal-agendamento" class="modal-agendamento">
-        <div class="modal-conteudo">
-          <span class="fechar-modal" id="fechar-modal">&times;</span>
-          <form id="form-agendamento" method="post" action="">
-            <h3>Agendar Horário</h3>
-            <!-- Calendário simples -->
-            <label for="data">Selecione a data:</label>
-            <input type="date" id="data" name="data" required>
-            
-            <!-- Profissionais -->
-            <div class="profissionais">
-              <label>Selecione o profissional:</label>
-              <div>
-                <input type="radio" id="prof1" name="profissional" value="Malu" required>
-                <label for="prof1" class="foto-profissional" style="background:#d46b6b;">Malu</label>
-                <input type="radio" id="prof2" name="profissional" value="Malu2">
-                <label for="prof2" class="foto-profissional" style="background:#7d3535;">Malu</label>
-                <input type="radio" id="prof3" name="profissional" value="Malu3">
-                <label for="prof3" class="foto-profissional" style="background:#d46b6b;">Malu</label>
-              </div>
+    <main>
+        <div class="container">
+            <!-- Tabela de Serviços -->
+            <div class="containertable">
+                <table>
+                    <tbody id="servicos-list">
+                        <tr class="trtitle">
+                            <th>Serviços</th>
+                        </tr>
+                        <!-- Os serviços serão carregados dinamicamente aqui -->
+                    </tbody>
+                </table>
             </div>
-            
-            <!-- Horários -->
-            <div class="horarios">
-              <label>Horário:</label>
-              <div id="lista-horarios">
-                <!-- Horários serão inseridos via JS -->
-              </div>
-            </div>
-            
-            <button type="submit" class="btn-agendar">Agendar</button>
-          </form>
-        </div>
-      </div>
 
-    <a class="botao" id="darkmode-botao" href=""><div class="darkmode"><img src="../images/dark.png"></div></a>
+            <!-- Informações do Salão -->
+            <div class="logoservico-container">
+                <img id="imagem-salao" src="../images/logo.png" class="logoservico" alt="Logo do salão">
+            </div>
+            <div class="containerinformacoes"> 
+                <h1 id="nome-salao">Carregando...</h1>
+                <p id="endereco-salao"><i class="fas fa-map-marker-alt"></i> Carregando...</p>
+                <p id="telefone-salao"><i class="fas fa-phone-alt"></i> <i>Carregando...</i></p>
+                <p id="email-salao" class="negritoitalico"><i class="fas fa-envelope"></i> <b>Carregando...</b></p>
+            </div>
+        </div>
+        
+        <!-- Modal de Agendamento -->
+        <div id="modal-agendamento" class="modal-agendamento">
+            <div class="modal-conteudo">
+                <span class="fechar-modal" id="fechar-modal">&times;</span>
+                <form id="form-agendamento" method="post" action="">
+                    <h3>Agendar Horário</h3>
+                    
+                    <!-- Informações do Serviço Selecionado -->
+                    <div class="servico-selecionado">
+                        <h4>Serviço: <span id="servico-nome-modal">Carregando...</span></h4>
+                        <p>Preço: <span id="servico-preco-modal">Carregando...</span></p>
+                    </div>
+                    
+                    <!-- Calendário -->
+                    <label for="data">Selecione a data:</label>
+                    <input type="date" id="data" name="data" required min="">
+                    
+                    <!-- Profissionais -->
+                    <div class="profissionais">
+                        <label>Selecione o profissional:</label>
+                        <div id="lista-profissionais">
+                            <!-- Profissionais serão carregados dinamicamente -->
+                        </div>
+                    </div>
+                    
+                    <!-- Horários -->
+                    <div class="horarios">
+                        <label>Horário:</label>
+                        <div id="lista-horarios">
+                            <!-- Horários serão inseridos via JS -->
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-agendar">Confirmar Agendamento</button>
+                </form>
+            </div>
+        </div>
+
+        <a class="botao" id="darkmode-botao" href="">
+            <div class="darkmode"><img src="../images/dark.png"></div>
+        </a>
     </main>
-   <footer></footer>
-     <!--SCRIPT JS-->
-    <script src="../js/darkmode.js"></script>
-    <script src="../js/menu_navbar.js"></script>
+    
+    <footer></footer>
+    
+    <!--SCRIPT JS-->
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/menu_navbar.js"></script>
     <script src="../js/perfil_usuario.js"></script>
+    <script src="../js/horario_profissional.js"></script>
     <script>
         // Verificação simples de autenticação
         document.addEventListener('DOMContentLoaded', function() {
@@ -197,78 +175,6 @@
                 return;
             }
         });
-    </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Abrir modal ao clicar em qualquer botão "Selecionar"
-      document.querySelectorAll('.btn-selecionar').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-          e.preventDefault();
-          document.getElementById('modal-agendamento').style.display = 'flex';
-          // Resetar seleção ao abrir
-          document.getElementById('form-agendamento').reset();
-          renderizarHorarios();
-        });
-      });
-    
-      // Fechar modal
-      document.getElementById('fechar-modal').onclick = function() {
-        document.getElementById('modal-agendamento').style.display = 'none';
-      };
-      window.onclick = function(event) {
-        if (event.target == document.getElementById('modal-agendamento')) {
-          document.getElementById('modal-agendamento').style.display = 'none';
-        }
-      };
-    
-      // Horários disponíveis (mock)
-      const horariosDisponiveis = [
-        "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
-      ];
-      // Exemplo de horários bloqueados (mock)
-      const horariosBloqueados = ["12:00", "15:00"];
-    
-      window.renderizarHorarios = function() {
-        const lista = document.getElementById('lista-horarios');
-        lista.innerHTML = '';
-        horariosDisponiveis.forEach(function(horario) {
-          const input = document.createElement('input');
-          input.type = 'radio';
-          input.name = 'horario';
-          input.value = horario;
-          input.id = 'horario-' + horario;
-          input.style.display = 'none';
-          if (horariosBloqueados.includes(horario)) {
-            input.disabled = true;
-          }
-          const label = document.createElement('label');
-          label.className = 'horario-btn' + (horariosBloqueados.includes(horario) ? ' bloqueado' : '');
-          label.htmlFor = input.id;
-          label.innerText = horario;
-          lista.appendChild(input);
-          lista.appendChild(label);
-        });
-      }
-    
-      // Selecionar horário (visual)
-      document.getElementById('lista-horarios').addEventListener('click', function(e) {
-        if (e.target.classList.contains('horario-btn') && !e.target.classList.contains('bloqueado')) {
-          document.querySelectorAll('.horario-btn').forEach(function(btn) {
-            btn.classList.remove('selecionado');
-          });
-          e.target.classList.add('selecionado');
-          // Seleciona o input correspondente
-          const input = document.getElementById('horario-' + e.target.innerText);
-          if (input) input.checked = true;
-        }
-      });
-    
-      // Ao submeter, pode enviar para backend ou redirecionar
-      document.getElementById('form-agendamento').onsubmit = function(e) {
-        // Aqui você pode manipular os dados antes de enviar
-        // e.preventDefault(); // Descomente para testar sem enviar
-      };
-    });
     </script>
 </body>
 </html>

@@ -169,6 +169,34 @@ class ApiClient {
             method: 'GET'
         });
     }
+
+    /**
+     * Busca um serviço específico por ID
+     */
+    async getServico(id) {
+        return this.request(`/servicos/${id}`, {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Busca profissionais de um salão específico
+     */
+    async getProfissionaisSalao(salaoId) {
+        return this.request(`/profissionais/salao/${salaoId}`, {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Cria um novo agendamento
+     */
+    async criarAgendamento(dadosAgendamento) {
+        return this.request('/agendamentos', {
+            method: 'POST',
+            body: JSON.stringify(dadosAgendamento)
+        });
+    }
 }
 
 // Instância global do cliente API

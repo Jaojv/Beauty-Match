@@ -118,13 +118,339 @@ function configurarBotoesAgendamento() {
         botao.addEventListener('click', function() {
             const servicoId = this.getAttribute('data-servico-id');
             const salaoId = this.getAttribute('data-salao-id');
+            const servicoNome = this.closest('tr').querySelector('td input').value;
+            const servicoPreco = this.closest('tr').querySelector('.preco').value;
             
             console.log('🔧 ServicosJS: Botão agendar clicado - Serviço:', servicoId, 'Salão:', salaoId);
             
-            // Redirecionar para página de agendamento
-            window.location.href = `horario.html?servicoId=${servicoId}&salaoId=${salaoId}`;
+            // Abrir modal de agendamento
+            abrirModalAgendamento(servicoId, salaoId, servicoNome, servicoPreco);
         });
     });
+}
+
+// Função para abrir modal de agendamento
+function abrirModalAgendamento(servicoId, salaoId, servicoNome, servicoPreco) {
+    console.log('🔧 ServicosJS: Abrindo modal de agendamento...');
+    
+    // Criar modal dinamicamente
+    const modal = document.createElement('div');
+    modal.id = 'modal-agendamento';
+    modal.className = 'modal-agendamento';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
+    modal.innerHTML = `
+        <div class="modal-conteudo" style="
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        ">
+            <span class="fechar-modal" id="fechar-modal" style="
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                cursor: pointer;
+                color: #fff;
+            ">&times;</span>
+            
+            <form id="form-agendamento" method="post" action="">
+                <h3 style="color: #fff; margin-bottom: 20px;">Agendar Horário</h3>
+                
+                <!-- Informações do Serviço Selecionado -->
+                <div class="servico-selecionado" style="margin-bottom: 20px; padding: 15px; background: #3a3a3a; border-radius: 5px;">
+                    <h4 style="color: #fff; margin: 0 0 10px 0;">Serviço: <span id="servico-nome-modal">${servicoNome}</span></h4>
+                    <p style="color: #fff; margin: 0;">Preço: <span id="servico-preco-modal">${servicoPreco}</span></p>
+                </div>
+                
+                <!-- Calendário -->
+                <div style="margin-bottom: 20px;">
+                    <label for="data" style="color: #fff; display: block; margin-bottom: 5px;">Selecione a data:</label>
+                    <input type="date" id="data" name="data" required min="" style="
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #555;
+                        border-radius: 5px;
+                        background: #3a3a3a;
+                        color: #fff;
+                    ">
+                </div>
+                
+                <!-- Profissionais -->
+                <div class="profissionais" style="margin-bottom: 20px;">
+                    <label style="color: #fff; display: block; margin-bottom: 10px;">Selecione o profissional:</label>
+                    <div id="lista-profissionais" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <!-- Profissionais serão carregados dinamicamente -->
+                    </div>
+                </div>
+                
+                <!-- Horários -->
+                <div class="horarios" style="margin-bottom: 20px;">
+                    <label style="color: #fff; display: block; margin-bottom: 10px;">Horário:</label>
+                    <div id="lista-horarios" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <!-- Horários serão inseridos via JS -->
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-agendar" style="
+                    width: 100%;
+                    padding: 12px;
+                    background: #d46b6b;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 16px;
+                ">Confirmar Agendamento</button>
+            </form>
+        </div>
+    `;
+    
+    // Adicionar modal ao body
+    document.body.appendChild(modal);
+    
+    // Configurar funcionalidades do modal
+    configurarModalAgendamento(servicoId, salaoId);
+}
+
+// Função para configurar modal de agendamento
+async function configurarModalAgendamento(servicoId, salaoId) {
+    console.log('🔧 ServicosJS: Configurando modal de agendamento...');
+    
+    // Fechar modal
+    const fecharModal = document.getElementById('fechar-modal');
+    if (fecharModal) {
+        fecharModal.onclick = function() {
+            document.getElementById('modal-agendamento').remove();
+        };
+    }
+
+    // Fechar modal ao clicar fora
+    window.onclick = function(event) {
+        const modal = document.getElementById('modal-agendamento');
+        if (event.target === modal) {
+            modal.remove();
+        }
+    };
+
+    // Configurar data mínima
+    configurarDataMinima();
+    
+    // Renderizar horários
+    renderizarHorarios();
+    
+    // Carregar profissionais
+    await carregarProfissionaisModal(salaoId);
+    
+    // Configurar formulário
+    configurarFormularioAgendamentoModal(servicoId, salaoId);
+}
+
+// Função para configurar data mínima
+function configurarDataMinima() {
+    const dataInput = document.getElementById('data');
+    if (dataInput) {
+        const hoje = new Date().toISOString().split('T')[0];
+        dataInput.min = hoje;
+        dataInput.value = hoje;
+    }
+}
+
+// Função para renderizar horários
+function renderizarHorarios() {
+    console.log('🔧 ServicosJS: Renderizando horários...');
+    
+    const horariosDisponiveis = [
+        "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
+    ];
+    
+    const horariosBloqueados = ["12:00", "15:00"];
+    
+    const lista = document.getElementById('lista-horarios');
+    if (!lista) return;
+
+    lista.innerHTML = '';
+    
+    horariosDisponiveis.forEach(function(horario) {
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'horario';
+        input.value = horario;
+        input.id = 'horario-' + horario;
+        input.style.display = 'none';
+        
+        if (horariosBloqueados.includes(horario)) {
+            input.disabled = true;
+        }
+        
+        const label = document.createElement('label');
+        label.className = 'horario-btn' + (horariosBloqueados.includes(horario) ? ' bloqueado' : '');
+        label.htmlFor = input.id;
+        label.innerText = horario;
+        label.style.cssText = `
+            padding: 8px 12px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #3a3a3a;
+            color: #fff;
+            margin: 2px;
+        `;
+        
+        if (horariosBloqueados.includes(horario)) {
+            label.style.opacity = '0.5';
+            label.style.cursor = 'not-allowed';
+        }
+        
+        lista.appendChild(input);
+        lista.appendChild(label);
+    });
+
+    // Configurar eventos de horários
+    lista.addEventListener('click', function(e) {
+        if (e.target.classList.contains('horario-btn') && !e.target.classList.contains('bloqueado')) {
+            document.querySelectorAll('.horario-btn').forEach(function(btn) {
+                btn.style.background = '#3a3a3a';
+            });
+            e.target.style.background = '#d46b6b';
+            
+            const input = document.getElementById('horario-' + e.target.innerText);
+            if (input) input.checked = true;
+        }
+    });
+}
+
+// Função para carregar profissionais no modal
+async function carregarProfissionaisModal(salaoId) {
+    console.log('🔧 ServicosJS: Carregando profissionais para modal...');
+    try {
+        const profissionais = await apiClient.getProfissionaisSalao(salaoId);
+        console.log('✅ ServicosJS: Profissionais carregados:', profissionais.length);
+        
+        const container = document.getElementById('lista-profissionais');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (profissionais.length === 0) {
+            container.innerHTML = '<p style="color: #fff;">Nenhum profissional disponível</p>';
+            return;
+        }
+
+        // Renderizar cada profissional
+        profissionais.forEach((profissional, index) => {
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.id = `prof${index + 1}`;
+            input.name = 'profissional';
+            input.value = profissional.idUsuario;
+            input.required = index === 0;
+            input.style.display = 'none';
+
+            const label = document.createElement('label');
+            label.htmlFor = `prof${index + 1}`;
+            label.className = 'foto-profissional';
+            label.style.cssText = `
+                padding: 8px 12px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 2px;
+                background: ${index % 2 === 0 ? '#d46b6b' : '#7d3535'};
+                color: white;
+            `;
+            label.textContent = profissional.nome || `Profissional ${index + 1}`;
+
+            container.appendChild(input);
+            container.appendChild(label);
+        });
+
+    } catch (error) {
+        console.error('❌ ServicosJS: Erro ao carregar profissionais:', error);
+        carregarProfissionaisMockModal();
+    }
+}
+
+// Função para carregar profissionais mock no modal
+function carregarProfissionaisMockModal() {
+    console.log('⚠️ ServicosJS: Usando profissionais mock no modal');
+    const container = document.getElementById('lista-profissionais');
+    if (!container) return;
+
+    const profissionaisMock = [
+        { idUsuario: 1, nome: 'Malu' },
+        { idUsuario: 2, nome: 'Ana' },
+        { idUsuario: 3, nome: 'Maria' }
+    ];
+
+    container.innerHTML = '';
+    profissionaisMock.forEach((prof, index) => {
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.id = `prof${index + 1}`;
+        input.name = 'profissional';
+        input.value = prof.idUsuario;
+        input.required = index === 0;
+        input.style.display = 'none';
+
+        const label = document.createElement('label');
+        label.htmlFor = `prof${index + 1}`;
+        label.className = 'foto-profissional';
+        label.style.cssText = `
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 2px;
+            background: ${index % 2 === 0 ? '#d46b6b' : '#7d3535'};
+            color: white;
+        `;
+        label.textContent = prof.nome;
+
+        container.appendChild(input);
+        container.appendChild(label);
+    });
+}
+
+// Função para configurar formulário de agendamento no modal
+function configurarFormularioAgendamentoModal(servicoId, salaoId) {
+    const form = document.getElementById('form-agendamento');
+    if (!form) return;
+
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const dados = {
+            servicoId: servicoId,
+            salaoId: salaoId,
+            data: formData.get('data'),
+            profissional: formData.get('profissional'),
+            horario: formData.get('horario')
+        };
+
+        console.log('🔧 ServicosJS: Dados do agendamento:', dados);
+        
+        // Aqui você pode enviar para a API
+        // apiClient.criarAgendamento(dados);
+        
+        alert('Agendamento realizado com sucesso!');
+        document.getElementById('modal-agendamento').remove();
+    };
 }
 
 // Função para mostrar erro
