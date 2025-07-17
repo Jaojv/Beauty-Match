@@ -427,30 +427,208 @@ function carregarProfissionaisMockModal() {
 }
 
 // Função para configurar formulário de agendamento no modal
-function configurarFormularioAgendamentoModal(servicoId, salaoId) {
+async function configurarFormularioAgendamentoModal(servicoId, salaoId) {
     const form = document.getElementById('form-agendamento');
     if (!form) return;
 
-    form.onsubmit = function(e) {
+    // Verificar se o usuário está logado
+    if (!isUserLoggedIn()) {
+        alert('Você precisa estar logado para fazer um agendamento. Redirecionando para a página de login...');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Configurar eventos para carregar horários dinamicamente
+    const dataInput = document.getElementById('data');
+    const profissionalInputs = document.querySelectorAll('input[name="profissional"]');
+    const horariosContainer = document.getElementById('lista-horarios');
+
+    // Evento para mudança de data
+    dataInput.addEventListener('change', async function() {
+        const dataSelecionada = this.value;
+        if (!dataSelecionada) return;
+
+        // Limpar horários anteriores
+        horariosContainer.innerHTML = '<p style="color: #fff;">Selecione um profissional para ver os horários disponíveis</p>';
+        
+        // Verificar se há profissional selecionado
+        const profissionalSelecionado = document.querySelector('input[name="profissional"]:checked');
+        if (profissionalSelecionado) {
+            await carregarHorariosDisponiveis(profissionalSelecionado.value, dataSelecionada, salaoId);
+        }
+    });
+
+    // Evento para mudança de profissional
+    profissionalInputs.forEach(input => {
+        input.addEventListener('change', async function() {
+            const dataSelecionada = dataInput.value;
+            if (!dataSelecionada) {
+                alert('Selecione uma data primeiro');
+                this.checked = false;
+                return;
+            }
+            
+            await carregarHorariosDisponiveis(this.value, dataSelecionada, salaoId);
+        });
+    });
+
+    // Configurar envio do formulário
+    form.onsubmit = async function(e) {
         e.preventDefault();
         
         const formData = new FormData(form);
-        const dados = {
-            servicoId: servicoId,
-            salaoId: salaoId,
-            data: formData.get('data'),
-            profissional: formData.get('profissional'),
-            horario: formData.get('horario')
-        };
+        const data = formData.get('data');
+        const profissional = formData.get('profissional');
+        const horario = formData.get('horario');
+        
+        if (!data || !profissional || !horario) {
+            alert('Por favor, preencha todos os campos');
+            return;
+        }
 
-        console.log('🔧 ServicosJS: Dados do agendamento:', dados);
-        
-        // Aqui você pode enviar para a API
-        // apiClient.criarAgendamento(dados);
-        
-        alert('Agendamento realizado com sucesso!');
-        document.getElementById('modal-agendamento').remove();
+        try {
+            // Combinar data e horário
+            const dataHora = new Date(data + 'T' + horario);
+            
+            const dadosAgendamento = {
+                profissionalId: parseInt(profissional),
+                servicoId: parseInt(servicoId),
+                salaoId: parseInt(salaoId),
+                dataHora: dataHora.toISOString(),
+                observacoes: formData.get('observacoes') || ''
+            };
+
+            console.log('🔧 ServicosJS: Enviando agendamento:', dadosAgendamento);
+            
+            // Mostrar loading
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Agendando...';
+            submitButton.disabled = true;
+            
+            // Enviar para a API
+            const response = await apiClient.criarAgendamento(dadosAgendamento);
+            
+            console.log('✅ ServicosJS: Agendamento criado com sucesso:', response);
+            
+            // Mostrar sucesso
+            alert('Agendamento realizado com sucesso!');
+            
+            // Fechar modal e redirecionar
+            document.getElementById('modal-agendamento').remove();
+            window.location.href = 'agendamentos.html';
+            
+        } catch (error) {
+            console.error('❌ ServicosJS: Erro ao criar agendamento:', error);
+            
+            // Restaurar botão
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+            
+            // Mostrar erro específico
+            let mensagemErro = 'Erro ao criar agendamento';
+            if (error.message) {
+                if (error.message.includes('Profissional não está disponível')) {
+                    mensagemErro = 'O profissional não está disponível neste horário. Tente outro horário.';
+                } else if (error.message.includes('Horário está bloqueado')) {
+                    mensagemErro = 'Este horário está bloqueado. Tente outro horário.';
+                } else if (error.message.includes('Existe conflito')) {
+                    mensagemErro = 'Este horário já foi agendado. Tente outro horário.';
+                } else if (error.message.includes('passado')) {
+                    mensagemErro = 'Não é possível agendar para datas/horários no passado.';
+                } else {
+                    mensagemErro = error.message;
+                }
+            }
+            
+            alert(mensagemErro);
+        }
     };
+}
+
+// Função para carregar horários disponíveis
+async function carregarHorariosDisponiveis(profissionalId, data, salaoId) {
+    console.log('🔧 ServicosJS: Carregando horários disponíveis...', { profissionalId, data, salaoId });
+    
+    try {
+        // Mostrar loading
+        const horariosContainer = document.getElementById('lista-horarios');
+        horariosContainer.innerHTML = '<p style="color: #fff;">Carregando horários...</p>';
+        
+        // Buscar horários disponíveis na API
+        const horariosDisponiveis = await apiClient.getHorariosDisponiveis(salaoId, profissionalId, data);
+        
+        console.log('✅ ServicosJS: Horários disponíveis carregados:', horariosDisponiveis);
+        
+        // Renderizar horários
+        renderizarHorariosDisponiveis(horariosDisponiveis);
+        
+    } catch (error) {
+        console.error('❌ ServicosJS: Erro ao carregar horários:', error);
+        const horariosContainer = document.getElementById('lista-horarios');
+        horariosContainer.innerHTML = '<p style="color: #ff6b6b;">Erro ao carregar horários. Tente novamente.</p>';
+    }
+}
+
+// Função para renderizar horários disponíveis
+function renderizarHorariosDisponiveis(horariosDisponiveis) {
+    const container = document.getElementById('lista-horarios');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (horariosDisponiveis.length === 0) {
+        container.innerHTML = '<p style="color: #ff6b6b;">Nenhum horário disponível para esta data</p>';
+        return;
+    }
+
+    // Renderizar cada horário disponível
+    horariosDisponiveis.forEach(horario => {
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'horario';
+        input.value = horario;
+        input.id = 'horario-' + horario;
+        input.style.display = 'none';
+
+        const label = document.createElement('label');
+        label.className = 'horario-btn';
+        label.htmlFor = input.id;
+        label.innerText = horario;
+        label.style.cssText = `
+            padding: 8px 12px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #3a3a3a;
+            color: #fff;
+            margin: 2px;
+            transition: background-color 0.2s;
+        `;
+
+        // Adicionar evento de hover
+        label.addEventListener('mouseenter', function() {
+            this.style.background = '#d46b6b';
+        });
+
+        label.addEventListener('mouseleave', function() {
+            this.style.background = '#3a3a3a';
+        });
+
+        // Adicionar evento de clique
+        label.addEventListener('click', function() {
+            // Remover seleção anterior
+            document.querySelectorAll('.horario-btn').forEach(btn => {
+                btn.style.background = '#3a3a3a';
+            });
+            
+            // Selecionar este horário
+            this.style.background = '#d46b6b';
+        });
+
+        container.appendChild(input);
+        container.appendChild(label);
+    });
 }
 
 // Função para mostrar erro
