@@ -354,29 +354,62 @@ public class AgendamentoController {
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<?> criarAgendamento(@RequestBody AgendamentoDTO.Request request) {
         try {
-            // Buscar as entidades pelo ID
-            Usuario cliente = usuarioRepository.findById(request.getClienteId())
-                .orElseThrow(() -> new AgendamentoException("Cliente não encontrado com ID: " + request.getClienteId()));
+            // Extrair clienteId do token JWT
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
+            Long clienteId = userPrincipal.getId();
             
+            // Verificar se o usuário logado é realmente um cliente
+            if (!"CLIENTE".equalsIgnoreCase(userPrincipal.getTipoUsuario())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Apenas clientes podem criar agendamentos");
+            }
+            
+            // Buscar o cliente pelo ID do token
+            Usuario cliente = usuarioRepository.findById(clienteId)
+                .orElseThrow(() -> new AgendamentoException("Cliente não encontrado"));
+            
+            // Buscar o profissional
             Usuario profissional = usuarioRepository.findById(request.getProfissionalId())
                 .orElseThrow(() -> new AgendamentoException("Profissional não encontrado com ID: " + request.getProfissionalId()));
 
+            // Verificar se o profissional pertence ao salão
+            if (!(profissional instanceof com.beauty.com.MatchBeauty.entity.Profissional)) {
+                return ResponseEntity.badRequest().body("Usuário não é um profissional");
+            }
+            
+            com.beauty.com.MatchBeauty.entity.Profissional prof = (com.beauty.com.MatchBeauty.entity.Profissional) profissional;
+            if (prof.getSalao() == null || !prof.getSalao().getId().equals(request.getSalaoId())) {
+                return ResponseEntity.badRequest().body("Profissional não pertence ao salão informado");
+            }
+
+            // Buscar o serviço
             Servico servico = servicoService.buscarServico(request.getServicoId())
                 .orElseThrow(() -> new AgendamentoException("Serviço não encontrado com ID: " + request.getServicoId()));
 
+            // Verificar se o serviço pertence ao salão
+            if (!servico.getSalao().getId().equals(request.getSalaoId())) {
+                return ResponseEntity.badRequest().body("Serviço não pertence ao salão informado");
+            }
+
+            // Buscar o salão
             Salao salao = salaoService.buscarSalao(request.getSalaoId());
 
+            // Verificar se a data/hora não é no passado
+            if (request.getDataHora().isBefore(LocalDateTime.now())) {
+                return ResponseEntity.badRequest().body("Não é possível agendar para datas/horários no passado");
+            }
+
             // Criar o objeto Agendamento
-        Agendamento agendamento = new Agendamento();
-        agendamento.setDataHora(request.getDataHora());
+            Agendamento agendamento = new Agendamento();
+            agendamento.setDataHora(request.getDataHora());
             agendamento.setCliente(cliente);
             agendamento.setProfissional(profissional);
             agendamento.setServico(servico);
             agendamento.setSalao(salao);
-        agendamento.setObservacoes(request.getObservacoes());
+            agendamento.setObservacoes(request.getObservacoes());
             agendamento.setStatus(Agendamento.StatusAgendamento.AGENDADO);
 
-        Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
+            Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
             AgendamentoDTO.Response response = AgendamentoDTO.Response.fromEntity(novoAgendamento);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AgendamentoException e) {
@@ -469,9 +502,24 @@ public class AgendamentoController {
             LocalDate dataAgendamento = LocalDate.parse(data);
             DayOfWeek diaSemana = dataAgendamento.getDayOfWeek();
             
+            // Verificar se a data não é no passado
+            if (dataAgendamento.isBefore(LocalDate.now())) {
+                return ResponseEntity.ok(List.of());
+            }
+            
             // Buscar o profissional
             Usuario profissional = usuarioRepository.findById(profissionalId)
                 .orElseThrow(() -> new AgendamentoException("Profissional não encontrado"));
+            
+            // Verificar se o profissional pertence ao salão
+            if (!(profissional instanceof com.beauty.com.MatchBeauty.entity.Profissional)) {
+                return ResponseEntity.badRequest().build();
+            }
+            
+            com.beauty.com.MatchBeauty.entity.Profissional prof = (com.beauty.com.MatchBeauty.entity.Profissional) profissional;
+            if (prof.getSalao() == null || !prof.getSalao().getId().equals(salaoId)) {
+                return ResponseEntity.badRequest().build();
+            }
             
             // Gerar slots disponíveis baseados no horário de funcionamento do salão
             List<LocalTime> slotsDisponiveis = horarioFuncionamentoService.gerarSlotsDisponiveis(salaoId, diaSemana);
@@ -479,8 +527,24 @@ public class AgendamentoController {
             // Filtrar horários já agendados
             List<LocalTime> horariosOcupados = agendamentoService.buscarHorariosOcupados(profissionalId, dataAgendamento);
             
-            // Remover horários ocupados dos slots disponíveis
+            // Filtrar horários bloqueados pelo profissional
+            List<LocalTime> horariosBloqueados = horarioTrabalhoService.buscarHorariosTrabalhoProfissionalPorDia(profissionalId, diaSemana)
+                .stream()
+                .filter(HorarioTrabalho::isBloqueado)
+                .flatMap(horario -> {
+                    List<LocalTime> slots = new ArrayList<>();
+                    LocalTime hora = horario.getHoraInicio();
+                    while (!hora.isAfter(horario.getHoraFim())) {
+                        slots.add(hora);
+                        hora = hora.plusMinutes(15);
+                    }
+                    return slots.stream();
+                })
+                .collect(Collectors.toList());
+            
+            // Remover horários ocupados e bloqueados dos slots disponíveis
             slotsDisponiveis.removeAll(horariosOcupados);
+            slotsDisponiveis.removeAll(horariosBloqueados);
             
             // Converter para formato de string
             List<String> horariosFormatados = slotsDisponiveis.stream()
