@@ -1,0 +1,369 @@
+/* Estilos para a página de agendamentos */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header-agendamentos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-agendamentos h1 {
+    color: #333;
+    font-size: 2.5rem;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.filtros {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filtros select {
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.filtros select:focus {
+    outline: none;
+    border-color: #d46b6b;
+}
+
+.lista-agendamentos {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.agendamento-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #d46b6b;
+}
+
+.agendamento-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.agendamento-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.agendamento-info h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.agendamento-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-agendado {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-concluido {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+.status-cancelado {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.agendamento-detalhes {
+    margin: 15px 0;
+}
+
+.detalhe-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.detalhe-item i {
+    width: 20px;
+    margin-right: 10px;
+    color: #d46b6b;
+}
+
+.detalhe-item strong {
+    color: #333;
+    margin-right: 5px;
+}
+
+.agendamento-acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.btn-acao {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-cancelar {
+    background: #ff6b6b;
+    color: white;
+}
+
+.btn-cancelar:hover {
+    background: #ff5252;
+}
+
+.btn-ver-detalhes {
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-ver-detalhes:hover {
+    background: #e9ecef;
+}
+
+.btn-reagendar {
+    background: #d46b6b;
+    color: white;
+}
+
+.btn-reagendar:hover {
+    background: #c55a5a;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.sem-agendamentos {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.icone-sem-agendamentos {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.sem-agendamentos h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.sem-agendamentos p {
+    margin: 0 0 30px 0;
+    font-size: 1rem;
+}
+
+.btn-agendar-novo {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #d46b6b;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-agendar-novo:hover {
+    background: #c55a5a;
+}
+
+/* Modal de confirmação de cancelamento */
+.modal-confirmacao {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-confirmacao .modal-conteudo {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-confirmacao h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.modal-confirmacao p {
+    margin: 0 0 25px 0;
+    color: #666;
+}
+
+.modal-confirmacao .botoes {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-confirmar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-confirmar.cancelar {
+    background: #ff6b6b;
+    color: white;
+}
+
+.btn-confirmar.manter {
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header-agendamentos {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .header-agendamentos h1 {
+        font-size: 2rem;
+        text-align: center;
+    }
+    
+    .filtros {
+        justify-content: center;
+    }
+    
+    .lista-agendamentos {
+        grid-template-columns: 1fr;
+    }
+    
+    .agendamento-card {
+        margin: 0 10px;
+    }
+    
+    .agendamento-acoes {
+        flex-direction: column;
+    }
+    
+    .btn-acao {
+        justify-content: center;
+    }
+}
+
+/* Dark mode */
+.dark-mode .header-agendamentos h1 {
+    color: #fff;
+}
+
+.dark-mode .agendamento-card {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+.dark-mode .agendamento-info h3 {
+    color: #fff;
+}
+
+.dark-mode .agendamento-info p {
+    color: #ccc;
+}
+
+.dark-mode .detalhe-item strong {
+    color: #fff;
+}
+
+.dark-mode .detalhe-item {
+    color: #ccc;
+}
+
+.dark-mode .btn-ver-detalhes {
+    background: #3a3a3a;
+    color: #fff;
+    border-color: #555;
+}
+
+.dark-mode .btn-ver-detalhes:hover {
+    background: #4a4a4a;
+}
+
+.dark-mode .modal-confirmacao .modal-conteudo {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+.dark-mode .modal-confirmacao h3 {
+    color: #fff;
+}
+
+.dark-mode .modal-confirmacao p {
+    color: #ccc;
+}
+
+.dark-mode .btn-confirmar.manter {
+    background: #3a3a3a;
+    color: #fff;
+    border-color: #555;
+} 

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Match - Meus Agendamentos</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/index_logado.css">
+    <link rel="stylesheet" href="../css/darkmode.css">
+    <link rel="stylesheet" href="../css/agendamentos.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Aleo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!--NAVBAR-->
+    <nav>
+        <div class="menu-icon" id="menu-icon">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="menu" id="menu">
+            <ul>
+                <li><a class="menu-botao" href="../index.html">Salões</a></li>
+                <li><a class="menu-botao" href="agendamentos.html">Agendamentos</a></li>
+                <li><a class="menu-botao" href="">Favoritos</a></li>
+                <li><a class="menu-botao" href="">Historico</a></li>
+                <li><a class="menu-botao" href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+        <div class="button-container" id="button-index">
+            <!-- Perfil do usuário (visível apenas quando logado) -->
+            <div class="perfil" id="perfil-usuario" style="display: none;">
+                <a class="botao_logado" href="">
+                    <input type="text" id="username-display" value="" readonly>
+                    <img class="perfil-img" src="../images/user.png" alt="Perfil">
+                </a>
+                <!-- Modal de perfil do usuário -->
+                <div id="modal-perfil" class="modal-perfil" style="display: none;">
+                    <div class="modal-conteudo">
+                        <span class="fechar-modal" id="fechar-modal-perfil">&times;</span>
+                        <div class="titulo-modal">
+                            <img src="../images/usuario.png">
+                            <h2>Perfil</h2>
+                        </div>
+                        <div class="img-modal">
+                            <img class="perfil-img" id="foto-perfil" src="../images/user.png" alt="Perfil" style="cursor: pointer;">
+                            <div id="container-imagem-perfil" style="display: none; margin-top: 10px;">
+                                <input type="file" id="input-imagem-perfil" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="dados-modal">
+                            <table>
+                                <tr>
+                                    <td class="label">Nome:</td>
+                                    <td><input type="text" id="nome-perfil" value="" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Email:</td>
+                                    <td><input type="email" id="email-perfil" value="" readonly></td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Senha:</td>
+                                    <td><input type="password" id="senha-perfil" value="" readonly></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <button id="editar-perfil">Editar Perfil</button>
+                    </div>
+                </div>
+                <div class="sair_conta">
+                    <a href="" id="logout-link"><img class="logout-img" src="../images/logout.png"></a>
+                    <p>Sair</p>
+                </div>
+            </div>
+            <!-- Botões de login/cadastro (visíveis apenas quando não logado) -->
+            <a class="botao" id="cadastrar-link" href="cadastrar.html">Cadastrar-se</a>
+            <a class="botao" id="login-link" href="login.html">Login</a>
+        </div>
+    </nav>
+    
+    <div class="logo">
+        <img src="../images/logo.png"> 
+    </div>
+    
+    <main>
+        <div class="container">
+            <div class="header-agendamentos">
+                <h1>Meus Agendamentos</h1>
+                <div class="filtros">
+                    <select id="filtro-estabelecimento">
+                        <option value="">Todos os estabelecimentos</option>
+                    </select>
+                    <select id="filtro-status">
+                        <option value="">Todos os status</option>
+                        <option value="AGENDADO">Agendado</option>
+                        <option value="CONCLUIDO">Concluído</option>
+                        <option value="CANCELADO">Cancelado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="lista-agendamentos" id="lista-agendamentos">
+                <!-- Agendamentos serão carregados dinamicamente aqui -->
+                <div class="loading">
+                    <p>Carregando agendamentos...</p>
+                </div>
+            </div>
+
+            <div class="sem-agendamentos" id="sem-agendamentos" style="display: none;">
+                <div class="icone-sem-agendamentos">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3>Nenhum agendamento encontrado</h3>
+                <p>Você ainda não possui agendamentos. Que tal agendar um serviço?</p>
+                <a href="../index.html" class="btn-agendar-novo">Ver Salões</a>
+            </div>
+        </div>
+
+        <a class="botao" id="darkmode-botao" href="">
+            <div class="darkmode"><img src="../images/dark.png"></div>
+        </a>
+    </main>
+    
+    <footer></footer>
+    
+    <!--SCRIPT JS-->
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/darkmode.js"></script>
+    <script src="../js/menu_navbar.js"></script>
+    <script src="../js/perfil_usuario.js"></script>
+    <script src="../js/agendamentos.js"></script>
+    <script>
+        // Verificação simples de autenticação
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.authManager && !window.authManager.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+        });
+    </script>
+</body>
+</html> 
