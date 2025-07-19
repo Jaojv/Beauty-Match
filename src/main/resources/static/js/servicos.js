@@ -252,8 +252,11 @@ async function configurarModalAgendamento(servicoId, salaoId) {
     // Configurar data mínima
     configurarDataMinima();
     
-    // Renderizar horários
-    renderizarHorarios();
+    // Inicializar container de horários com mensagem
+    const horariosContainer = document.getElementById('lista-horarios');
+    if (horariosContainer) {
+        horariosContainer.innerHTML = '<p style="color: #fff;">Selecione uma data e profissional para ver os horários disponíveis</p>';
+    }
     
     // Carregar profissionais
     await carregarProfissionaisModal(salaoId);
@@ -268,72 +271,7 @@ function configurarDataMinima() {
     if (dataInput) {
         const hoje = new Date().toISOString().split('T')[0];
         dataInput.min = hoje;
-        dataInput.value = hoje;
     }
-}
-
-// Função para renderizar horários
-function renderizarHorarios() {
-    console.log('🔧 ServicosJS: Renderizando horários...');
-    
-    const horariosDisponiveis = [
-        "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
-    ];
-    
-    const horariosBloqueados = ["12:00", "15:00"];
-    
-    const lista = document.getElementById('lista-horarios');
-    if (!lista) return;
-
-    lista.innerHTML = '';
-    
-    horariosDisponiveis.forEach(function(horario) {
-        const input = document.createElement('input');
-        input.type = 'radio';
-        input.name = 'horario';
-        input.value = horario;
-        input.id = 'horario-' + horario;
-        input.style.display = 'none';
-        
-        if (horariosBloqueados.includes(horario)) {
-            input.disabled = true;
-        }
-        
-        const label = document.createElement('label');
-        label.className = 'horario-btn' + (horariosBloqueados.includes(horario) ? ' bloqueado' : '');
-        label.htmlFor = input.id;
-        label.innerText = horario;
-        label.style.cssText = `
-            padding: 8px 12px;
-            border: 1px solid #555;
-            border-radius: 5px;
-            cursor: pointer;
-            background: #3a3a3a;
-            color: #fff;
-            margin: 2px;
-        `;
-        
-        if (horariosBloqueados.includes(horario)) {
-            label.style.opacity = '0.5';
-            label.style.cursor = 'not-allowed';
-        }
-        
-        lista.appendChild(input);
-        lista.appendChild(label);
-    });
-
-    // Configurar eventos de horários
-    lista.addEventListener('click', function(e) {
-        if (e.target.classList.contains('horario-btn') && !e.target.classList.contains('bloqueado')) {
-            document.querySelectorAll('.horario-btn').forEach(function(btn) {
-                btn.style.background = '#3a3a3a';
-            });
-            e.target.style.background = '#d46b6b';
-            
-            const input = document.getElementById('horario-' + e.target.innerText);
-            if (input) input.checked = true;
-        }
-    });
 }
 
 // Função para carregar profissionais no modal
@@ -496,10 +434,10 @@ async function configurarFormularioAgendamentoModal(servicoId, salaoId) {
                 salaoId: parseInt(salaoId),
                 dataHora: dataHora.toISOString(),
                 observacoes: formData.get('observacoes') || ''
-            };
+        };
 
             console.log('🔧 ServicosJS: Enviando agendamento:', dadosAgendamento);
-            
+        
             // Mostrar loading
             const submitButton = form.querySelector('button[type="submit"]');
             const originalText = submitButton.textContent;
@@ -508,22 +446,25 @@ async function configurarFormularioAgendamentoModal(servicoId, salaoId) {
             
             // Enviar para a API
             const response = await apiClient.criarAgendamento(dadosAgendamento);
-            
+        
             console.log('✅ ServicosJS: Agendamento criado com sucesso:', response);
             
             // Mostrar sucesso
-            alert('Agendamento realizado com sucesso!');
+        alert('Agendamento realizado com sucesso!');
             
             // Fechar modal e redirecionar
-            document.getElementById('modal-agendamento').remove();
+        document.getElementById('modal-agendamento').remove();
             window.location.href = 'agendamentos.html';
             
         } catch (error) {
             console.error('❌ ServicosJS: Erro ao criar agendamento:', error);
             
             // Restaurar botão
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.textContent = 'Confirmar Agendamento';
+                submitButton.disabled = false;
+            }
             
             // Mostrar erro específico
             let mensagemErro = 'Erro ao criar agendamento';
@@ -612,18 +553,33 @@ function renderizarHorariosDisponiveis(horariosDisponiveis) {
         });
 
         label.addEventListener('mouseleave', function() {
-            this.style.background = '#3a3a3a';
+            // Só volta para a cor original se não estiver selecionado
+            if (!input.checked) {
+                this.style.background = '#3a3a3a';
+            }
         });
 
         // Adicionar evento de clique
         label.addEventListener('click', function() {
-            // Remover seleção anterior
+            console.log('🔧 ServicosJS: Horário clicado:', horario);
+            
+            // Desmarcar todos os outros inputs
+            document.querySelectorAll('input[name="horario"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Marcar este input
+            input.checked = true;
+            
+            // Remover seleção visual anterior
             document.querySelectorAll('.horario-btn').forEach(btn => {
                 btn.style.background = '#3a3a3a';
             });
             
-            // Selecionar este horário
+            // Aplicar seleção visual
             this.style.background = '#d46b6b';
+            
+            console.log('✅ ServicosJS: Horário selecionado:', horario);
         });
 
         container.appendChild(input);

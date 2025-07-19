@@ -189,12 +189,76 @@ class ApiClient {
     }
 
     /**
+     * Busca horários disponíveis para agendamento
+     */
+    async getHorariosDisponiveis(salaoId, profissionalId, data) {
+        const params = new URLSearchParams({
+            salaoId: salaoId,
+            profissionalId: profissionalId,
+            data: data
+        });
+        
+        return this.request(`/agendamentos/horarios-disponiveis?${params}`, {
+            method: 'GET'
+        });
+    }
+
+    /**
      * Cria um novo agendamento
      */
     async criarAgendamento(dadosAgendamento) {
         return this.request('/agendamentos', {
             method: 'POST',
             body: JSON.stringify(dadosAgendamento)
+        });
+    }
+
+    /**
+     * Busca agendamentos do cliente logado
+     */
+    async getAgendamentosCliente() {
+        return this.request('/agendamentos/cliente', {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Busca agendamentos ativos do cliente logado
+     */
+    async getAgendamentosAtivosCliente() {
+        return this.request('/agendamentos/cliente/ativos', {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Busca histórico de agendamentos do cliente logado
+     */
+    async getHistoricoAgendamentosCliente(dataInicio = null, dataFim = null) {
+        const params = new URLSearchParams();
+        if (dataInicio) params.append('dataInicio', dataInicio);
+        if (dataFim) params.append('dataFim', dataFim);
+        
+        return this.request(`/agendamentos/cliente/historico?${params}`, {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Cancela um agendamento específico
+     */
+    async cancelarAgendamento(agendamentoId) {
+        return this.request(`/agendamentos/${agendamentoId}/cancelar`, {
+            method: 'PUT'
+        });
+    }
+
+    /**
+     * Busca um agendamento específico por ID
+     */
+    async getAgendamento(id) {
+        return this.request(`/agendamentos/${id}`, {
+            method: 'GET'
         });
     }
 }
