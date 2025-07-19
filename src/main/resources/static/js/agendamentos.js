@@ -196,22 +196,54 @@ class AgendamentosManager {
             
             <div class="agendamento-acoes">
                 ${agendamento.status === 'AGENDADO' ? `
-                    <button class="btn-acao btn-cancelar" onclick="agendamentosManager.cancelarAgendamento(${agendamento.id})">
+                    <button class="btn-acao btn-cancelar" data-agendamento-id="${agendamento.id}">
                         <i class="fas fa-times"></i> Cancelar
                     </button>
                 ` : ''}
-                <button class="btn-acao btn-ver-detalhes" onclick="agendamentosManager.verDetalhes(${agendamento.id})">
+                <button class="btn-acao btn-ver-detalhes" data-agendamento-id="${agendamento.id}">
                     <i class="fas fa-eye"></i> Ver Detalhes
                 </button>
                 ${agendamento.status === 'CONCLUIDO' ? `
-                    <button class="btn-acao btn-reagendar" onclick="agendamentosManager.reagendar(${agendamento.id})">
+                    <button class="btn-acao btn-reagendar" data-agendamento-id="${agendamento.id}">
                         <i class="fas fa-redo"></i> Reagendar
                     </button>
                 ` : ''}
             </div>
         `;
 
+        // Adicionar event listeners após criar o HTML
+        this.adicionarEventListeners(card, agendamento);
+
         return card;
+    }
+
+    adicionarEventListeners(card, agendamento) {
+        // Botão cancelar
+        const btnCancelar = card.querySelector('.btn-cancelar');
+        if (btnCancelar) {
+            btnCancelar.addEventListener('click', () => {
+                console.log('🔧 AgendamentosJS: Botão cancelar clicado para agendamento:', agendamento.id);
+                this.cancelarAgendamento(agendamento.id);
+            });
+        }
+
+        // Botão ver detalhes
+        const btnVerDetalhes = card.querySelector('.btn-ver-detalhes');
+        if (btnVerDetalhes) {
+            btnVerDetalhes.addEventListener('click', () => {
+                console.log('🔧 AgendamentosJS: Botão ver detalhes clicado para agendamento:', agendamento.id);
+                this.verDetalhes(agendamento.id);
+            });
+        }
+
+        // Botão reagendar
+        const btnReagendar = card.querySelector('.btn-reagendar');
+        if (btnReagendar) {
+            btnReagendar.addEventListener('click', () => {
+                console.log('🔧 AgendamentosJS: Botão reagendar clicado para agendamento:', agendamento.id);
+                this.reagendar(agendamento.id);
+            });
+        }
     }
 
     getStatusClass(status) {
@@ -233,7 +265,8 @@ class AgendamentosManager {
     }
 
     async cancelarAgendamento(agendamentoId) {
-        console.log('🔧 AgendamentosJS: Cancelando agendamento:', agendamentoId);
+        console.log('🔧 AgendamentosJS: Função cancelarAgendamento chamada com ID:', agendamentoId);
+        console.log('🔧 AgendamentosJS: this.agendamentos:', this.agendamentos);
         
         // Mostrar modal de confirmação
         const confirmado = await this.mostrarModalConfirmacao(
@@ -241,9 +274,15 @@ class AgendamentosManager {
             'Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita.'
         );
 
-        if (!confirmado) return;
+        console.log('🔧 AgendamentosJS: Usuário confirmou cancelamento:', confirmado);
+
+        if (!confirmado) {
+            console.log('🔧 AgendamentosJS: Cancelamento cancelado pelo usuário');
+            return;
+        }
 
         try {
+            console.log('🔧 AgendamentosJS: Chamando API para cancelar agendamento...');
             await apiClient.cancelarAgendamento(agendamentoId);
             
             console.log('✅ AgendamentosJS: Agendamento cancelado com sucesso');
@@ -309,10 +348,10 @@ ${agendamento.observacoes ? `Observações: ${agendamento.observacoes}` : ''}
                     <h3>${titulo}</h3>
                     <p>${mensagem}</p>
                     <div class="botoes">
-                        <button class="btn-confirmar manter" onclick="this.closest('.modal-confirmacao').remove(); resolve(false);">
+                        <button class="btn-confirmar manter">
                             Manter
                         </button>
-                        <button class="btn-confirmar cancelar" onclick="this.closest('.modal-confirmacao').remove(); resolve(true);">
+                        <button class="btn-confirmar cancelar">
                             Confirmar
                         </button>
                     </div>
@@ -320,6 +359,20 @@ ${agendamento.observacoes ? `Observações: ${agendamento.observacoes}` : ''}
             `;
 
             document.body.appendChild(modal);
+
+            // Adicionar event listeners para os botões
+            const btnManter = modal.querySelector('.btn-confirmar.manter');
+            const btnConfirmar = modal.querySelector('.btn-confirmar.cancelar');
+
+            btnManter.addEventListener('click', () => {
+                modal.remove();
+                resolve(false);
+            });
+
+            btnConfirmar.addEventListener('click', () => {
+                modal.remove();
+                resolve(true);
+            });
 
             // Fechar modal ao clicar fora
             modal.addEventListener('click', (e) => {
@@ -391,7 +444,17 @@ let agendamentosManager;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🔧 AgendamentosJS: DOM carregado, iniciando...');
-    agendamentosManager = new AgendamentosManager();
+    try {
+        agendamentosManager = new AgendamentosManager();
+        console.log('✅ AgendamentosJS: AgendamentosManager inicializado com sucesso');
+        
+        // Verificar se a variável global está disponível
+        window.agendamentosManager = agendamentosManager;
+        console.log('✅ AgendamentosJS: Variável global agendamentosManager definida');
+        
+    } catch (error) {
+        console.error('❌ AgendamentosJS: Erro ao inicializar AgendamentosManager:', error);
+    }
 });
 
 // Adicionar estilos CSS para animações
