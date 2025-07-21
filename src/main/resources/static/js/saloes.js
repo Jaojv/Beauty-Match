@@ -15,7 +15,7 @@ function criarCardSalao(salao) {
     img.src = salao.imagemUrl ? salao.imagemUrl : 'images/logo.png'; // fallback se não houver imagem
     img.alt = `Logo do salão ${salao.nome}`;
     img.style.width = '100%';
-    img.style.height = '120px';
+    img.style.height = '130px';
     img.style.objectFit = 'cover';
     card.appendChild(img);
 
@@ -39,7 +39,10 @@ async function renderizarSaloes(filtro = '') {
         console.error('❌ SaloesJS: Container de salões não encontrado');
         return;
     }
+    
+    // Limpar container
     container.innerHTML = '';
+    
     try {
         const saloes = await apiClient.getSaloes();
         console.log('✅ SaloesJS: Salões carregados do backend:', saloes.length);
@@ -48,17 +51,21 @@ async function renderizarSaloes(filtro = '') {
         console.log('🔧 SaloesJS: Salões após filtro:', saloesFiltrados.length);
         
         if (saloesFiltrados.length === 0) {
-            container.innerHTML = '<p>Nenhum salão encontrado.</p>';
+            container.innerHTML = '<p style="width: 100%; text-align: center; color: #CC5B6F; font-family: HelveticaWorld;">Nenhum salão encontrado.</p>';
             console.log('⚠️ SaloesJS: Nenhum salão encontrado');
             return;
         }
+        
+        // Adicionar cards ao container
         saloesFiltrados.forEach(salao => {
-            container.appendChild(criarCardSalao(salao));
+            const card = criarCardSalao(salao);
+            container.appendChild(card);
         });
+        
         console.log('✅ SaloesJS: Salões renderizados com sucesso');
     } catch (e) {
         console.error('❌ SaloesJS: Erro ao carregar salões:', e);
-        container.innerHTML = '<p>Erro ao carregar salões.</p>';
+        container.innerHTML = '<p style="width: 100%; text-align: center; color: #CC5B6F; font-family: HelveticaWorld;">Erro ao carregar salões.</p>';
     }
 }
 
