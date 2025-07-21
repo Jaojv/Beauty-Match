@@ -206,3 +206,12 @@ footer{
     height: 50px;
     background-color: #CB5A6E;
 }
+
+.div-menu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.div-menu span{
+    padding: 0 15px;
+}
