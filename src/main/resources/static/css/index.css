@@ -74,7 +74,7 @@ main{
     min-width: 250px;
     min-height: 200px;
     margin: 10px 10px 10px 10px;
-    border-radius: 30px;
+    border-radius: 10px;
     box-shadow: -10px -10px 1px #E6A6B1;
     background-color: #FAECF2;
     overflow: hidden;

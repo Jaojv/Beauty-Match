@@ -39,10 +39,20 @@ nav .menu-icon {
     height: 40px;
     cursor: pointer;
 }
+.menu-text {
+    padding-right: 65%;
+    font-family: 'Roboto Slab', sans-serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ffffff;
+    user-select: none;
+    transition: color 0.2s;
+}
+
 .menu-icon .bar{
     width: 38px;
     height: 10px;
-    background-color: #85373F;
+    background-color: #f0f0f0;
     margin: 3px 0;
     border-radius: 2px;
     transition: transform 0.3s;
