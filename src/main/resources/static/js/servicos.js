@@ -13,37 +13,37 @@ async function carregarDadosSalao(salaoId) {
         const salao = await apiClient.getSalao(salaoId);
         console.log('✅ ServicosJS: Dados do salão carregados:', salao.nome);
         
-        // Atualizar informações do salão
+        // Atualizar informações do salão - elementos específicos da página de serviços
         const nomeElement = document.getElementById('nome-salao');
         if (nomeElement) {
             nomeElement.textContent = salao.nome ?? '';
-            console.log('🔧 ServicosJS: Nome do salão atualizado');
+            console.log('🔧 ServicosJS: Nome do salão atualizado na página de serviços');
         }
 
         const enderecoElement = document.getElementById('endereco-salao');
         if (enderecoElement) {
             enderecoElement.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${salao.endereco ?? ''}`;
-            console.log('🔧 ServicosJS: Endereço atualizado');
+            console.log('🔧 ServicosJS: Endereço do salão atualizado');
         }
 
         const telefoneElement = document.getElementById('telefone-salao');
         if (telefoneElement) {
             telefoneElement.innerHTML = `<i class="fas fa-phone-alt"></i> <i> ${salao.telefone ?? ''} </i>`;
-            console.log('🔧 ServicosJS: Telefone atualizado');
+            console.log('🔧 ServicosJS: Telefone do salão atualizado');
         }
 
         const emailElement = document.getElementById('email-salao');
         if (emailElement) {
             emailElement.innerHTML = `<i class="fas fa-envelope"></i> <b> ${salao.email ?? ''} </b>`;
-            console.log('🔧 ServicosJS: Email atualizado');
+            console.log('🔧 ServicosJS: Email do salão atualizado');
         }
 
-        // Atualizar imagem do salão se existir
+        // Atualizar imagem do salão se existir - elemento específico da página de serviços
         const logoElement = document.querySelector('.logoservico');
         if (logoElement && salao.imagemUrl) {
             logoElement.src = salao.imagemUrl;
             logoElement.alt = `Logo do ${salao.nome}`;
-            console.log('🔧 ServicosJS: Logo do salão atualizado');
+            console.log('🔧 ServicosJS: Logo do salão atualizado na página de serviços');
         }
 
         return salao;
@@ -61,23 +61,20 @@ async function carregarServicos(salaoId) {
         const servicos = await apiClient.getServicosSalao(salaoId);
         console.log('✅ ServicosJS: Serviços carregados:', servicos.length);
         
-        const tbody = document.querySelector('table tbody');
+        // Usar o tbody específico da página de serviços
+        const tbody = document.getElementById('servicos-list');
         if (!tbody) {
-            console.error('❌ ServicosJS: Tabela de serviços não encontrada');
+            console.error('❌ ServicosJS: Tabela de serviços não encontrada (servicos-list)');
             return;
         }
 
-        // Limpar tabela existente (exceto o cabeçalho)
-        const trTitle = tbody.querySelector('.trtitle');
+        // Limpar tbody completamente
         tbody.innerHTML = '';
-        if (trTitle) {
-            tbody.appendChild(trTitle);
-        }
 
         if (servicos.length === 0) {
             const tr = document.createElement('tr');
             tr.className = 'itemtabela';
-            tr.innerHTML = '<td colspan="3" style="text-align: center;">Nenhum serviço disponível</td>';
+            tr.innerHTML = '<td colspan="3" style="text-align: center; color: #CC5B6F;">Nenhum serviço disponível</td>';
             tbody.appendChild(tr);
             console.log('⚠️ ServicosJS: Nenhum serviço encontrado');
             return;
@@ -97,7 +94,7 @@ async function carregarServicos(salaoId) {
             tbody.appendChild(tr);
         });
 
-        console.log('🔧 ServicosJS: Serviços renderizados na tabela');
+        console.log('🔧 ServicosJS: Serviços renderizados na tabela da página de serviços');
 
         // Configurar botões de agendamento
         configurarBotoesAgendamento();
