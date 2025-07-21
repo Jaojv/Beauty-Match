@@ -94,3 +94,16 @@ main{
     transform: scale(1.03);
     transition: all 0.2s;
 }
+
+.card .card-nome {
+    font-family: HelveticaWorld, sans-serif;
+    font-size: 1.2em;
+    font-weight: 900;
+    color: #CC5B6F;
+    padding: 10px;
+    text-align: center;
+}
+
+h1{
+    color: #CC5B6F;
+}
