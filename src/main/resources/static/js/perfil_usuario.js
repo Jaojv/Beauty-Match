@@ -11,6 +11,7 @@ class GerenciadorPerfil {
         this.carregarDadosUsuario();
     }
 
+    
     configurarEventos() {
         // Botão de perfil para abrir modal
 const botaoPerfil = document.querySelector('.botao_logado');
@@ -342,8 +343,25 @@ const fecharModal = document.getElementById('fechar-modal');
         }
     }
 }
+// Função para obter o caminho correto da imagem de perfil
+function getImagemPerfilPath(imagemPerfil) {
+    // Se já for uma imagem base64, retorna direto
+    if (imagemPerfil && imagemPerfil.startsWith('data:image')) return imagemPerfil;
+    // Se estiver em /pages, precisa de ../images/
+    const isPages = window.location.pathname.includes('/pages/');
+    return imagemPerfil ? (isPages ? '../' + imagemPerfil : imagemPerfil) : (isPages ? '../images/user.png' : 'images/user.png');
+}
+
+// Ao preencher o perfil:
+const fotoPerfil = document.getElementById('foto-perfil');
+const fotoPerfilNavbar = document.querySelector('.perfil-img');
+let imagemPerfil = usuario.imagemPerfil || '';
+const caminhoImagem = getImagemPerfilPath(imagemPerfil);
+
+if (fotoPerfil) fotoPerfil.src = caminhoImagem;
+if (fotoPerfilNavbar) fotoPerfilNavbar.src = caminhoImagem;
 
 // Inicializar gerenciador quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {
-    new GerenciadorPerfil();
+    new GerenciadorPerfil();4
 });

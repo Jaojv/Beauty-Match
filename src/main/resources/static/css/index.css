@@ -10,6 +10,12 @@ main{
     font-family: 'Roboto Slab', sans-serif;
     color: #85373f;
 }
+
+.topico h1{
+    border-left: 4px solid #d46b6b;
+    padding-left: 10px;
+}
+
 .topico p{
     padding: 0 0 0 20px;
 }
@@ -84,7 +90,7 @@ main{
     min-height: 200px;
     margin: 10px 10px 10px 10px;
     border-radius: 10px;
-    box-shadow: -10px -10px 1px #E6A6B1;
+    box-shadow: -7px -7px 1px #E6A6B1;
     background-color: #FAECF2;
     overflow: hidden;
     flex-shrink: 0;
