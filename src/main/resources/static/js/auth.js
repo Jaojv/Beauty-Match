@@ -108,16 +108,43 @@ class AuthManager {
         }
 
             // Configurar logout (se existir)
-        const logoutLink = document.getElementById('logout-link');
-        if (logoutLink) {
-            logoutLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                    console.log('AuthManager: Logout solicitado');
-                this.logout();
-            });
-                console.log('AuthManager: Logout configurado');
-            } else {
-                console.log('AuthManager: Elemento logout-link não encontrado');
+            const logoutLink = document.getElementById('logout-link');
+            const sairConta = document.querySelector('.sair_conta');
+            
+            if (logoutLink) {
+                // Remover event listener anterior para evitar duplicação
+                logoutLink.removeEventListener('click', this.handleLogoutClick);
+                
+                // Criar função para lidar com o logout
+                this.handleLogoutClick = (e) => {
+                    e.preventDefault();
+                    console.log('AuthManager: Logout solicitado via link');
+                    this.logout();
+                };
+                
+                logoutLink.addEventListener('click', this.handleLogoutClick);
+                console.log('AuthManager: Logout configurado via link');
+            }
+            
+            // Configurar logout para toda a div sair_conta
+            if (sairConta) {
+                // Remover event listener anterior para evitar duplicação
+                sairConta.removeEventListener('click', this.handleLogoutClick);
+                
+                // Adicionar event listener para toda a div
+                sairConta.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('AuthManager: Logout solicitado via div sair_conta');
+                    this.logout();
+                });
+                
+                // Adicionar cursor pointer para indicar que é clicável
+                sairConta.style.cursor = 'pointer';
+                console.log('AuthManager: Logout configurado para toda a div sair_conta');
+            }
+            
+            if (!logoutLink && !sairConta) {
+                console.log('AuthManager: Elementos de logout não encontrados');
             }
 
             // Configurar modal de perfil (se existir)
@@ -218,12 +245,23 @@ class AuthManager {
     logout() {
         console.log('AuthManager: Executando logout...');
         try {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userData');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
             console.log('AuthManager: Dados removidos do localStorage');
-        window.location.href = '/index.html';
+            
+            // Redirecionar para a página inicial sem causar erro 404
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('/pages/')) {
+                // Se estamos em uma página dentro de /pages/, voltar para index
+                window.location.href = '../index.html';
+            } else {
+                // Se estamos na raiz, recarregar a página atual
+                window.location.reload();
+            }
         } catch (error) {
             console.error('AuthManager: Erro ao fazer logout:', error);
+            // Fallback: recarregar a página
+            window.location.reload();
         }
     }
 

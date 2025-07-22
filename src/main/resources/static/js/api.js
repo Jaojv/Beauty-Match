@@ -77,7 +77,16 @@ class ApiClient {
     logout() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userData');
-        window.location.href = '/index.html';
+        
+        // Redirecionar para a página inicial sem causar erro 404
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('/pages/')) {
+            // Se estamos em uma página dentro de /pages/, voltar para index
+            window.location.href = '../index.html';
+        } else {
+            // Se estamos na raiz, recarregar a página atual
+            window.location.reload();
+        }
     }
 
     // ============================================================================
