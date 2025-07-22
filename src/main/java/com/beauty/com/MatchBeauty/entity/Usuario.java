@@ -20,44 +20,110 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 
+/**
+ * ENTIDADE USUÁRIO - CLASSE BASE PARA TODOS OS USUÁRIOS DO SISTEMA
+ * 
+ * Esta é a entidade principal que representa todos os usuários do sistema Match Beauty.
+ * Utiliza herança JOINED para criar tabelas separadas para cada tipo de usuário
+ * (Cliente, Profissional, Proprietário, Admin), mas mantém dados comuns nesta tabela.
+ * 
+ * CARACTERÍSTICAS PRINCIPAIS:
+ * - Implementa UserDetails do Spring Security para autenticação
+ * - Usa herança JOINED para separar tipos de usuário
+ * - Contém dados básicos como nome, email, senha, telefone
+ * - Mantém timestamps de criação e atualização
+ * - Define roles/permissões baseadas no tipo de usuário
+ *
+ */
 @Data
 @Entity
 @Table(name = "usuario")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario implements UserDetails {
+    
+    /**
+     * ID ÚNICO DO USUÁRIO
+     * Chave primária auto-incrementada
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
 
+    /**
+     * NOME DE USUÁRIO ÚNICO
+     * Usado para login no sistema
+     */
     @Column(unique = true, nullable = false)
     private String username;
 
+    /**
+     * SENHA DO USUÁRIO
+     * Será criptografada pelo Spring Security
+     */
     @Column(nullable = false)
     private String password;
 
+    /**
+     * EMAIL ÚNICO DO USUÁRIO
+     * Usado para comunicação e recuperação de conta
+     */
     @Column(unique = true, nullable = false)
     private String email;
 
+    /**
+     * NOME COMPLETO DO USUÁRIO
+     */
     @Column(nullable = false)
     private String nome;
 
+    /**
+     * TELEFONE DO USUÁRIO
+     * Campo opcional para contato
+     */
     private String telefone;
 
+    /**
+     * DATA E HORA DE CRIAÇÃO DO REGISTRO
+     * Preenchido automaticamente no construtor
+     */
     @Column(nullable = false)
     private LocalDateTime criadoEm;
 
+    /**
+     * DATA E HORA DA ÚLTIMA ATUALIZAÇÃO
+     * Deve ser atualizado sempre que o registro for modificado
+     */
     @Column(nullable = false)
     private LocalDateTime atualizadoEm;
 
+    /**
+     * TIPO DE USUÁRIO
+     * Define o papel do usuário no sistema (ADMIN, CLIENTE, PROFISSIONAL, PROPRIETARIO)
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_usuario", nullable = false)
     private TipoUsuario tipoUsuario;
 
+    /**
+     * CONSTRUTOR PADRÃO
+     * Inicializa timestamps automaticamente
+     */
     public Usuario() {
         this.criadoEm = LocalDateTime.now();
         this.atualizadoEm = LocalDateTime.now();
     }
 
+    /**
+     * CONSTRUTOR COM PARÂMETROS BÁSICOS
+     * 
+     * @param idUsuario ID do usuário
+     * @param username Nome de usuário
+     * @param password Senha
+     * @param email Email
+     * @param telefone Telefone
+     * @param criadoEm Data de criação
+     * @param atualizadoEm Data de atualização
+     */
     public Usuario(Long idUsuario, String username, String password, String email,
                    String telefone, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
         this.idUsuario = idUsuario;
@@ -69,6 +135,18 @@ public class Usuario implements UserDetails {
         this.atualizadoEm = atualizadoEm;
     }
 
+    /**
+     * CONSTRUTOR COMPLETO COM NOME
+     * 
+     * @param idUsuario ID do usuário
+     * @param username Nome de usuário
+     * @param password Senha
+     * @param email Email
+     * @param nome Nome completo
+     * @param telefone Telefone
+     * @param criadoEm Data de criação
+     * @param atualizadoEm Data de atualização
+     */
     public Usuario(Long idUsuario, String username, String password, String email,
                    String nome, String telefone, LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
         this.idUsuario = idUsuario;
@@ -81,7 +159,9 @@ public class Usuario implements UserDetails {
         this.atualizadoEm = atualizadoEm;
     }
 
-    // Getters e setters
+    // ========== GETTERS E SETTERS ==========
+    // Métodos para acessar e modificar os atributos da classe
+    
     public Long getIdUsuario() {
         return idUsuario;
     }
@@ -154,35 +234,64 @@ public class Usuario implements UserDetails {
         this.tipoUsuario = tipoUsuario;
     }
 
+    // ========== MÉTODOS DO SPRING SECURITY ==========
+    // Implementação da interface UserDetails para autenticação
+
+    /**
+     * RETORNA AS AUTORIDADES/PERMISSÕES DO USUÁRIO
+     * Converte o tipo de usuário em uma role do Spring Security
+     * 
+     * @return Lista de autoridades baseada no tipo de usuário
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.tipoUsuario.name()));
     }
 
+    /**
+     * VERIFICA SE A CONTA NÃO ESTÁ EXPIRADA
+     * Por padrão, contas não expiram
+     */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    /**
+     * VERIFICA SE A CONTA NÃO ESTÁ BLOQUEADA
+     * Por padrão, contas não são bloqueadas
+     */
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    /**
+     * VERIFICA SE AS CREDENCIAIS NÃO ESTÃO EXPIRADAS
+     * Por padrão, credenciais não expiram
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    /**
+     * VERIFICA SE A CONTA ESTÁ HABILITADA
+     * Por padrão, contas estão habilitadas
+     */
     @Override
     public boolean isEnabled() {
         return true;
     }
 
+    /**
+     * ENUMERATION DOS TIPOS DE USUÁRIO
+     * Define os diferentes papéis que um usuário pode ter no sistema
+     */
     public enum TipoUsuario {
-        ADMIN,
-        CLIENTE,
-        PROFISSIONAL,
-        PROPRIETARIO
+        ADMIN,          // Administrador do sistema
+        CLIENTE,        // Cliente que agenda serviços
+        PROFISSIONAL,   // Profissional que presta serviços
+        PROPRIETARIO    // Proprietário de salão
     }
 }
