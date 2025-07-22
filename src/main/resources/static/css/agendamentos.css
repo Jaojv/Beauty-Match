@@ -306,6 +306,7 @@ main{
 
 /* Responsividade */
 @media (max-width: 768px) {
+    
     .header-agendamentos {
         flex-direction: column;
         align-items: stretch;
