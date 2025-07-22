@@ -1,3 +1,6 @@
+main{
+    min-height: 93vh;
+}
 .title{
     font-family: 'Roboto Slab', sans-serif;
     color: #cc5b6f;
@@ -14,7 +17,7 @@
     justify-content: center;
     text-align: center;
     background-color: #E6A6B1;
-    margin: 70px 0 0 0;
+    margin: 0px 0 0 0;
 }
 .main-container {
     width: 450px;

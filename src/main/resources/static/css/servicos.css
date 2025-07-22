@@ -1,6 +1,7 @@
 
 main{
     align-items: start;
+    padding-top: 0px;
 }
 .container {
     width: 1000px;

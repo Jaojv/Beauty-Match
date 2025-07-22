@@ -1,0 +1,196 @@
+/* ============================================================================
+   RESPONSIVIDADE - BEAUTY MATCH
+   ============================================================================
+   
+   Este arquivo contém as regras responsivas para o site Beauty Match.
+   Foco inicial: Navbar responsivo
+   
+   Breakpoints:
+   - Mobile: até 768px
+   - Tablet: 769px até 1024px
+   - Desktop: 1025px e acima
+   
+   ============================================================================ */
+
+/* ============================================================================
+   CONFIGURAÇÕES GLOBAIS RESPONSIVAS
+   ============================================================================ */
+
+/* Garantir que o viewport seja responsivo em todos os dispositivos */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px; /* Base para rem */
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden; /* Evitar scroll horizontal */
+}
+
+/* ============================================================================
+   NAVBAR RESPONSIVA
+   ============================================================================ */
+
+/* Desktop - Tamanho padrão (1025px e acima) */
+@media (min-width: 1025px) {
+    /* Manter tamanho padrão do desktop - não alterar nada */
+}
+
+/* Tablet - Navbar (769px até 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    nav {
+        padding: 15px 20px;
+    }
+    
+    .div-menu {
+        gap: 15px;
+    }
+    
+    .menu-text {
+        font-size: 16px;
+    }
+    
+    .menu ul {
+        gap: 20px;
+    }
+    
+    .menu-botao {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    
+    .button-container {
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .botao {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    
+    .perfil {
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .botao_logado {
+        gap: 8px;
+        align-items: center;
+    }
+    
+    #username-display {
+        width: 120px;
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+    
+    .perfil-img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .sair_conta {
+        gap: 5px;
+        align-items: center;
+    }
+    
+    .logout-img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .sair_conta p {
+        font-size: 12px;
+    }
+}
+
+/* Mobile - Navbar (até 768px) */
+@media (max-width: 768px) {
+    nav {
+        padding: 10px 15px;
+    }
+    
+    .div-menu {
+        gap: 10px;
+    }
+    
+    .menu-icon {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .menu-icon .bar {
+        width: 25px;
+        height: 3px;
+        background-color: white;
+        margin: 4px 0;
+        transition: 0.3s;
+        border-radius: 2px;
+    }
+    
+    .menu-text {
+        display: none; /* Esconder texto "Menu" em mobile */
+    }
+    
+    .menu ul {
+        gap: 15px;
+    }
+    
+    .menu-botao {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .button-container {
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .botao {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .perfil {
+        gap: 8px;
+        align-items: center;
+    }
+    
+    .botao_logado {
+        gap: 6px;
+        align-items: center;
+    }
+    
+    #username-display {
+        width: 80px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .perfil-img {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .sair_conta {
+        gap: 4px;
+        align-items: center;
+    }
+    
+    .logout-img {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .sair_conta p {
+        display: none; /* Esconder texto "Sair" em mobile */
+    }
+}
+
+/* ============================================================================
+   FIM DO ARQUIVO RESPONSIVIDADE - NAVBAR
+   ============================================================================ */ 

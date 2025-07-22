@@ -12,7 +12,7 @@ nav .perfil {
 
 nav .botao_logado{
     width: 150px;
-    height: 25px;
+    height: 45px;
     background-color: #f1ebebee;
     color: rgba(0, 0, 0, 0.9);
     font-family: 'Roboto Slab', sans-serif;
@@ -62,7 +62,7 @@ nav .perfil img.perfil-img {
     filter: none;
     width: 40px;
     height: 40px;
-    margin: 0 5px;
+    margin: 0px;
 }
 
 nav .perfil img.perfil-img:hover {
