@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/index_logado.css">
-    <link rel="stylesheet" href="../css/quiz.css">
     <link rel="stylesheet" href="../css/darkmode.css">
+    <link rel="stylesheet" href="../css/favoritos.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
@@ -16,10 +16,13 @@
 <body>
     <!--NAVBAR-->
     <nav>
-        <div class="menu-icon" id="menu-icon">
+        <div class="div-menu">
+            <div class="menu-icon" id="menu-icon">
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
+        </div>
+            <span class="menu-text">Menu</span>
         </div>
         <div class="menu" id="menu">
             <ul>
@@ -83,18 +86,15 @@
 
     <!--MAIN-->
     <main>
-        <div class="container">
+        <div class="logo">
             <img src="../images/logo.png" alt="Beauty Match Logo" class="logo">
         </div>
         
         <div class="topico">
-            <p>Favoritos</p>
+            <h1>Favoritos</h1>
         </div>
         <div class="container" id="carrossel-container">
-            <div class="card"><input type="hidden" value=""></div>
-            <div class="card"><input type="hidden" value=""></div>
-            <div class="card"><input type="hidden" value=""></div>
-            <div class="card"><input type="hidden" value=""></div>              
+            <!-- Os favoritos serão carregados dinamicamente aqui pelo JS -->
         </div>
     </main>
     
@@ -108,6 +108,7 @@
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/perfil_usuario.js"></script>
+    <script src="../js/favoritos.js"></script>
     <script>
         // Verificação simples de autenticação
         document.addEventListener('DOMContentLoaded', function() {

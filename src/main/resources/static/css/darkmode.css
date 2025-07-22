@@ -4,7 +4,8 @@ body.dark-mode nav{
 }
 
 body.dark-mode {
-  background-color: #313131;
+  
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   color: white;
   transition: 0.3s;
 }
@@ -77,4 +78,43 @@ body.dark-mode .modal-agendamento .modal-conteudo{
   background-color: #313131;
   color: white;
   border: 2px solid #632b36;
+}
+
+body.dark-mode .containertable{
+    background-color: #632b36;
+}
+
+body.dark-mode .containerinformacoes{
+    background-color: #632b36;
+}
+body.dark-mode .containerinformacoes p{
+    color: white;
+}
+
+body.dark-mode .containertable input{
+    color: white;
+}
+
+/*Agendamentos*/
+
+body.dark-mode .header-agendamentos h1 {
+    color: white;
+
+}body.dark-mode .agendamento-info h3 {
+    color: #d46b6b;
+
+}body.dark-mode .agendamento-info p {
+    color: white;
+}
+
+body.dark-mode .detalhe-item strong {
+    color: white;
+}
+
+body.dark-mode .agendamento-card {
+    background-color: #632b36;
+}
+
+body.dark-mode .detalhe-item {
+    color: #d4cfcf;
 }

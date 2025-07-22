@@ -91,12 +91,13 @@ nav .perfil .sair_conta {
     flex-direction: row;
     position: relative;
     z-index: 1100;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 5px;
 }
 
 nav .perfil .sair_conta:hover {
-    cursor: pointer;
-    transform: scale(1.03);
-    transition: all 0.1s;
+    transform: scale(1.05);
 }
 /* Modal de perfil */
 .modal-perfil {

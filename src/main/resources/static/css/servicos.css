@@ -1,10 +1,7 @@
-body {
-    background-color: #2d2d2d;
-    font-family: HelveticaWorld, Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
 
+main{
+    align-items: start;
+}
 .container {
     width: 1000px;
     margin: 40px auto 0 auto;
@@ -15,14 +12,15 @@ body {
 }
 
 .containertable {
-    width: 48%;
-    background: #232323;
+    width: 40%;
+    background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.08);
     padding: 30px 20px;
     font-weight: bold;
     font-style: normal;
     overflow-y: auto;
+    border-left: 4px solid #d46b6b;
 }
 
 .containertable input {
@@ -33,7 +31,7 @@ body {
     outline: none;
     font-family: HelveticaWorld, Arial, sans-serif;
     font-weight: bold;
-    color: #fff;
+    color: #333232;
 }
 
 .containertable .preco {
@@ -43,7 +41,7 @@ body {
 
 trtitle, th {
     font-family: "Arimo", sans-serif;
-    text-decoration: underline;
+    text-decoration: none;
     color: #CC5B6F;
     font-size: 2em;
     background: transparent;
@@ -104,7 +102,7 @@ p {
     align-items: center;
     width: 220px;
     height: 220px;
-    border: 2px solid #CC5B6F;
+    border: 2px solid #d46b6b;
     border-radius: 50%;
     background: #232323;
     margin: 0 auto 16px auto;
@@ -120,17 +118,27 @@ p {
 
 .containerinformacoes {
     width: 350px;
-    background: #232323;
+    background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.08);
     padding: 24px 18px;
     margin: 0 auto;
-    color: #fff;
+    color: #CC5B6F;
+    border-left: 4px solid #d46b6b;
+    text-align: center;
+    font-weight: bold;
+    font-family: "Arimo", sans-serif;
 }
+.containerinformacoes  p{
+    text-align: left;
+    color: #383737;
+    font-family: HelveticaWorld, Arial, sans-serif;
+}
+
 
 .logo {
     margin: 0;
-    padding: 30px 0 0 0;
+    padding: 100px 0 0 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -138,15 +146,7 @@ p {
 }
 
 .logo img {
-    width: 180px;
+    width: 300px;
     height: 120px;
     object-fit: contain;
-}
-
-nav {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: #6b232e;
-    width: 100%;
 }

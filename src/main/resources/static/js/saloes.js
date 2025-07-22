@@ -4,10 +4,20 @@ function criarCardSalao(salao) {
     const card = document.createElement('div');
     card.className = 'card';
     card.style.cursor = 'pointer';
-    card.onclick = () => {
+    card.onclick = (e) => {
+        // Não redirecionar se clicou na estrela
+        if (e.target.closest('.favorito-btn')) {
+            return;
+        }
         console.log('🔧 SaloesJS: Card clicado, redirecionando para salão ID:', salao.id);
         window.location.href = `pages/servicos.html?id=${salao.id}`;
     };
+
+    // Container para imagem e botão de favorito
+    const imgContainer = document.createElement('div');
+    imgContainer.style.position = 'relative';
+    imgContainer.style.width = '100%';
+    imgContainer.style.height = '130px';
 
     // Imagem do salão
     const img = document.createElement('img');
@@ -15,9 +25,51 @@ function criarCardSalao(salao) {
     img.src = salao.imagemUrl ? salao.imagemUrl : 'images/logo.png'; // fallback se não houver imagem
     img.alt = `Logo do salão ${salao.nome}`;
     img.style.width = '100%';
-    img.style.height = '130px';
+    img.style.height = '100%';
     img.style.objectFit = 'cover';
-    card.appendChild(img);
+    imgContainer.appendChild(img);
+
+    // Botão de favorito
+    const favoritoBtn = document.createElement('button');
+    favoritoBtn.className = 'favorito-btn';
+    favoritoBtn.innerHTML = '❤';
+    favoritoBtn.style.cssText = `
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: transparent;
+        border: 2px solid #ccc;
+        font-size: 20px;
+        color: #ccc;
+        cursor: pointer;
+        z-index: 10;
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    `;
+
+    // Verificar se o salão está favoritado
+    const favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
+    const isFavoritado = favoritos.some(fav => fav.id === salao.id);
+    
+    if (isFavoritado) {
+        favoritoBtn.style.color = '#d46b6b';
+        favoritoBtn.style.borderColor = '#d46b6b';
+        favoritoBtn.style.textShadow = '0 0 5px rgba(212, 107, 107, 0.5)';
+    }
+
+    // Evento de clique no botão de favorito
+    favoritoBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evitar que o clique propague para o card
+        toggleFavorito(salao, favoritoBtn);
+    });
+
+    imgContainer.appendChild(favoritoBtn);
+    card.appendChild(imgContainer);
 
     // Nome do salão
     const nome = document.createElement('div');
@@ -29,6 +81,48 @@ function criarCardSalao(salao) {
 
     console.log('✅ SaloesJS: Card criado com sucesso');
     return card;
+}
+
+// Função para alternar favorito
+function toggleFavorito(salao, btnElement) {
+    console.log('🔧 SaloesJS: Alternando favorito para salão:', salao.nome);
+    
+    const favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
+    const salaoIndex = favoritos.findIndex(fav => fav.id === salao.id);
+    
+    if (salaoIndex === -1) {
+        // Adicionar aos favoritos
+        favoritos.push({
+            id: salao.id,
+            nome: salao.nome,
+            imagemUrl: salao.imagemUrl || 'images/logo.png',
+            endereco: salao.endereco || '',
+            telefone: salao.telefone || '',
+            email: salao.email || '',
+            dataFavoritado: new Date().toISOString()
+        });
+        
+        // Atualizar visual do botão
+        btnElement.style.color = '#d46b6b';
+        btnElement.style.borderColor = '#d46b6b';
+        btnElement.style.textShadow = '0 0 5px rgba(212, 107, 107, 0.5)';
+        
+        console.log('✅ SaloesJS: Salão adicionado aos favoritos');
+    } else {
+        // Remover dos favoritos
+        favoritos.splice(salaoIndex, 1);
+        
+        // Atualizar visual do botão
+        btnElement.style.color = '#ccc';
+        btnElement.style.borderColor = '#ccc';
+        btnElement.style.textShadow = 'none';
+        
+        console.log('✅ SaloesJS: Salão removido dos favoritos');
+    }
+    
+    // Salvar no localStorage
+    localStorage.setItem('favoritos', JSON.stringify(favoritos));
+    console.log('💾 SaloesJS: Favoritos salvos no localStorage');
 }
 
 // Função para renderizar os salões

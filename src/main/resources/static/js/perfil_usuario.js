@@ -13,15 +13,15 @@ class GerenciadorPerfil {
 
     configurarEventos() {
         // Botão de perfil para abrir modal
-const botaoPerfil = document.querySelector('.botao_logado');
-const modalPerfil = document.getElementById('modal-perfil');
-const fecharModal = document.getElementById('fechar-modal');
+        const botaoPerfil = document.querySelector('.botao_logado');
+        const modalPerfil = document.getElementById('modal-perfil');
+        const fecharModal = document.getElementById('fechar-modal');
         const botaoEditar = document.getElementById('editar-perfil');
         const inputImagem = document.getElementById('input-imagem-perfil');
 
         if (botaoPerfil && modalPerfil) {
             botaoPerfil.addEventListener('click', (e) => {
-    e.preventDefault();
+                e.preventDefault();
                 this.abrirModal();
             });
         }
@@ -29,7 +29,7 @@ const fecharModal = document.getElementById('fechar-modal');
         if (fecharModal) {
             fecharModal.addEventListener('click', () => {
                 this.fecharModal();
-});
+            });
         }
 
         // Fechar modal ao clicar fora
@@ -65,21 +65,48 @@ const fecharModal = document.getElementById('fechar-modal');
     carregarDadosUsuario() {
         const userData = localStorage.getItem('userData');
         if (userData) {
-            const usuario = JSON.parse(userData);
-            this.preencherDadosPerfil(usuario);
+            try {
+                const usuario = JSON.parse(userData);
+                this.preencherDadosPerfil(usuario);
+                console.log('✅ PerfilJS: Dados do usuário carregados com sucesso');
+            } catch (error) {
+                console.error('❌ PerfilJS: Erro ao carregar dados do usuário:', error);
+            }
+        } else {
+            console.log('⚠️ PerfilJS: Nenhum dado de usuário encontrado no localStorage');
         }
     }
 
     preencherDadosPerfil(usuario) {
+        console.log('🔧 PerfilJS: Preenchendo dados do perfil para:', usuario.nome);
+        
+        // Elementos específicos do modal de perfil
         const nomePerfil = document.getElementById('nome-perfil');
         const emailPerfil = document.getElementById('email-perfil');
         const senhaPerfil = document.getElementById('senha-perfil');
         const fotoPerfil = document.getElementById('foto-perfil');
         const fotoPerfilNavbar = document.querySelector('.perfil-img');
+        const usernameDisplay = document.getElementById('username-display');
 
-        if (nomePerfil) nomePerfil.value = usuario.nome || '';
-        if (emailPerfil) emailPerfil.value = usuario.email || '';
-        if (senhaPerfil) senhaPerfil.value = '********';
+        // Preencher dados do perfil
+        if (nomePerfil) {
+            nomePerfil.value = usuario.nome || '';
+            console.log('🔧 PerfilJS: Nome do perfil atualizado:', usuario.nome);
+        }
+        
+        if (emailPerfil) {
+            emailPerfil.value = usuario.email || '';
+            console.log('🔧 PerfilJS: Email do perfil atualizado:', usuario.email);
+        }
+        
+        if (senhaPerfil) {
+            senhaPerfil.value = '********';
+        }
+
+        // Atualizar username display na navbar
+        if (usernameDisplay) {
+            usernameDisplay.value = usuario.nome || usuario.username || '';
+        }
 
         // Definir imagem de perfil (prioridade: localStorage > padrão)
         let imagemPerfil = 'images/user.png'; // Padrão
@@ -89,8 +116,14 @@ const fecharModal = document.getElementById('fechar-modal');
             imagemPerfil = usuario.imagemPerfil;
         }
 
-        if (fotoPerfil) fotoPerfil.src = imagemPerfil;
-        if (fotoPerfilNavbar) fotoPerfilNavbar.src = imagemPerfil;
+        if (fotoPerfil) {
+            fotoPerfil.src = imagemPerfil;
+            console.log('🔧 PerfilJS: Foto do perfil atualizada:', imagemPerfil);
+        }
+        
+        if (fotoPerfilNavbar) {
+            fotoPerfilNavbar.src = imagemPerfil;
+        }
 
         // Salvar dados originais
         this.dadosOriginais = {
@@ -98,6 +131,8 @@ const fecharModal = document.getElementById('fechar-modal');
             email: usuario.email || '',
             imagemPerfil: imagemPerfil
         };
+        
+        console.log('✅ PerfilJS: Dados do perfil preenchidos com sucesso');
     }
 
     abrirModal() {
@@ -342,8 +377,25 @@ const fecharModal = document.getElementById('fechar-modal');
         }
     }
 }
+// Função para obter o caminho correto da imagem de perfil
+function getImagemPerfilPath(imagemPerfil) {
+    // Se já for uma imagem base64, retorna direto
+    if (imagemPerfil && imagemPerfil.startsWith('data:image')) return imagemPerfil;
+    // Se estiver em /pages, precisa de ../images/
+    const isPages = window.location.pathname.includes('/pages/');
+    return imagemPerfil ? (isPages ? '../' + imagemPerfil : imagemPerfil) : (isPages ? '../images/user.png' : 'images/user.png');
+}
+
+// Ao preencher o perfil:
+const fotoPerfil = document.getElementById('foto-perfil');
+const fotoPerfilNavbar = document.querySelector('.perfil-img');
+let imagemPerfil = usuario.imagemPerfil || '';
+const caminhoImagem = getImagemPerfilPath(imagemPerfil);
+
+if (fotoPerfil) fotoPerfil.src = caminhoImagem;
+if (fotoPerfilNavbar) fotoPerfilNavbar.src = caminhoImagem;
 
 // Inicializar gerenciador quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function() {
-    new GerenciadorPerfil();
+    new GerenciadorPerfil();4
 });
