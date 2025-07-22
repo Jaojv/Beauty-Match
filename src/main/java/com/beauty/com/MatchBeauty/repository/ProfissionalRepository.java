@@ -5,8 +5,32 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
+/**
+ * REPOSITÓRIO PROFISSIONAL - ACESSO A DADOS DE PROFISSIONAIS
+ * 
+ * Este repositório fornece métodos para acessar e manipular dados de profissionais
+ * no sistema Match Beauty. Estende JpaRepository para herdar operações CRUD básicas
+ * e adiciona métodos específicos para busca por salão.
+ * 
+ * FUNCIONALIDADES:
+ * - Operações CRUD básicas (herdadas de JpaRepository)
+ * - Busca de profissionais por salão
+ * - Gerenciamento de profissionais
+ * 
+ * USO:
+ * - Consulta de profissionais por salão
+ * - Gerenciamento de equipe de salão
+ * - Validação de disponibilidade de profissionais
+ *
+ */
 @Repository
 public interface ProfissionalRepository extends JpaRepository<Profissional, Long> {
-    // Métodos específicos do Profissional podem ser adicionados aqui
+    
+    /**
+     * BUSCA PROFISSIONAIS POR SALÃO
+     * 
+     * @param salaoId ID do salão
+     * @return Lista de profissionais do salão
+     */
     List<Profissional> findBySalao_Id(Long salaoId);
 } 
