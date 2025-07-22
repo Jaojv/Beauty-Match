@@ -192,5 +192,140 @@ body {
 }
 
 /* ============================================================================
-   FIM DO ARQUIVO RESPONSIVIDADE - NAVBAR
+   CONTEÚDO PRINCIPAL RESPONSIVO - PÁGINA INICIAL
+   ============================================================================ */
+
+/* Desktop - Conteúdo Principal (1025px e acima) */
+
+    
+    
+
+
+/* Tablet - Conteúdo Principal (769px até 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        padding: 30px 20px;
+    }
+    
+    .logo {
+        width: 250px;
+        height: auto;
+    }
+    
+    .search-bar {
+        width: 100%;
+        max-width: 400px;
+        padding: 15px 20px;
+        font-size: 18px;
+    }
+    
+    .container p {
+        font-size: 18px;
+    }
+    
+    .topico {
+        padding: 30px 20px;
+    }
+    
+    .topico h1 {
+        font-size: 28px;
+        text-align: center; /* Centro no tablet */
+        margin: 0 auto;
+    }
+    
+    #carrossel-container {
+        gap: 20px;
+        max-width: 900px;
+        justify-content: flex-start; /* Começar na esquerda */
+    }
+    
+    .card {
+        width: 280px; /* Tamanho padrão como antes */
+        min-height: 220px;
+        flex: 0 0 280px;
+    }
+    
+    .card-logo {
+        height: 140px;
+    }
+    
+    .card-nome {
+        font-size: 18px;
+        padding: 12px;
+    }
+    
+}
+
+/* Mobile - Conteúdo Principal (até 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+        text-align: center;
+    }
+    
+    .logo {
+        width: 200px;
+        height: auto;
+        margin-bottom: 20px;
+    }
+    
+    .search-bar {
+        width: 100%;
+        max-width: 300px;
+        padding: 12px 15px;
+        font-size: 16px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+    
+    .container p {
+        font-size: 16px;
+        margin: 15px 0;
+        line-height: 1.4;
+    }
+    
+    .topico {
+        padding: 20px 15px;
+        text-align: center; /* Centralizar o título em mobile */
+    }
+    
+    .topico h1 {
+        font-size: 24px;
+        line-height: 1.3;
+        text-align: center; /* Centralizar o título em mobile */
+        margin: 0 auto; /* Centralizar o título em mobile */
+    }
+    
+    #carrossel-container {
+        padding: 0 15px;
+        gap: 15px;
+        justify-content: center; /* Centralizar os cards em mobile */
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: column; /* Empilhar os cards verticalmente */
+        align-items: center; /* Centralizar os cards */
+    }
+    
+    .card {
+        width: 280px;
+        min-height: 220px;
+        flex: 0 0 280px;
+        margin-bottom: 15px;
+        margin-left: auto; /* Centralizar o card */
+        margin-right: auto; /* Centralizar o card */
+    }
+    
+    .card-logo {
+        height: 140px;
+    }
+    
+    .card-nome {
+        font-size: 18px;
+        padding: 12px;
+    }
+    
+}
+
+/* ============================================================================
+   FIM DO ARQUIVO RESPONSIVIDADE - NAVBAR E CONTEÚDO
    ============================================================================ */ 

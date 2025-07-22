@@ -171,8 +171,8 @@ nav .menu li img{
 
 
 #darkmode-botao{
-    width: 70px;
-    height: 45px;
+    width: 55px;
+    height: 55px;
     background-color: #E6A6B1;
     color: rgba(0, 0, 0, 0.7);
     border-radius: 100px;
@@ -185,9 +185,9 @@ nav .menu li img{
     bottom: 10px;
 }
 .darkmode img {
-    padding: 1px;
-    width: 23px;
-    height: 23px;
+    margin: 2px;
+    width: 30px;
+    height: 30px;
     filter: invert(18%) sepia(32%) saturate(1172%) hue-rotate(308deg) brightness(92%) contrast(92%);
 }
 
