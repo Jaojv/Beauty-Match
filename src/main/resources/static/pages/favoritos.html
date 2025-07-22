@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/index_logado.css">
-    <link rel="stylesheet" href="../css/quiz.css">
     <link rel="stylesheet" href="../css/darkmode.css">
     <link rel="stylesheet" href="../css/favoritos.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,10 +94,7 @@
             <h1>Favoritos</h1>
         </div>
         <div class="container" id="carrossel-container">
-            <div class="card"><input type="hidden" value=""></div>
-            <div class="card"><input type="hidden" value=""></div>
-            <div class="card"><input type="hidden" value=""></div>
-            <div class="card"><input type="hidden" value=""></div>              
+            <!-- Os favoritos serão carregados dinamicamente aqui pelo JS -->
         </div>
     </main>
     
@@ -112,6 +108,7 @@
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/perfil_usuario.js"></script>
+    <script src="../js/favoritos.js"></script>
     <script>
         // Verificação simples de autenticação
         document.addEventListener('DOMContentLoaded', function() {
