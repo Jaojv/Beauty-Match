@@ -68,4 +68,18 @@ public class SecurityService {
         }
         return usuario.getIdUsuario().equals(idProprietario);
     }
+    
+    /**
+     * OBTER ID DO CLIENTE LOGADO
+     * Retorna o ID do cliente atualmente autenticado
+     * 
+     * @return ID do cliente logado ou null se não for cliente
+     */
+    public Long getClienteLogadoId() {
+        Usuario usuario = getUsuarioAutenticado();
+        if (usuario == null || !(usuario instanceof Cliente)) {
+            return null;
+        }
+        return usuario.getIdUsuario();
+    }
 } 
