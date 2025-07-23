@@ -15,6 +15,43 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * SERVIÇO QUIZ - SISTEMA DE RECOMENDAÇÕES E QUIZ
+ * 
+ * Este serviço gerencia todo o sistema de quiz e recomendações do Match Beauty.
+ * Implementa lógica para apresentar perguntas, processar respostas e gerar
+ * recomendações personalizadas de salões e serviços.
+ * 
+ * FUNCIONALIDADES:
+ * - Apresentação de perguntas do quiz
+ * - Processamento de respostas dos usuários
+ * - Geração de recomendações personalizadas
+ * - Cálculo de scores de compatibilidade
+ * - Filtragem de salões por preferências
+ * - Ranking de recomendações
+ * - Histórico de respostas
+ * 
+ * SISTEMA DE RECOMENDAÇÕES:
+ * - Análise de preferências do usuário
+ * - Matching com características dos salões
+ * - Score de compatibilidade por salão
+ * - Filtros por localização e serviços
+ * - Recomendações baseadas em histórico
+ * 
+ * VALIDAÇÕES:
+ * - Verificação de respostas válidas
+ * - Validação de perguntas obrigatórias
+ * - Verificação de dados de entrada
+ * - Tratamento de exceções do quiz
+ * 
+ * DEPENDÊNCIAS:
+ * - PerguntaRepository: Para consulta de perguntas
+ * - AlternativaRepository: Para alternativas das perguntas
+ * - RespostaQuizRepository: Para persistência de respostas
+ * - RecomendacaoRepository: Para persistência de recomendações
+ * - SalaoRepository: Para consulta de salões
+ * - ServicoRepository: Para consulta de serviços
+ */
 @Service
 @Transactional
 public class QuizService {

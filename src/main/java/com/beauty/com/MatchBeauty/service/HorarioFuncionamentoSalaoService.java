@@ -12,6 +12,36 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SERVIÇO DE HORÁRIOS DE FUNCIONAMENTO DOS SALÕES
+ * 
+ * Este serviço gerencia os horários de funcionamento dos salões,
+ * permitindo definir e consultar os horários disponíveis para cada
+ * dia da semana. Essencial para o sistema de agendamentos.
+ * 
+ * FUNCIONALIDADES:
+ * - Definição de horários de funcionamento por dia da semana
+ * - Consulta de horários ativos por salão
+ * - Verificação de disponibilidade de horários
+ * - Gerenciamento de horários de abertura e fechamento
+ * - Validação de horários de funcionamento
+ * - Consulta de horários por período
+ * 
+ * ESTRUTURA:
+ * - Horários por dia da semana (segunda a domingo)
+ * - Horário de abertura e fechamento por dia
+ * - Status ativo/inativo para horários
+ * - Associação com salão específico
+ * 
+ * VALIDAÇÕES:
+ * - Verificação de horários válidos
+ * - Validação de sobreposição de horários
+ * - Verificação de horários de funcionamento
+ * - Validação de dias da semana
+ * 
+ * DEPENDÊNCIAS:
+ * - HorarioFuncionamentoSalaoRepository: Para persistência
+ */
 @Service
 public class HorarioFuncionamentoSalaoService {
     

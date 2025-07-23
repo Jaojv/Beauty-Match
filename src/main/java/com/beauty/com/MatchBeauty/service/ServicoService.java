@@ -13,6 +13,43 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * SERVIÇO SERVIÇO - LÓGICA DE NEGÓCIO PARA SERVIÇOS
+ * 
+ * Este serviço gerencia todas as operações relacionadas aos serviços do sistema.
+ * Fornece métodos para CRUD de serviços, consultas por salão, preços
+ * e integração com profissionais e agendamentos.
+ * 
+ * FUNCIONALIDADES:
+ * - Listagem de todos os serviços
+ * - Busca de serviço por ID
+ * - Criação de novos serviços
+ * - Atualização de dados de serviços
+ * - Exclusão de serviços
+ * - Consulta por salão
+ * - Filtragem por tipo de serviço
+ * - Busca por faixa de preço
+ * - Validações específicas para serviços
+ * 
+ * CARACTERÍSTICAS ESPECÍFICAS:
+ * - Gerenciamento de informações do serviço
+ * - Associação com salão
+ * - Preços e duração
+ * - Descrições detalhadas
+ * - Categorias de serviços
+ * - Disponibilidade de profissionais
+ * - Integração com agendamentos
+ * 
+ * VALIDAÇÕES:
+ * - Verificação de dados obrigatórios
+ * - Validação de preços válidos
+ * - Verificação de salão existente
+ * - Validação de duração
+ * 
+ * DEPENDÊNCIAS:
+ * - ServicoRepository: Para operações de persistência
+ * - SalaoRepository: Para consulta de salões
+ */
 @Service
 public class ServicoService {
 

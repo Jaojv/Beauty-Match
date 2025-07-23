@@ -17,6 +17,40 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+/**
+ * SERVIÇO DE HORÁRIOS DE TRABALHO DOS PROFISSIONAIS
+ * 
+ * Este serviço gerencia os horários de trabalho dos profissionais,
+ * permitindo definir e consultar os horários disponíveis para cada
+ * profissional por dia da semana. Essencial para agendamentos.
+ * 
+ * FUNCIONALIDADES:
+ * - Definição de horários de trabalho por profissional
+ * - Consulta de horários ativos por profissional
+ * - Verificação de disponibilidade de horários
+ * - Gerenciamento de horários de início e fim
+ * - Validação de horários de trabalho
+ * - Consulta de horários por período
+ * - Criação em lote de horários
+ * 
+ * ESTRUTURA:
+ * - Horários por profissional e dia da semana
+ * - Horário de início e fim por dia
+ * - Status ativo/inativo para horários
+ * - Associação com profissional específico
+ * - Intervalos de trabalho
+ * 
+ * VALIDAÇÕES:
+ * - Verificação de horários válidos
+ * - Validação de sobreposição de horários
+ * - Verificação de horários de funcionamento do salão
+ * - Validação de dias da semana
+ * - Verificação de conflitos com agendamentos
+ * 
+ * DEPENDÊNCIAS:
+ * - HorarioTrabalhoRepository: Para persistência de horários
+ * - ProfissionalRepository: Para consulta de profissionais
+ */
 @Service
 public class HorarioTrabalhoService {
 

@@ -13,6 +13,43 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * SERVIÇO SALÃO - LÓGICA DE NEGÓCIO PARA SALÕES
+ * 
+ * Este serviço gerencia todas as operações relacionadas aos salões do sistema.
+ * Fornece métodos para CRUD de salões, consultas por localização, serviços
+ * e integração com proprietários e profissionais.
+ * 
+ * FUNCIONALIDADES:
+ * - Listagem de todos os salões
+ * - Busca de salão por ID
+ * - Criação de novos salões
+ * - Atualização de dados de salões
+ * - Exclusão de salões
+ * - Consulta por localização
+ * - Filtragem por serviços oferecidos
+ * - Busca por proprietário
+ * - Validações específicas para salões
+ * 
+ * CARACTERÍSTICAS ESPECÍFICAS:
+ * - Gerenciamento de informações do salão
+ * - Associação com proprietário
+ * - Lista de profissionais
+ * - Horários de funcionamento
+ * - Serviços oferecidos
+ * - Localização e contato
+ * - Imagens e descrições
+ * 
+ * VALIDAÇÕES:
+ * - Verificação de dados obrigatórios
+ * - Validação de proprietário existente
+ * - Verificação de dados de contato
+ * - Validação de endereço
+ * 
+ * DEPENDÊNCIAS:
+ * - SalaoRepository: Para operações de persistência
+ * - ProprietarioRepository: Para consulta de proprietários
+ */
 @Service
 public class SalaoService {
 

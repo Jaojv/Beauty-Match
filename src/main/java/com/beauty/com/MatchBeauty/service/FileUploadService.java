@@ -7,8 +7,42 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
+/**
+ * SERVIÇO DE UPLOAD DE ARQUIVOS - GERENCIAMENTO DE UPLOADS
+ * 
+ * Este serviço gerencia o upload e armazenamento de arquivos no sistema,
+ * especialmente imagens de salões e perfis. Implementa validações de arquivo,
+ * geração de nomes únicos e armazenamento seguro.
+ * 
+ * FUNCIONALIDADES:
+ * - Upload de arquivos com validação
+ * - Geração de nomes únicos para arquivos
+ * - Validação de tipos de arquivo permitidos
+ * - Verificação de tamanho de arquivo
+ * - Armazenamento seguro em diretório específico
+ * - Tratamento de erros de upload
+ * - Limpeza de arquivos temporários
+ * 
+ * VALIDAÇÕES:
+ * - Tipos de arquivo permitidos (imagens)
+ * - Tamanho máximo de arquivo
+ * - Verificação de arquivo vazio
+ * - Validação de extensões seguras
+ * 
+ * SEGURANÇA:
+ * - Geração de nomes únicos para evitar conflitos
+ * - Validação de tipos de arquivo para prevenir uploads maliciosos
+ * - Armazenamento em diretório específico e seguro
+ * - Tratamento de exceções para evitar vazamentos de informação
+ * 
+ * DIRETÓRIOS:
+ * - Uploads de salões: /uploads/saloes/
+ * - Uploads de perfis: /uploads/perfis/
+ * - Configurável via propriedades do sistema
+ */
 @Service
 public class FileUploadService {
 
