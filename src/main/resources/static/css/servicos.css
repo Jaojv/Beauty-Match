@@ -1,6 +1,7 @@
 
 main{
     align-items: start;
+    padding-top: 0px;
 }
 .container {
     width: 1000px;
@@ -12,7 +13,7 @@ main{
 }
 
 .containertable {
-    width: 40%;
+    width: 60%;
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 16px rgba(0,0,0,0.08);
@@ -24,8 +25,8 @@ main{
 }
 
 .containertable input {
-    width: 100%;
-    font-size: 1.2em;
+    width: 110%;
+    font-size: 1.1em;
     background-color: transparent;
     border: none;
     outline: none;

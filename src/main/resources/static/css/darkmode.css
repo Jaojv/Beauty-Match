@@ -112,9 +112,26 @@ body.dark-mode .detalhe-item strong {
 }
 
 body.dark-mode .agendamento-card {
-    background-color: #632b36;
+    background-color: #2D2D2D;
 }
 
 body.dark-mode .detalhe-item {
     color: #d4cfcf;
+}
+
+body.dark-mode .filtros select  {
+    background-color: #632b36;
+}
+
+
+body.dark-mode .btn-ver-detalhes {
+    background-color: #632b36;
+    border-bottom: 1px solid #d46b6b;
+    border-left: 1px solid #d46b6b;
+    border-top: none;
+    border-right: none;
+    color: white;
+}
+body.dark-mode .btn-ver-detalhes:hover {
+    background-color: #944545;
 }

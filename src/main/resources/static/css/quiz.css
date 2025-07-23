@@ -592,7 +592,8 @@
     }
     
     .quiz-logo .logo {
-        width: 100px;
+        width: 125px;
+        padding-top: 30px;
     }
     
     .quiz-titulo h1 {

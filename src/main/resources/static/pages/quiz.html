@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beauty Match - Quiz de Recomendações</title>
+    <title>Beauty Match - Quiz de Recomendacoes</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="../css/index_logado.css">
     <link rel="stylesheet" href="../css/quiz.css">
     <link rel="stylesheet" href="../css/darkmode.css">
+    <link rel="stylesheet" href="../css/responsividade.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
@@ -26,20 +27,20 @@
         </div>
         <div class="menu" id="menu">
             <ul>
-                <li><a class="menu-botao" href="../index.html">Salões</a></li>
+                <li><a class="menu-botao" href="../index.html">Saloes</a></li>
                 <li><a class="menu-botao" href="agendamentos.html">Agendamentos</a></li>
                 <li><a class="menu-botao" href="favoritos.html">Favoritos</a></li>
                 <li><a class="menu-botao" href="">Quiz</a></li>
             </ul>
         </div>
             <div class="button-container" id="button-index">
-                <!-- Perfil do usuário (visível apenas quando logado) -->
+                <!-- Perfil do usuario (visivel apenas quando logado) -->
                 <div class="perfil" id="perfil-usuario" style="display: none;">
                     <a class="botao_logado" href="">
                         <input type="text" id="username-display" value="" readonly>
                         <img class="perfil-img" src="../images/user.png" alt="Perfil">
                     </a>
-                    <!-- Modal de perfil do usuário -->
+                    <!-- Modal de perfil do usuario -->
                     <div id="modal-perfil" class="modal-perfil" style="display: none;">
                         <div class="modal-conteudo">
                             <span class="fechar-modal" id="fechar-modal">&times;</span>
@@ -49,7 +50,7 @@
                             </div>
                             <div class="img-modal">
                                 <img class="perfil-img" id="foto-perfil" src="../images/user.png" alt="Perfil" style="cursor: pointer;">
-                                <!-- Container para upload de imagem (visível apenas em modo de edição) -->
+                                <!-- Container para upload de imagem (visivel apenas em modo de edicao) -->
                                 <div id="container-imagem-perfil" style="display: none; margin-top: 10px;">
                                     <input type="file" id="input-imagem-perfil" accept="image/*" style="display: none;">
                                 </div>
@@ -78,7 +79,7 @@
                     <p>Sair</p>
                     </div>
                 </div>
-                <!-- Botões de login/cadastro (visíveis apenas quando não logado) -->
+                <!-- Botoes de login/cadastro (visiveis apenas quando nao logado) -->
                 <a class="botao" id="cadastrar-link" href="cadastrar.html">Cadastrar-se</a>
                 <a class="botao" id="login-link" href="login.html">Login</a>
             </div>
@@ -111,8 +112,8 @@
                     <img src="../images/logo.png" alt="Beauty Match Logo" class="logo">
                 </div>
                 <div class="quiz-titulo">
-                    <h1>Quiz de Recomendações</h1>
-                    <p>Descubra o estilo perfeito para você</p>
+                    <h1>Quiz de Recomendacoes</h1>
+                    <p>Descubra o estilo perfeito para voce</p>
                 </div>
             </div>
 
@@ -132,10 +133,10 @@
             <div id="quiz-container" class="quiz-content">
                 <!-- Container da pergunta atual -->
                 <div id="pergunta-container" class="pergunta-container">
-                    <!-- Conteúdo será carregado dinamicamente pelo JavaScript -->
+                    <!-- Conteudo sera carregado dinamicamente pelo JavaScript -->
                 </div>
 
-                <!-- Botões de Navegação -->
+                <!-- Botoes de Navegacao -->
                 <div class="quiz-navegacao">
                     <button id="btn-anterior" class="botao botao-secundario" disabled>
                         <span class="botao-icon">←</span>
@@ -144,7 +145,7 @@
                     
                     <div class="navegacao-direita">
                         <button id="btn-proximo" class="botao botao-primario" disabled>
-                            Próximo
+                            Proximo
                             <span class="botao-icon">→</span>
                         </button>
                         
@@ -158,18 +159,18 @@
         </div>
     </main>
     
-    <!-- Modal de Recomendação -->
+    <!-- Modal de Recomendacao -->
     <div id="modal-recomendacao" class="modal-overlay" style="display: none;">
         <div class="modal-recomendacao">
             <div class="modal-header">
-                <h2 id="modal-titulo">Sua Recomendação Personalizada</h2>
+                <h2 id="modal-titulo">Sua Recomendacao Personalizada</h2>
                 <button class="modal-fechar" onclick="document.getElementById('modal-recomendacao').style.display='none'">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="recomendacao-content">
                     <div class="recomendacao-icon">✨</div>
                     <div id="modal-descricao" class="recomendacao-texto">
-                        <!-- Conteúdo será carregado dinamicamente -->
+                        <!-- Conteudo sera carregado dinamicamente -->
                     </div>
                 </div>
             </div>
@@ -185,7 +186,7 @@
         </div>
     </div>
 
-    <!-- Botão Dark Mode -->
+    <!-- Botao Dark Mode -->
     <a class="botao" id="darkmode-botao" href="">
         <div class="darkmode">
             <img src="../images/dark.png">

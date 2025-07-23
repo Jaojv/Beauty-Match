@@ -1,4 +1,6 @@
-
+main{
+    min-height: 100vh;
+}
 .logo {
     margin: 0;
     display: flex;

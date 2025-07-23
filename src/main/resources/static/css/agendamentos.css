@@ -1,4 +1,8 @@
 /* Estilos para a página de agendamentos */
+main{
+    padding-top: 0px;
+    padding-left: 30px;
+}
 
 .container {
     max-width: 1200px;
@@ -302,6 +306,7 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
+    
     .header-agendamentos {
         flex-direction: column;
         align-items: stretch;
