@@ -270,6 +270,56 @@ class ApiClient {
             method: 'GET'
         });
     }
+
+    // =========================================================================
+    // MÉTODOS DE FAVORITOS
+    // =========================================================================
+
+    /**
+     * Lista todos os favoritos do usuário logado
+     */
+    async getFavoritos() {
+        return this.request('/favoritos', {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Adiciona um salão aos favoritos
+     */
+    async adicionarFavorito(salaoId) {
+        return this.request('/favoritos', {
+            method: 'POST',
+            body: JSON.stringify({ salaoId: salaoId })
+        });
+    }
+
+    /**
+     * Remove um salão dos favoritos
+     */
+    async removerFavorito(salaoId) {
+        return this.request(`/favoritos/${salaoId}`, {
+            method: 'DELETE'
+        });
+    }
+
+    /**
+     * Verifica se um salão está favoritado
+     */
+    async verificarFavorito(salaoId) {
+        return this.request(`/favoritos/verificar/${salaoId}`, {
+            method: 'GET'
+        });
+    }
+
+    /**
+     * Conta quantos favoritos o usuário tem
+     */
+    async contarFavoritos() {
+        return this.request('/favoritos/contar', {
+            method: 'GET'
+        });
+    }
 }
 
 // Instância global do cliente API
