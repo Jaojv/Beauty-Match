@@ -1,8 +1,10 @@
 package com.beauty.com.MatchBeauty.service;
 
 import com.beauty.com.MatchBeauty.entity.Profissional;
+import com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario;
 import com.beauty.com.MatchBeauty.repository.ProfissionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.beauty.com.MatchBeauty.entity.Servico;
 import java.util.List;
@@ -11,6 +13,35 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.time.LocalDate;
 
+/**
+ * SERVIÇO PROFISSIONAL - LÓGICA DE NEGÓCIO PARA PROFISSIONAIS
+ * 
+ * Este serviço gerencia todas as operações relacionadas aos profissionais do sistema.
+ * Fornece métodos para CRUD de profissionais, incluindo criptografia de senhas
+ * e validações específicas para perfis de profissionais.
+ * 
+ * FUNCIONALIDADES:
+ * - Listagem de todos os profissionais
+ * - Busca de profissional por ID
+ * - Criação de novos profissionais
+ * - Atualização de dados de profissionais
+ * - Exclusão de profissionais
+ * - Criptografia automática de senhas
+ * - Definição automática do tipo de usuário
+ * - Validações específicas para profissionais
+ * 
+ * CARACTERÍSTICAS ESPECÍFICAS:
+ * - Gerenciamento de especialidades
+ * - Histórico de agendamentos
+ * - Perfil de profissional com dados específicos
+ * - Integração com sistema de agendamentos
+ * - Horários de trabalho
+ * - Biografia e experiência
+ * 
+ * DEPENDÊNCIAS:
+ * - ProfissionalRepository: Para operações de persistência
+ * - PasswordEncoder: Para criptografia de senhas
+ */
 @Service
 public class ProfissionalService {
 

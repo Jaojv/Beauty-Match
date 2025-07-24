@@ -2,13 +2,42 @@ package com.beauty.com.MatchBeauty.service;
 
 import com.beauty.com.MatchBeauty.dto.ClienteDTO;
 import com.beauty.com.MatchBeauty.entity.Cliente;
+import com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario;
 import com.beauty.com.MatchBeauty.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * SERVIÇO CLIENTE - LÓGICA DE NEGÓCIO PARA CLIENTES
+ * 
+ * Este serviço gerencia todas as operações relacionadas aos clientes do sistema.
+ * Fornece métodos para CRUD de clientes, incluindo criptografia de senhas
+ * e validações específicas para perfis de clientes.
+ * 
+ * FUNCIONALIDADES:
+ * - Listagem de todos os clientes
+ * - Busca de cliente por ID
+ * - Criação de novos clientes
+ * - Atualização de dados de clientes
+ * - Exclusão de clientes
+ * - Criptografia automática de senhas
+ * - Definição automática do tipo de usuário
+ * - Validações específicas para clientes
+ * 
+ * CARACTERÍSTICAS ESPECÍFICAS:
+ * - Gerenciamento de preferências de clientes
+ * - Histórico de agendamentos
+ * - Perfil de cliente com dados específicos
+ * - Integração com sistema de agendamentos
+ * 
+ * DEPENDÊNCIAS:
+ * - ClienteRepository: Para operações de persistência
+ * - PasswordEncoder: Para criptografia de senhas
+ */
 @Service
 public class ClienteService {
 

@@ -25,6 +25,33 @@ import com.beauty.com.MatchBeauty.security.JwtTokenProvider;
 import com.beauty.com.MatchBeauty.security.UserPrincipal;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * SERVIÇO DE AUTENTICAÇÃO - GERENCIAMENTO DE LOGIN E TOKENS JWT
+ * 
+ * Este serviço gerencia todo o processo de autenticação do sistema,
+ * incluindo login, geração de tokens JWT, validação de credenciais
+ * e gerenciamento de sessões de usuário.
+ * 
+ * FUNCIONALIDADES:
+ * - Autenticação de usuários com username e password
+ * - Geração de tokens JWT para sessões
+ * - Validação de credenciais de login
+ * - Gerenciamento de contexto de segurança
+ * - Verificação de existência de usuários
+ * - Criptografia de senhas para novos usuários
+ * 
+ * SEGURANÇA:
+ * - Uso de PasswordEncoder para criptografia
+ * - Tokens JWT para autenticação stateless
+ * - Spring Security para gerenciamento de contexto
+ * - Validação de credenciais antes de gerar tokens
+ * 
+ * DEPENDÊNCIAS:
+ * - UsuarioRepository: Para consulta de usuários
+ * - JwtTokenProvider: Para geração de tokens JWT
+ * - AuthenticationManager: Para autenticação Spring Security
+ * - PasswordEncoder: Para criptografia de senhas
+ */
 @Service
 public class AutenticacaoService {
     
