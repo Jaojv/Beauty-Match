@@ -7,6 +7,9 @@ class ApiClient {
     // Função genérica para requisições HTTP
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
+        console.log('🔍 DEBUG API: URL sendo construída:', url);
+        console.log('🔍 DEBUG API: Endpoint:', endpoint);
+        console.log('🔍 DEBUG API: Base URL:', this.baseURL);
         
         // Configurações padrão
         const config = {
@@ -21,26 +24,35 @@ class ApiClient {
         const token = localStorage.getItem('authToken');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
+            console.log('🔍 DEBUG API: Token encontrado, adicionando Authorization header');
+        } else {
+            console.log('🔍 DEBUG API: Nenhum token encontrado');
         }
 
         try {
+            console.log('🔍 DEBUG API: Fazendo requisição para:', url);
             const response = await fetch(url, config);
             
             // Verificar se a resposta é ok
             if (!response.ok) {
                 const errorData = await response.text();
+                console.error('❌ DEBUG API: Erro na resposta:', response.status, errorData);
                 throw new Error(errorData || `Erro ${response.status}: ${response.statusText}`);
             }
 
             // Tentar parsear JSON, se não conseguir retornar texto
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
-                return await response.json();
+                const result = await response.json();
+                console.log('✅ DEBUG API: Resposta JSON recebida:', result);
+                return result;
             } else {
-                return await response.text();
+                const result = await response.text();
+                console.log('✅ DEBUG API: Resposta texto recebida:', result);
+                return result;
             }
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            console.error('❌ DEBUG API: Erro na requisição:', error);
             throw error;
         }
     }

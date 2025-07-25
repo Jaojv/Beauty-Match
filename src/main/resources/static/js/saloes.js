@@ -98,6 +98,8 @@ async function criarCardSalao(salao) {
 // Função para alternar favorito
 async function toggleFavorito(salao, btnElement) {
     console.log('🔧 SaloesJS: Alternando favorito para salão:', salao.nome);
+    console.log('🔍 DEBUG: Tipo do salao.id:', typeof salao.id);
+    console.log('🔍 DEBUG: Valor do salao.id:', salao.id);
     
     // Verificar se o usuário está logado
     const isLoggedIn = localStorage.getItem('authToken') !== null;
@@ -110,10 +112,13 @@ async function toggleFavorito(salao, btnElement) {
     
     try {
         // Verificar se o salão está favoritado
+        console.log('🔍 DEBUG: Chamando verificarFavorito com ID:', salao.id);
         const isFavoritado = await apiClient.verificarFavorito(salao.id);
+        console.log('🔍 DEBUG: Resultado verificarFavorito:', isFavoritado);
         
         if (!isFavoritado) {
             // Adicionar aos favoritos
+            console.log('🔍 DEBUG: Chamando adicionarFavorito com ID:', salao.id);
             await apiClient.adicionarFavorito(salao.id);
             
             // Atualizar visual do botão
@@ -124,6 +129,7 @@ async function toggleFavorito(salao, btnElement) {
             console.log('✅ SaloesJS: Salão adicionado aos favoritos');
         } else {
             // Remover dos favoritos
+            console.log('🔍 DEBUG: Chamando removerFavorito com ID:', salao.id);
             await apiClient.removerFavorito(salao.id);
             
             // Atualizar visual do botão

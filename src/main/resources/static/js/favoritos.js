@@ -4,9 +4,9 @@ class GerenciadorFavoritos {
         this.inicializar();
     }
 
-    inicializar() {
+    async inicializar() {
         console.log('🔧 FavoritosJS: Inicializando gerenciador de favoritos');
-        this.carregarFavoritos();
+        await this.carregarFavoritos();
         this.configurarEventos();
     }
 
@@ -20,12 +20,18 @@ class GerenciadorFavoritos {
         }
     }
 
-    carregarFavoritos() {
-        console.log('🔧 FavoritosJS: Carregando favoritos do localStorage');
-        const favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
-        console.log('✅ FavoritosJS: Favoritos carregados:', favoritos.length);
+    async carregarFavoritos() {
+        console.log('🔧 FavoritosJS: Carregando favoritos da API');
         
-        this.renderizarFavoritos(favoritos);
+        try {
+            const favoritos = await apiClient.getFavoritos();
+            console.log('✅ FavoritosJS: Favoritos carregados da API:', favoritos.length);
+            
+            this.renderizarFavoritos(favoritos);
+        } catch (error) {
+            console.error('❌ FavoritosJS: Erro ao carregar favoritos:', error);
+            this.renderizarFavoritos([]);
+        }
     }
 
     renderizarFavoritos(favoritos) {
@@ -62,7 +68,7 @@ class GerenciadorFavoritos {
     }
 
     criarCardFavorito(favorito) {
-        console.log('🔧 FavoritosJS: Criando card para favorito:', favorito.nome);
+        console.log('🔧 FavoritosJS: Criando card para favorito:', favorito.nomeSalao);
         
         const card = document.createElement('div');
         card.className = 'card';
@@ -72,8 +78,8 @@ class GerenciadorFavoritos {
             if (e.target.closest('.favorito-btn')) {
                 return;
             }
-            console.log('🔧 FavoritosJS: Card clicado, redirecionando para salão ID:', favorito.id);
-            window.location.href = `servicos.html?id=${favorito.id}`;
+            console.log('🔧 FavoritosJS: Card clicado, redirecionando para salão ID:', favorito.salaoId);
+            window.location.href = `servicos.html?id=${favorito.salaoId}`;
         };
 
         // Container para imagem e botão de favorito
@@ -85,8 +91,8 @@ class GerenciadorFavoritos {
         // Imagem do salão
         const img = document.createElement('img');
         img.className = 'card-logo';
-        img.src = favorito.imagemUrl || 'images/logo.png';
-        img.alt = `Logo do salão ${favorito.nome}`;
+        img.src = favorito.imagemUrlSalao || 'images/logo.png';
+        img.alt = `Logo do salão ${favorito.nomeSalao}`;
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.objectFit = 'cover';
@@ -119,7 +125,7 @@ class GerenciadorFavoritos {
         // Evento de clique no botão de favorito
         favoritoBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // Evitar que o clique propague para o card
-            this.removerFavorito(favorito.id, card);
+            this.removerFavorito(favorito.salaoId, card);
         });
 
         imgContainer.appendChild(favoritoBtn);
@@ -128,13 +134,13 @@ class GerenciadorFavoritos {
         // Nome do salão
         const nome = document.createElement('div');
         nome.className = 'card-nome';
-        nome.innerText = favorito.nome;
+        nome.innerText = favorito.nomeSalao;
         nome.style.textAlign = 'center';
         nome.style.marginTop = '8px';
         card.appendChild(nome);
 
         // Informações adicionais (opcional)
-        if (favorito.endereco) {
+        if (favorito.enderecoSalao) {
             const endereco = document.createElement('div');
             endereco.style.cssText = `
                 font-size: 0.8em;
@@ -143,7 +149,7 @@ class GerenciadorFavoritos {
                 margin-top: 4px;
                 padding: 0 8px;
             `;
-            endereco.innerText = favorito.endereco;
+            endereco.innerText = favorito.enderecoSalao;
             card.appendChild(endereco);
         }
 
@@ -151,18 +157,12 @@ class GerenciadorFavoritos {
         return card;
     }
 
-    removerFavorito(salaoId, cardElement) {
+    async removerFavorito(salaoId, cardElement) {
         console.log('🔧 FavoritosJS: Removendo favorito ID:', salaoId);
         
-        const favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
-        const salaoIndex = favoritos.findIndex(fav => fav.id === salaoId);
-        
-        if (salaoIndex !== -1) {
-            const salaoRemovido = favoritos[salaoIndex];
-            favoritos.splice(salaoIndex, 1);
-            
-            // Salvar no localStorage
-            localStorage.setItem('favoritos', JSON.stringify(favoritos));
+        try {
+            // Remover do backend
+            await apiClient.removerFavorito(salaoId);
             
             // Remover card da tela com animação
             cardElement.style.transition = 'all 0.3s ease';
@@ -171,32 +171,41 @@ class GerenciadorFavoritos {
             
             setTimeout(() => {
                 cardElement.remove();
-                console.log('✅ FavoritosJS: Salão removido dos favoritos:', salaoRemovido.nome);
+                console.log('✅ FavoritosJS: Salão removido dos favoritos');
                 
                 // Recarregar favoritos se não houver mais nenhum
-                const favoritosAtualizados = JSON.parse(localStorage.getItem('favoritos') || '[]');
-                if (favoritosAtualizados.length === 0) {
+                const container = document.querySelector('#carrossel-container');
+                if (container && container.children.length === 0) {
                     this.carregarFavoritos();
                 }
             }, 300);
+        } catch (error) {
+            console.error('❌ FavoritosJS: Erro ao remover favorito:', error);
+            alert('Erro ao remover favorito. Tente novamente.');
         }
     }
 
-    filtrarFavoritos(termo) {
+    async filtrarFavoritos(termo) {
         console.log('🔧 FavoritosJS: Filtrando favoritos com termo:', termo);
         
-        const favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
-        const favoritosFiltrados = favoritos.filter(fav => 
-            fav.nome.toLowerCase().includes(termo.toLowerCase()) ||
-            (fav.endereco && fav.endereco.toLowerCase().includes(termo.toLowerCase()))
-        );
-        
-        this.renderizarFavoritos(favoritosFiltrados);
+        try {
+            const favoritos = await apiClient.getFavoritos();
+            const favoritosFiltrados = favoritos.filter(fav => 
+                fav.nomeSalao.toLowerCase().includes(termo.toLowerCase()) ||
+                (fav.enderecoSalao && fav.enderecoSalao.toLowerCase().includes(termo.toLowerCase()))
+            );
+            
+            this.renderizarFavoritos(favoritosFiltrados);
+        } catch (error) {
+            console.error('❌ FavoritosJS: Erro ao filtrar favoritos:', error);
+            this.renderizarFavoritos([]);
+        }
     }
 }
 
 // Inicializar quando a página carregar
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('🔧 FavoritosJS: DOM carregado, iniciando...');
     window.gerenciadorFavoritos = new GerenciadorFavoritos();
+    await window.gerenciadorFavoritos.inicializar();
 }); 
