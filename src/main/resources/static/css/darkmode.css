@@ -45,6 +45,24 @@ body.dark-mode footer {
   background-color: #632b36;
 }
 
+body.dark-mode .footer-content {
+  color: #ffffff;
+}
+
+body.dark-mode .footer-section p {
+  color: #ffffff;
+}
+
+body.dark-mode .footer-section:first-child p {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+body.dark-mode .footer-section:last-child p {
+  color: #e6e6e6;
+  opacity: 0.9;
+}
+
 /*Index_lodago*/
 body.dark-mode .modal-perfil .modal-conteudo {
   background-color: #313131;
