@@ -4,9 +4,11 @@ import com.beauty.com.MatchBeauty.dto.FavoritoDTO;
 import com.beauty.com.MatchBeauty.entity.Cliente;
 import com.beauty.com.MatchBeauty.entity.Favorito;
 import com.beauty.com.MatchBeauty.entity.Salao;
+import com.beauty.com.MatchBeauty.entity.Usuario;
 import com.beauty.com.MatchBeauty.repository.ClienteRepository;
 import com.beauty.com.MatchBeauty.repository.FavoritoRepository;
 import com.beauty.com.MatchBeauty.repository.SalaoRepository;
+import com.beauty.com.MatchBeauty.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,9 @@ public class FavoritoService {
     @Autowired
     private SalaoRepository salaoRepository;
     
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    
     /**
      * LISTAR FAVORITOS DO CLIENTE
      * Retorna todos os favoritos de um cliente específico
@@ -58,9 +63,16 @@ public class FavoritoService {
      * @return DTO do favorito criado
      */
     public FavoritoDTO.ResponseSimples adicionarFavorito(Long clienteId, Long salaoId) {
-        // Verificar se o cliente existe
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        // Verificar se o cliente existe - buscar primeiro na tabela usuario
+        Usuario usuario = usuarioRepository.findById(clienteId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        
+        // Verificar se é realmente um cliente
+        if (!(usuario instanceof Cliente)) {
+            throw new RuntimeException("Usuário não é um cliente");
+        }
+        
+        Cliente cliente = (Cliente) usuario;
         
         // Verificar se o salão existe
         Salao salao = salaoRepository.findById(salaoId)
