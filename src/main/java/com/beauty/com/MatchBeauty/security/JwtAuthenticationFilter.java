@@ -33,10 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            System.out.println("🔍 DEBUG JwtFilter: Processando requisição para: " + request.getRequestURI());
             String jwt = getJwtFromRequest(request);
+            System.out.println("🔍 DEBUG JwtFilter: JWT extraído: " + (jwt != null ? "SIM" : "NÃO"));
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                System.out.println("✅ DEBUG JwtFilter: Token válido");
                 Long userId = tokenProvider.getUserIdFromJWT(jwt);
+                System.out.println("🔍 DEBUG JwtFilter: User ID: " + userId);
 
                 // Carregar as authorities do token
                 Claims claims = Jwts.parserBuilder()
@@ -47,6 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 
                 @SuppressWarnings("unchecked")
                 List<String> authorities = claims.get("authorities", List.class);
+                System.out.println("🔍 DEBUG JwtFilter: Authorities: " + authorities);
                 
                 if (authorities != null) {
                     List<GrantedAuthority> grantedAuthorities = authorities.stream()
@@ -67,9 +72,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                    System.out.println("✅ DEBUG JwtFilter: Autenticação configurada com sucesso");
                 }
+            } else {
+                System.out.println("❌ DEBUG JwtFilter: Token inválido ou não encontrado");
             }
         } catch (Exception ex) {
+            System.out.println("❌ DEBUG JwtFilter: Erro ao processar token: " + ex.getMessage());
             logger.error("Não foi possível autenticar o usuário", ex);
         }
 

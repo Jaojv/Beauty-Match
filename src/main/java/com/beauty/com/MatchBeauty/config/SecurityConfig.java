@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/quiz/recomendacao").permitAll()
                 .requestMatchers("/api/quiz/recomendacoes/{criterio}").permitAll()
                 .requestMatchers("/api/quiz/debug/**").permitAll()
+                .requestMatchers("/api/favoritos/**").hasRole("CLIENTE")
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 
