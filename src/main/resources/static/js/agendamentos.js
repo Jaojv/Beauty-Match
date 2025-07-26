@@ -1,3 +1,6 @@
+// Sistema de gerenciamento de agendamentos
+// Controla exibição, filtros e ações dos agendamentos do cliente
+
 // Gerenciador da página de agendamentos
 class AgendamentosManager {
     constructor() {
@@ -9,6 +12,7 @@ class AgendamentosManager {
         this.init();
     }
 
+    // Inicializa o sistema de agendamentos
     async init() {
         console.log('🔧 AgendamentosJS: Inicializando...');
         
@@ -28,10 +32,12 @@ class AgendamentosManager {
         console.log('✅ AgendamentosJS: Inicializado com sucesso');
     }
 
+    // Verifica se o usuário está logado
     isUserLoggedIn() {
         return localStorage.getItem('authToken') !== null;
     }
 
+    // Configura filtros de estabelecimento e status
     configurarFiltros() {
         console.log('🔧 AgendamentosJS: Configurando filtros...');
         
@@ -53,6 +59,7 @@ class AgendamentosManager {
         }
     }
 
+    // Carrega agendamentos da API
     async carregarAgendamentos() {
         console.log('🔧 AgendamentosJS: Carregando agendamentos...');
         
@@ -76,6 +83,7 @@ class AgendamentosManager {
         }
     }
 
+    // Popula o filtro de estabelecimentos com dados únicos
     popularFiltroEstabelecimentos() {
         const filtroEstabelecimento = document.getElementById('filtro-estabelecimento');
         if (!filtroEstabelecimento) return;
@@ -95,6 +103,7 @@ class AgendamentosManager {
         });
     }
 
+    // Aplica filtros selecionados aos agendamentos
     aplicarFiltros() {
         console.log('🔧 AgendamentosJS: Aplicando filtros:', this.filtros);
         

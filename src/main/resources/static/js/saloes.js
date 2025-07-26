@@ -1,4 +1,8 @@
+// Sistema de gerenciamento de salões
+// Controla exibição, busca e favoritos dos salões
+
 // Função para criar o card do salão
+// Cria elemento visual para exibir informações do salão
 async function criarCardSalao(salao) {
     console.log('🔧 SaloesJS: Criando card para salão:', salao.nome);
     const card = document.createElement('div');
@@ -96,6 +100,7 @@ async function criarCardSalao(salao) {
 }
 
 // Função para alternar favorito
+// Adiciona ou remove salão dos favoritos
 async function toggleFavorito(salao, btnElement) {
     console.log('🔧 SaloesJS: Alternando favorito para salão:', salao.nome);
     console.log('🔍 DEBUG: Tipo do salao.id:', typeof salao.id);

@@ -1,4 +1,8 @@
+// Sistema de gerenciamento de horários profissionais
+// Controla seleção de serviços, profissionais e horários disponíveis
+
 // Função para extrair parâmetros da URL
+// Obtém IDs do serviço e salão da query string
 function getUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
     return {
@@ -8,6 +12,7 @@ function getUrlParams() {
 }
 
 // Função para carregar dados do salão
+// Busca informações do salão na API e atualiza a interface
 async function carregarDadosSalao(salaoId) {
     console.log('🔧 HorarioJS: Carregando dados do salão ID:', salaoId);
     try {
@@ -51,6 +56,7 @@ async function carregarDadosSalao(salaoId) {
 }
 
 // Função para carregar e renderizar serviços
+// Busca serviços do salão e exibe na tabela para seleção
 async function carregarServicos(salaoId) {
     console.log('🔧 HorarioJS: Carregando serviços do salão ID:', salaoId);
     try {

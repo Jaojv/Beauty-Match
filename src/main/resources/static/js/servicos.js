@@ -1,4 +1,8 @@
+// Sistema de gerenciamento de serviços
+// Controla exibição de serviços e processo de agendamento
+
 // Função para extrair ID do salão da URL
+// Obtém o parâmetro 'id' da query string
 function getSalaoIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
@@ -7,6 +11,7 @@ function getSalaoIdFromUrl() {
 }
 
 // Função para carregar dados do salão
+// Busca informações do salão na API e atualiza a interface
 async function carregarDadosSalao(salaoId) {
     console.log('🔧 ServicosJS: Carregando dados do salão ID:', salaoId);
     try {
@@ -55,6 +60,7 @@ async function carregarDadosSalao(salaoId) {
 }
 
 // Função para carregar e renderizar serviços
+// Busca serviços do salão e exibe na tabela
 async function carregarServicos(salaoId) {
     console.log('🔧 ServicosJS: Carregando serviços do salão ID:', salaoId);
     try {

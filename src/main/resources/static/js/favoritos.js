@@ -1,15 +1,20 @@
+// Sistema de gerenciamento de favoritos
+// Controla exibição, filtro e remoção de salões favoritados
+
 // Gerenciador de Favoritos
 class GerenciadorFavoritos {
     constructor() {
         this.inicializar();
     }
 
+    // Inicializa o sistema de favoritos
     async inicializar() {
         console.log('🔧 FavoritosJS: Inicializando gerenciador de favoritos');
         await this.carregarFavoritos();
         this.configurarEventos();
     }
 
+    // Configura eventos de interação
     configurarEventos() {
         // Configurar barra de pesquisa
         const searchBar = document.querySelector('.search-bar');
@@ -20,6 +25,7 @@ class GerenciadorFavoritos {
         }
     }
 
+    // Carrega favoritos da API
     async carregarFavoritos() {
         console.log('🔧 FavoritosJS: Carregando favoritos da API');
         
@@ -34,6 +40,7 @@ class GerenciadorFavoritos {
         }
     }
 
+    // Renderiza lista de favoritos na tela
     renderizarFavoritos(favoritos) {
         const container = document.querySelector('#carrossel-container');
         if (!container) {
@@ -67,6 +74,7 @@ class GerenciadorFavoritos {
         console.log('✅ FavoritosJS: Favoritos renderizados com sucesso');
     }
 
+    // Cria card visual para um favorito
     criarCardFavorito(favorito) {
         console.log('🔧 FavoritosJS: Criando card para favorito:', favorito.nomeSalao);
         
