@@ -38,40 +38,53 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// Controller responsável por gerenciar operações relacionadas aos agendamentos
+// Fornece endpoints para CRUD de agendamentos, consultas por usuário e gerenciamento de horários
 @RestController
 @RequestMapping("/api/agendamentos")
 public class AgendamentoController {
 
+    // Serviço para operações de agendamento
     @Autowired
     private AgendamentoService agendamentoService;
 
+    // Repositório para operações de cliente
     @Autowired
     private ClienteRepository clienteRepository;
 
+    // Repositório para operações de usuário
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // Serviço para operações de cliente
     @Autowired
     private ClienteService clienteService;
 
+    // Serviço para operações de profissional
     @Autowired
     private ProfissionalService profissionalService;
 
+    // Serviço para operações de salão
     @Autowired
     private SalaoService salaoService;
 
+    // Serviço para operações de serviço
     @Autowired
     private ServicoService servicoService;
 
+    // Serviço para operações de horário de trabalho
     @Autowired
     private HorarioTrabalhoService horarioTrabalhoService;
 
+    // Serviço para operações de proprietário
     @Autowired
     private ProprietarioService proprietarioService;
 
+    // Serviço para operações de horário de funcionamento
     @Autowired
     private HorarioFuncionamentoSalaoService horarioFuncionamentoService;
 
+    // Endpoint para listar todos os agendamentos (apenas admin)
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarTodosAgendamentos() {
@@ -82,6 +95,8 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para buscar um agendamento específico por ID
+    // Verifica permissões baseadas no tipo de usuário logado
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('CLIENTE', 'PROFISSIONAL', 'PROPRIETARIO', 'ADMIN')")
     public ResponseEntity<AgendamentoDTO.Response> buscarAgendamentoPorId(@PathVariable Long id) {
@@ -90,6 +105,7 @@ public class AgendamentoController {
             return ResponseEntity.notFound().build();
         }
         
+        // Verifica permissões do usuário logado
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
         Long usuarioId = userPrincipal.getId();
@@ -111,6 +127,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(AgendamentoDTO.Response.fromEntity(agendamento));
     }
 
+    // Endpoint para listar agendamentos do cliente logado
     @GetMapping("/cliente")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosPorClienteLogado() {
@@ -124,6 +141,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para listar agendamentos do profissional logado
     @GetMapping("/profissional")
     @PreAuthorize("hasRole('PROFISSIONAL')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosPorProfissionalLogado() {
@@ -137,6 +155,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para listar agendamentos dos salões do proprietário logado
     @GetMapping("/salao")
     @PreAuthorize("hasRole('PROPRIETARIO')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosPorSalaoDoProprietarioLogado() {
@@ -159,6 +178,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para listar agendamentos ativos do cliente logado
     @GetMapping("/cliente/ativos")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarAgendamentosAtivosPorClienteLogado() {
@@ -175,6 +195,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para listar histórico de agendamentos do cliente logado
     @GetMapping("/cliente/historico")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarHistoricoAgendamentosPorClienteLogado(
@@ -201,6 +222,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para listar histórico de agendamentos do profissional logado
     @GetMapping("/profissional/historico")
     @PreAuthorize("hasRole('PROFISSIONAL')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarHistoricoAgendamentosPorProfissionalLogado(
@@ -227,6 +249,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para listar histórico de agendamentos de um salão específico
     @GetMapping("/salao/historico")
     @PreAuthorize("hasRole('PROPRIETARIO')")
     public ResponseEntity<List<AgendamentoDTO.Response>> listarHistoricoAgendamentosPorSalaoLogado(
@@ -237,6 +260,7 @@ public class AgendamentoController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
         Long usuarioId = userPrincipal.getId();
+        // Verifica se o salão pertence ao proprietário logado
         boolean salaoPertenceProprietario = salaoService.buscarSaloesPorProprietario(usuarioId)
             .stream()
             .anyMatch(salao -> salao.getId().equals(salaoId));
@@ -260,6 +284,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentosDTO);
     }
 
+    // Endpoint para buscar estatísticas de agendamentos do cliente logado
     @GetMapping("/cliente/estatisticas")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<AgendamentoService.AgendamentoEstatisticas> buscarEstatisticasClienteLogado(
@@ -287,6 +312,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(estatisticas);
     }
 
+    // Endpoint para buscar estatísticas de agendamentos do profissional logado
     @GetMapping("/profissional/estatisticas")
     @PreAuthorize("hasRole('PROFISSIONAL')")
     public ResponseEntity<AgendamentoService.AgendamentoEstatisticas> buscarEstatisticasProfissionalLogado(
@@ -314,6 +340,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(estatisticas);
     }
 
+    // Endpoint para buscar estatísticas de agendamentos de um salão específico
     @GetMapping("/salao/estatisticas")
     @PreAuthorize("hasRole('PROPRIETARIO')")
     public ResponseEntity<AgendamentoService.AgendamentoEstatisticas> buscarEstatisticasSalaoLogado(
@@ -325,6 +352,7 @@ public class AgendamentoController {
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
         Long usuarioId = userPrincipal.getId();
         
+        // Verifica se o salão pertence ao proprietário logado
         boolean salaoPertenceProprietario = salaoService.buscarSaloesPorProprietario(usuarioId)
             .stream()
             .anyMatch(salao -> salao.getId().equals(salaoId));
@@ -350,6 +378,8 @@ public class AgendamentoController {
         return ResponseEntity.ok(estatisticas);
     }
 
+    // Endpoint para criar um novo agendamento
+    // Apenas clientes podem criar agendamentos
     @PostMapping
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<?> criarAgendamento(@RequestBody AgendamentoDTO.Request request) {
@@ -421,6 +451,8 @@ public class AgendamentoController {
         }
     }
 
+    // Endpoint para cancelar um agendamento
+    // Clientes, profissionais e proprietários podem cancelar (com permissões específicas)
     @PutMapping("/{id}/cancelar")
     @PreAuthorize("hasAnyRole('CLIENTE', 'PROFISSIONAL', 'PROPRIETARIO')")
     public ResponseEntity<AgendamentoDTO.Response> cancelarAgendamento(@PathVariable Long id) {
@@ -428,6 +460,7 @@ public class AgendamentoController {
         if (agendamento == null) {
             return ResponseEntity.notFound().build();
         }
+        // Verifica permissões para cancelar o agendamento
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
         Long usuarioId = userPrincipal.getId();
@@ -453,6 +486,8 @@ public class AgendamentoController {
         return ResponseEntity.ok(AgendamentoDTO.Response.fromEntity(agendamentoAtualizado));
     }
 
+    // Endpoint para concluir um agendamento
+    // Apenas profissionais e proprietários podem concluir agendamentos
     @PutMapping("/{id}/concluir")
     @PreAuthorize("hasAnyRole('PROFISSIONAL', 'PROPRIETARIO')")
     public ResponseEntity<AgendamentoDTO.Response> concluirAgendamento(@PathVariable Long id) {
@@ -461,6 +496,7 @@ public class AgendamentoController {
             return ResponseEntity.notFound().build();
         }
         
+        // Verifica permissões para concluir o agendamento
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
         Long usuarioId = userPrincipal.getId();
@@ -487,9 +523,8 @@ public class AgendamentoController {
         return ResponseEntity.ok(AgendamentoDTO.Response.fromEntity(agendamentoAtualizado));
     }
 
-    /**
-     * Lista horários disponíveis para agendamento
-     */
+    // Endpoint para listar horários disponíveis para agendamento
+    // Retorna horários livres de um profissional em uma data específica
     @GetMapping("/horarios-disponiveis")
     @Operation(summary = "Listar horários disponíveis para agendamento")
     public ResponseEntity<List<String>> listarHorariosDisponiveis(
@@ -558,6 +593,8 @@ public class AgendamentoController {
         }
     }
 
+    // Endpoint para bloquear horário de trabalho
+    // Profissionais e proprietários podem bloquear horários
     @PostMapping("/horarios/bloquear")
     @PreAuthorize("hasAnyRole('PROFISSIONAL', 'PROPRIETARIO')")
     public ResponseEntity<?> bloquearHorario(
@@ -574,6 +611,7 @@ public class AgendamentoController {
                 return ResponseEntity.notFound().build();
             }
             
+            // Verifica permissões para bloquear horário
             boolean podeBloquear = false;
             
             if (userPrincipal.getTipoUsuario().equals("PROFISSIONAL") && 
@@ -608,6 +646,8 @@ public class AgendamentoController {
         }
     }
 
+    // Endpoint para desbloquear horário de trabalho
+    // Profissionais e proprietários podem desbloquear horários
     @PostMapping("/horarios/desbloquear")
     @PreAuthorize("hasAnyRole('PROFISSIONAL', 'PROPRIETARIO')")
     public ResponseEntity<HorarioTrabalho> desbloquearHorario(
@@ -623,6 +663,7 @@ public class AgendamentoController {
             return ResponseEntity.notFound().build();
         }
         
+        // Verifica permissões para desbloquear horário
         boolean podeDesbloquear = false;
         
         if (userPrincipal.getTipoUsuario().equals("PROFISSIONAL") && 
@@ -654,6 +695,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(horarioDesbloqueado);
     }
 
+    // Endpoint para listar horários bloqueados de um profissional
     @GetMapping("/horarios/bloqueados")
     @PreAuthorize("hasAnyRole('PROFISSIONAL', 'PROPRIETARIO')")
     public ResponseEntity<List<HorarioTrabalho>> listarHorariosBloqueados(
@@ -670,6 +712,7 @@ public class AgendamentoController {
             return ResponseEntity.notFound().build();
         }
         
+        // Verifica permissões para visualizar horários bloqueados
         boolean podeVer = false;
         
         if (userPrincipal.getTipoUsuario().equals("PROFISSIONAL") && 
@@ -697,6 +740,7 @@ public class AgendamentoController {
             .filter(HorarioTrabalho::isBloqueado)
             .collect(Collectors.toList());
         
+        // Filtrar por período se fornecido
         if (dataInicio != null && dataFim != null) {
             LocalDateTime inicio = LocalDateTime.parse(dataInicio, DateTimeFormatter.ISO_DATE_TIME);
             LocalDateTime fim = LocalDateTime.parse(dataFim, DateTimeFormatter.ISO_DATE_TIME);

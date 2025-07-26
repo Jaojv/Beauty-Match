@@ -11,16 +11,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Controller responsável por gerenciar operações relacionadas aos clientes
+// Fornece endpoints para CRUD de clientes com controle de acesso baseado em roles
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
 
+    // Serviço para operações de cliente
     @Autowired
     private ClienteService clienteService;
 
+    // Serviço de segurança para validação de permissões
     @Autowired
     private SecurityService securityService;
 
+    // Endpoint para listar todos os clientes
+    // Apenas administradores podem listar todos os clientes
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ClienteDTO>> listarClientes() {
@@ -36,12 +42,14 @@ public class ClienteController {
             dto.setEndereco(cliente.getEndereco());
             dto.setPreferencias(cliente.getPreferencias());
             dto.setUsername(cliente.getUsername());
-            // Não retornar senha
+            // Não retornar senha por segurança
             return dto;
         }).toList();
         return ResponseEntity.ok(dtos);
     }
 
+    // Endpoint para buscar um cliente específico por ID
+    // Administradores podem buscar qualquer cliente, clientes só podem buscar seus próprios dados
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
     public ResponseEntity<ClienteDTO> buscarCliente(@PathVariable Long id) {
@@ -52,6 +60,8 @@ public class ClienteController {
         return ResponseEntity.notFound().build();
     }
 
+    // Endpoint para criar um novo cliente
+    // Apenas administradores podem criar clientes
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteDTO> criarCliente(@RequestBody ClienteDTO dto) {
@@ -59,6 +69,8 @@ public class ClienteController {
         return ResponseEntity.ok(novoCliente);
     }
 
+    // Endpoint para atualizar dados de um cliente
+    // Administradores podem atualizar qualquer cliente, clientes só podem atualizar seus próprios dados
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
     public ResponseEntity<ClienteDTO> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDTO dto) {
@@ -69,6 +81,8 @@ public class ClienteController {
         return ResponseEntity.notFound().build();
     }
 
+    // Endpoint para deletar um cliente
+    // Administradores podem deletar qualquer cliente, clientes só podem deletar suas próprias contas
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isClienteLogado(#id)")
     public ResponseEntity<Void> deletarCliente(@PathVariable Long id) {

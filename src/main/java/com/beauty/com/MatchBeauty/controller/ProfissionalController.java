@@ -21,19 +21,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+// Controller responsável por gerenciar operações relacionadas aos profissionais
+// Fornece endpoints para CRUD de profissionais e consultas relacionadas
 @RestController
 @RequestMapping("/api/profissionais")
 public class ProfissionalController {
 
+    // Serviço para operações de profissional
     @Autowired
     private ProfissionalService profissionalService;
 
+    // Serviço de segurança para validação de permissões
     @Autowired
     private SecurityService securityService;
 
+    // Repositório para operações de salão
     @Autowired
     private SalaoRepository salaoRepository;
 
+    // Endpoint para listar todos os profissionais
+    // Apenas administradores podem listar todos os profissionais
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProfissionalDTO.Response>> listarProfissionais() {
@@ -44,6 +51,8 @@ public class ProfissionalController {
         return ResponseEntity.ok(response);
     }
 
+    // Endpoint para buscar um profissional específico por ID
+    // Administradores podem buscar qualquer profissional, profissionais só podem buscar seus próprios dados
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isProfissionalLogado(#id)")
     public ResponseEntity<ProfissionalDTO.Response> buscarProfissional(@PathVariable Long id) {
@@ -54,9 +63,12 @@ public class ProfissionalController {
         return ResponseEntity.notFound().build();
     }
 
+    // Endpoint para criar um novo profissional
+    // Apenas administradores podem criar profissionais
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProfissionalDTO.Response> criarProfissional(@RequestBody ProfissionalDTO.Request dto) {
+        // Cria nova entidade profissional com dados do DTO
         Profissional profissional = new Profissional();
         profissional.setUsername(dto.getUsername());
         profissional.setPassword(dto.getPassword());
@@ -68,7 +80,7 @@ public class ProfissionalController {
         profissional.setBiografia(dto.getBiografia());
         profissional.setTipoUsuario(com.beauty.com.MatchBeauty.entity.Usuario.TipoUsuario.PROFISSIONAL);
 
-        // Buscar e associar o salão
+        // Buscar e associar o salão ao profissional
         Salao salao = salaoRepository.findById(dto.getSalaoId())
             .orElseThrow(() -> new RuntimeException("Salão não encontrado"));
         profissional.setSalao(salao);
@@ -77,6 +89,8 @@ public class ProfissionalController {
         return ResponseEntity.ok(new ProfissionalDTO.Response(novoProfissional));
     }
 
+    // Endpoint para atualizar dados de um profissional
+    // Administradores podem atualizar qualquer profissional, profissionais só podem atualizar seus próprios dados
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isProfissionalLogado(#id)")
     public ResponseEntity<ProfissionalDTO.Response> atualizarProfissional(@PathVariable Long id, @RequestBody ProfissionalDTO.Request dto) {
@@ -85,6 +99,7 @@ public class ProfissionalController {
             return ResponseEntity.notFound().build();
         }
 
+        // Atualiza os campos do profissional
         profissional.setUsername(dto.getUsername());
         profissional.setPassword(dto.getPassword());
         profissional.setEmail(dto.getEmail());
@@ -98,6 +113,8 @@ public class ProfissionalController {
         return ResponseEntity.ok(new ProfissionalDTO.Response(profissionalAtualizado));
     }
 
+    // Endpoint para deletar um profissional
+    // Apenas administradores podem deletar profissionais
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletarProfissional(@PathVariable Long id) {
@@ -107,6 +124,8 @@ public class ProfissionalController {
         return ResponseEntity.notFound().build();
     }
 
+    // Endpoint para listar serviços de um profissional
+    // Retorna todos os serviços oferecidos por um profissional específico
     @GetMapping("/{id}/servicos")
     public ResponseEntity<List<ServicoDTO.Response>> listarServicosProfissional(@PathVariable Long id) {
         try {
@@ -120,6 +139,8 @@ public class ProfissionalController {
         }
     }
 
+    // Endpoint para verificar disponibilidade de um profissional
+    // Retorna horários disponíveis de um profissional em uma data específica
     @GetMapping("/{id}/disponibilidade")
     public ResponseEntity<Map<String, List<String>>> verificarDisponibilidade(
             @PathVariable Long id,
@@ -132,6 +153,8 @@ public class ProfissionalController {
         }
     }
 
+    // Endpoint para buscar profissionais por salão
+    // Retorna todos os profissionais que trabalham em um salão específico
     @GetMapping("/salao/{salaoId}")
     public ResponseEntity<List<ProfissionalDTO.Response>> buscarProfissionaisPorSalao(@PathVariable Long salaoId) {
         try {
@@ -145,6 +168,7 @@ public class ProfissionalController {
         }
     }
 
+    // Método auxiliar para converter Servico para ServicoDTO.Response
     private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
         return new ServicoDTO.Response(servico);
     }

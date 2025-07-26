@@ -21,17 +21,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
+// Controller responsável por gerenciar operações relacionadas aos salões
+// Fornece endpoints para CRUD de salões, upload de imagem e consultas relacionadas
 @RestController
 @RequestMapping("/api/saloes")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:8080"})
 public class SalaoController {
 
+    // Serviço para operações de salão
     @Autowired
     private SalaoService salaoService;
 
+    // Serviço para upload de arquivos (imagens)
     @Autowired
     private FileUploadService fileUploadService;
 
+    // Endpoint para listar todos os salões
     @GetMapping
     public ResponseEntity<List<SalaoDTO.Response>> listarSaloes() {
         List<Salao> saloes = salaoService.listarSaloes();
@@ -41,6 +46,7 @@ public class SalaoController {
         return ResponseEntity.ok(response);
     }
 
+    // Endpoint para buscar um salão específico por ID
     @GetMapping("/{id}")
     public ResponseEntity<SalaoDTO.Response> buscarSalao(@PathVariable Long id) {
         try {
@@ -51,6 +57,7 @@ public class SalaoController {
         }
     }
 
+    // Endpoint para criar um novo salão
     @PostMapping
     public ResponseEntity<SalaoDTO.Response> criarSalao(@Valid @RequestBody SalaoDTO.Request request) {
         try {
@@ -63,6 +70,7 @@ public class SalaoController {
         }
     }
 
+    // Endpoint para atualizar dados de um salão
     @PutMapping("/{id}")
     public ResponseEntity<SalaoDTO.Response> atualizarSalao(
             @PathVariable Long id,
@@ -76,6 +84,7 @@ public class SalaoController {
         }
     }
 
+    // Endpoint para deletar um salão
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarSalao(@PathVariable Long id) {
         boolean deletado = salaoService.deletarSalao(id);
@@ -85,6 +94,7 @@ public class SalaoController {
         return ResponseEntity.notFound().build();
     }
 
+    // Endpoint para buscar salões por proprietário
     @GetMapping("/proprietario")
     public ResponseEntity<List<SalaoDTO.Response>> buscarSaloesPorProprietario(@RequestParam Long proprietarioId) {
         try {
@@ -103,6 +113,7 @@ public class SalaoController {
         }
     }
 
+    // Endpoint para buscar salão por nome e endereço
     @GetMapping("/buscar")
     public ResponseEntity<SalaoDTO.Response> buscarSalaoPorNomeEEndereco(
             @RequestParam String nome,
@@ -112,6 +123,7 @@ public class SalaoController {
             .orElse(ResponseEntity.notFound().build());
     }
 
+    // Endpoint para listar serviços de um salão
     @GetMapping("/{id}/servicos")
     public ResponseEntity<List<ServicoDTO.Response>> listarServicosSalao(@PathVariable Long id) {
         try {
@@ -125,6 +137,7 @@ public class SalaoController {
         }
     }
 
+    // Endpoint para listar profissionais de um salão
     @GetMapping("/{id}/profissionais")
     public ResponseEntity<List<ProfissionalDTO.Response>> listarProfissionaisSalao(@PathVariable Long id) {
         try {
@@ -138,6 +151,7 @@ public class SalaoController {
         }
     }
 
+    // Endpoint para upload de imagem do salão
     @PostMapping("/{id}/imagem")
     public ResponseEntity<SalaoDTO.Response> uploadImagemSalao(
             @PathVariable Long id,
@@ -159,14 +173,17 @@ public class SalaoController {
         }
     }
 
+    // Método auxiliar para converter Servico para ServicoDTO.Response
     private ServicoDTO.Response converterServicoParaDTO(Servico servico) {
         return new ServicoDTO.Response(servico);
     }
 
+    // Método auxiliar para converter Profissional para ProfissionalDTO.Response
     private ProfissionalDTO.Response converterProfissionalParaDTO(Profissional profissional) {
         return new ProfissionalDTO.Response(profissional);
     }
 
+    // Método auxiliar para converter Salao para SalaoDTO.Response
     private SalaoDTO.Response converterParaDTO(Salao salao) {
         SalaoDTO.Response response = new SalaoDTO.Response();
         response.setId(salao.getId());
@@ -198,6 +215,7 @@ public class SalaoController {
         return response;
     }
 
+    // Método auxiliar para converter SalaoDTO.Request para Salao
     private Salao converterParaEntidade(SalaoDTO.Request dto) {
         Salao salao = new Salao();
         salao.setNome(dto.getNome());

@@ -23,17 +23,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Controller responsável por gerenciar o sistema de quiz e recomendações
+// Fornece endpoints para perguntas, respostas e recomendações personalizadas
 @RestController
 @RequestMapping("/api/quiz")
 @Tag(name = "Quiz", description = "Endpoints para gestão do quiz de recomendações")
 public class QuizController {
     
+    // Serviço para operações de quiz e recomendações
     @Autowired
     private QuizService quizService;
     
-    /**
-     * Lista todas as perguntas ativas com suas alternativas
-     */
+    // Endpoint para listar todas as perguntas do quiz
+    // Retorna perguntas ativas ordenadas por ordem
     @GetMapping("/perguntas")
     @Operation(summary = "Listar perguntas", description = "Retorna todas as perguntas ativas ordenadas por ordem")
     @ApiResponses(value = {
@@ -50,9 +52,8 @@ public class QuizController {
         }
     }
     
-    /**
-     * Salva as respostas do cliente e retorna a recomendação
-     */
+    // Endpoint para responder o quiz
+    // Salva as respostas do cliente e retorna recomendação personalizada
     @PostMapping("/responder")
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(summary = "Responder quiz", description = "Salva as respostas do cliente e retorna a recomendação personalizada")
@@ -79,9 +80,8 @@ public class QuizController {
         }
     }
     
-    /**
-     * Lista todas as recomendações cadastradas (apenas admin)
-     */
+    // Endpoint para listar todas as recomendações (apenas admin)
+    // Retorna todas as recomendações cadastradas no sistema
     @GetMapping("/recomendacoes")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Listar recomendações", description = "Retorna todas as recomendações cadastradas (apenas administradores)")
@@ -101,9 +101,8 @@ public class QuizController {
         }
     }
     
-    /**
-     * Cadastra uma nova recomendação (apenas admin)
-     */
+    // Endpoint para cadastrar nova recomendação (apenas admin)
+    // Permite criar novas recomendações no sistema
     @PostMapping("/recomendacoes")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Cadastrar recomendação", description = "Cadastra uma nova recomendação (apenas administradores)")
@@ -130,9 +129,8 @@ public class QuizController {
         }
     }
     
-    /**
-     * Busca recomendação por critério específico
-     */
+    // Endpoint para buscar recomendação por critério
+    // Retorna a recomendação para um critério específico
     @GetMapping("/recomendacoes/{criterio}")
     @Operation(summary = "Buscar recomendação por critério", description = "Retorna a recomendação para um critério específico")
     @ApiResponses(value = {
@@ -156,9 +154,8 @@ public class QuizController {
         }
     }
     
-    /**
-     * Verifica se o cliente já respondeu o quiz
-     */
+    // Endpoint para verificar status do quiz do cliente
+    // Verifica se o cliente já respondeu o quiz e retorna dados relacionados
     @GetMapping("/cliente/{clienteId}/status")
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(summary = "Verificar status do quiz", description = "Verifica se o cliente já respondeu o quiz")
@@ -191,9 +188,8 @@ public class QuizController {
         }
     }
     
-    /**
-     * Busca resposta do quiz por cliente
-     */
+    // Endpoint para buscar resposta específica do cliente
+    // Retorna a resposta do quiz de um cliente específico
     @GetMapping("/cliente/{clienteId}/resposta")
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(summary = "Buscar resposta do cliente", description = "Retorna a resposta do quiz de um cliente específico")
@@ -219,6 +215,8 @@ public class QuizController {
         }
     }
 
+    // Endpoint de debug para listar recomendações
+    // Usado para desenvolvimento e testes
     @GetMapping("/debug/recomendacoes")
     public ResponseEntity<List<RecomendacaoDTO>> listarRecomendacoesDebug() {
         try {
@@ -229,13 +227,15 @@ public class QuizController {
         }
     }
 
+    // Endpoint de debug para testar critérios
+    // Permite testar a geração de critérios e busca de recomendações
     @PostMapping("/debug/testar-criterio")
     public ResponseEntity<Map<String, Object>> testarCriterio(@RequestBody Map<String, String> respostas) {
         try {
-            // Gerar critério
+            // Gerar critério baseado nas respostas fornecidas
             String criterio = quizService.gerarCriterioTeste(respostas);
             
-            // Buscar recomendação
+            // Buscar recomendação para o critério gerado
             RecomendacaoDTO recomendacao = null;
             try {
                 recomendacao = quizService.buscarRecomendacaoPorCriterio(criterio);
@@ -256,9 +256,8 @@ public class QuizController {
         }
     }
     
-    /**
-     * Limpa as respostas do quiz de um cliente (permite refazer)
-     */
+    // Endpoint para limpar respostas do quiz
+    // Remove as respostas do quiz de um cliente para permitir nova resposta
     @DeleteMapping("/cliente/{clienteId}/respostas")
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(summary = "Limpar respostas do quiz", description = "Remove as respostas do quiz de um cliente para permitir nova resposta")
