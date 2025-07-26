@@ -11,12 +11,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+// Serviço responsável por operações de segurança e validação de permissões
+// Fornece métodos para verificar se usuários podem acessar recursos específicos
 @Service
 public class SecurityService {
 
+    // Repositório para operações de cliente
     @Autowired
     private ClienteRepository clienteRepository;
 
+    // Método privado para obter o usuário autenticado do contexto de segurança
+    // Converte UserPrincipal para Usuario para facilitar comparações
     private Usuario getUsuarioAutenticado() {
         System.out.println("🔍 DEBUG SecurityService: Obtendo usuário autenticado");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -31,6 +36,7 @@ public class SecurityService {
         System.out.println("🔍 DEBUG SecurityService: Principal: " + principal);
         System.out.println("🔍 DEBUG SecurityService: Tipo do principal: " + (principal != null ? principal.getClass().getName() : "null"));
         
+        // Converte UserPrincipal para Usuario
         if (principal instanceof UserPrincipal) {
             System.out.println("✅ DEBUG SecurityService: Principal é UserPrincipal");
             UserPrincipal userPrincipal = (UserPrincipal) principal;
@@ -55,6 +61,8 @@ public class SecurityService {
         return null;
     }
 
+    // Verifica se o cliente logado é o mesmo que está sendo acessado
+    // Usado para controlar acesso a recursos específicos do cliente
     public boolean isClienteLogado(Long idCliente) {
         Usuario usuario = getUsuarioAutenticado();
         if (usuario == null || !(usuario instanceof Cliente)) {
@@ -63,6 +71,8 @@ public class SecurityService {
         return usuario.getIdUsuario().equals(idCliente);
     }
 
+    // Verifica se o profissional logado é o mesmo que está sendo acessado
+    // Usado para controlar acesso a recursos específicos do profissional
     public boolean isProfissionalLogado(Long idProfissional) {
         Usuario usuario = getUsuarioAutenticado();
         if (usuario == null || !(usuario instanceof Profissional)) {
@@ -71,6 +81,8 @@ public class SecurityService {
         return usuario.getIdUsuario().equals(idProfissional);
     }
 
+    // Verifica se o admin logado é o mesmo que está sendo acessado
+    // Usado para controlar acesso a recursos específicos do admin
     public boolean isAdminLogado(Long idAdmin) {
         Usuario usuario = getUsuarioAutenticado();
         if (usuario == null) {
@@ -83,6 +95,8 @@ public class SecurityService {
         return usuario.getIdUsuario().equals(idAdmin);
     }
 
+    // Verifica se o proprietário logado é o mesmo que está sendo acessado
+    // Usado para controlar acesso a recursos específicos do proprietário
     public boolean isProprietarioLogado(Long idProprietario) {
         Usuario usuario = getUsuarioAutenticado();
         if (usuario == null || !(usuario instanceof com.beauty.com.MatchBeauty.entity.Proprietario)) {
@@ -91,12 +105,8 @@ public class SecurityService {
         return usuario.getIdUsuario().equals(idProprietario);
     }
     
-    /**
-     * OBTER ID DO CLIENTE LOGADO
-     * Retorna o ID do cliente atualmente autenticado
-     * 
-     * @return ID do cliente logado ou null se não for cliente
-     */
+    // Retorna o ID do cliente atualmente autenticado
+    // Usado para obter o ID do cliente logado sem precisar de parâmetros
     public Long getClienteLogadoId() {
         System.out.println("🔍 DEBUG SecurityService: getClienteLogadoId() chamado");
         Usuario usuario = getUsuarioAutenticado();
