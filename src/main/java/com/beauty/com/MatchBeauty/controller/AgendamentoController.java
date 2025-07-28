@@ -33,6 +33,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -384,6 +386,12 @@ public class AgendamentoController {
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<?> criarAgendamento(@RequestBody AgendamentoDTO.Request request) {
         try {
+            // Processar a data/hora corretamente
+            LocalDateTime dataHoraProcessada = processarDataHora(request.getDataHora());
+            
+            System.out.println("🔍 DEBUG: Data/Hora original: " + request.getDataHora());
+            System.out.println("🔍 DEBUG: Data/Hora processada: " + dataHoraProcessada);
+            
             // Extrair clienteId do token JWT
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             UserPrincipal userPrincipal = (UserPrincipal) auth.getPrincipal();
@@ -425,22 +433,26 @@ public class AgendamentoController {
             Salao salao = salaoService.buscarSalao(request.getSalaoId());
 
             // Verificar se a data/hora não é no passado
-            if (request.getDataHora().isBefore(LocalDateTime.now())) {
+            if (dataHoraProcessada.isBefore(LocalDateTime.now())) {
                 return ResponseEntity.badRequest().body("Não é possível agendar para datas/horários no passado");
             }
 
             // Criar o objeto Agendamento
-        Agendamento agendamento = new Agendamento();
-        agendamento.setDataHora(request.getDataHora());
+            Agendamento agendamento = new Agendamento();
+            agendamento.setDataHora(dataHoraProcessada);
             agendamento.setCliente(cliente);
             agendamento.setProfissional(profissional);
             agendamento.setServico(servico);
             agendamento.setSalao(salao);
-        agendamento.setObservacoes(request.getObservacoes());
+            agendamento.setObservacoes(request.getObservacoes());
             agendamento.setStatus(Agendamento.StatusAgendamento.AGENDADO);
 
-        Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
+            Agendamento novoAgendamento = agendamentoService.criarAgendamento(agendamento);
+            System.out.println("🔍 DEBUG: Data/Hora salva no banco: " + novoAgendamento.getDataHora());
+            
             AgendamentoDTO.Response response = AgendamentoDTO.Response.fromEntity(novoAgendamento);
+            System.out.println("🔍 DEBUG: Data/Hora no response: " + response.getDataHora());
+            
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AgendamentoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -448,6 +460,27 @@ public class AgendamentoController {
             // Adicionando log do erro para depuração
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno ao criar agendamento: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Processa a data/hora recebida do frontend para garantir o timezone correto
+     */
+    private LocalDateTime processarDataHora(String dataHoraString) {
+        if (dataHoraString == null || dataHoraString.trim().isEmpty()) {
+            throw new AgendamentoException("Data/Hora não pode ser nula ou vazia");
+        }
+        
+        System.out.println("🔍 DEBUG: Processando string de data/hora: " + dataHoraString);
+        
+        try {
+            // Fazer parse da string diretamente como LocalDateTime
+            LocalDateTime dataHora = LocalDateTime.parse(dataHoraString);
+            System.out.println("🔍 DEBUG: Data/Hora após parse: " + dataHora);
+            return dataHora;
+        } catch (Exception e) {
+            System.out.println("❌ DEBUG: Erro ao fazer parse da data/hora: " + e.getMessage());
+            throw new AgendamentoException("Formato de data/hora inválido: " + dataHoraString);
         }
     }
 

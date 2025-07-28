@@ -422,22 +422,31 @@ async function configurarFormularioAgendamentoModal(servicoId, salaoId) {
         const profissional = formData.get('profissional');
         const horario = formData.get('horario');
         
+        console.log('🔍 DEBUG: Dados do formulário:', { data, profissional, horario });
+        
         if (!data || !profissional || !horario) {
             alert('Por favor, preencha todos os campos');
             return;
         }
 
         try {
-            // Combinar data e horário
-            const dataHora = new Date(data + 'T' + horario);
+            // Combinar data e horário de forma mais robusta
+            const [ano, mes, dia] = data.split('-');
+            const [hora, minuto] = horario.split(':');
+            
+            // Criar string de data/hora no formato local (YYYY-MM-DDTHH:mm:ss)
+            const dataHoraString = `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}T${hora.padStart(2, '0')}:${minuto.padStart(2, '0')}:00`;
+            
+            console.log('🔧 ServicosJS: Data/Hora original:', data, horario);
+            console.log('🔧 ServicosJS: Data/Hora formatada:', dataHoraString);
             
             const dadosAgendamento = {
                 profissionalId: parseInt(profissional),
                 servicoId: parseInt(servicoId),
                 salaoId: parseInt(salaoId),
-                dataHora: dataHora.toISOString(),
+                dataHora: dataHoraString,
                 observacoes: formData.get('observacoes') || ''
-        };
+            };
 
             console.log('🔧 ServicosJS: Enviando agendamento:', dadosAgendamento);
         
@@ -453,10 +462,10 @@ async function configurarFormularioAgendamentoModal(servicoId, salaoId) {
             console.log('✅ ServicosJS: Agendamento criado com sucesso:', response);
             
             // Mostrar sucesso
-        alert('Agendamento realizado com sucesso!');
+            alert('Agendamento realizado com sucesso!');
             
             // Fechar modal e redirecionar
-        document.getElementById('modal-agendamento').remove();
+            document.getElementById('modal-agendamento').remove();
             window.location.href = 'agendamentos.html';
             
         } catch (error) {

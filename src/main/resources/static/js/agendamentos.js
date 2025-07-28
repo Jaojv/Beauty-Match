@@ -159,11 +159,24 @@ class AgendamentosManager {
         const card = document.createElement('div');
         card.className = 'agendamento-card';
         
-        const dataHora = new Date(agendamento.dataHora);
-        const dataFormatada = dataHora.toLocaleDateString('pt-BR');
-        const horaFormatada = dataHora.toLocaleTimeString('pt-BR', { 
+        // Processar data/hora de forma mais robusta
+        let dataHora;
+        if (typeof agendamento.dataHora === 'string') {
+            dataHora = new Date(agendamento.dataHora);
+        } else {
+            dataHora = new Date(agendamento.dataHora);
+        }
+        
+        // Forçar timezone para São Paulo na exibição
+        const offset = -3; // UTC-3 para São Paulo
+        const utc = dataHora.getTime() + (dataHora.getTimezoneOffset() * 60000);
+        const dataHoraLocal = new Date(utc + (offset * 3600000));
+        
+        // Formatar data e hora no timezone local
+        const dataFormatada = dataHoraLocal.toLocaleDateString('pt-BR');
+        const horaFormatada = dataHoraLocal.toLocaleTimeString('pt-BR', { 
             hour: '2-digit', 
-            minute: '2-digit' 
+            minute: '2-digit'
         });
 
         const statusClass = this.getStatusClass(agendamento.status);
@@ -219,10 +232,8 @@ class AgendamentosManager {
                 ` : ''}
             </div>
         `;
-
-        // Adicionar event listeners após criar o HTML
+        
         this.adicionarEventListeners(card, agendamento);
-
         return card;
     }
 

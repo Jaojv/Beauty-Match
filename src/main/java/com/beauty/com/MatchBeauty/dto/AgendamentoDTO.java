@@ -16,7 +16,7 @@ public class AgendamentoDTO {
     
     // Classe para requisições de agendamento
     public static class Request {
-        private LocalDateTime dataHora;
+        private String dataHora; // Mudando para String para evitar conversão automática
         private Long clienteId;
         private Long profissionalId;
         private Long servicoId;
@@ -26,11 +26,11 @@ public class AgendamentoDTO {
         public Request() {
         }
 
-        public LocalDateTime getDataHora() {
+        public String getDataHora() {
             return dataHora;
         }
 
-        public void setDataHora(LocalDateTime dataHora) {
+        public void setDataHora(String dataHora) {
             this.dataHora = dataHora;
         }
 
