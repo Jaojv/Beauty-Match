@@ -53,7 +53,7 @@ INSERT IGNORE INTO recomendacoes (criterio, descricao, ativo, created_at, update
 ('LISO_PELE_MORENA_CLARA_TRIANGULAR_MODERNO', 'Para cabelos lisos com pele morena clara e rosto triangular, indicamos cortes modernos com camadas desconectadas e franja lateral. O estilo moderno traz leveza ao visual. Tons de cor recomendados: castanho médio, caramelo ou castanho dourado.', true, NOW(), NOW()),
 ('LISO_PELE_MORENA_CLARA_TRIANGULAR_ROMANTICO', 'Para cabelos lisos com pele morena clara e rosto triangular, recomendamos cortes em camadas longas e volume no topo. O estilo romântico suaviza o formato. Tons de cor recomendados: castanho médio, caramelo ou castanho dourado.', true, NOW(), NOW()),
 ('LISO_PELE_MORENA_CLARA_TRIANGULAR_AVENTUREIRO', 'Para cabelos lisos com pele morena clara e rosto triangular, sugerimos cortes curtos e assimétricos, como o bob. O estilo aventureiro destaca a personalidade. Tons de cor recomendados: castanho médio, caramelo ou castanho dourado.', true, NOW(), NOW()),
-('LISO_PELE_MORENA_CLARA_TRIANGULAR_MINIMALISTA', 'Para cabelos lisos com pele morena clara e rosto triangular, indicamos cortes retos e simétricos, com pouco volume nas laterais. O estilo minimalista valoriza a simplicidade. Tons de cor recomendados: castanho médio, caramelo ou castanho dourado.', true, NOW(), NOW()),
+('LISO_PELE_MORENA_CLARA_TRIANGULAR_MINIMALISTA', 'Para cabelos lisos com pele morena clara e rosto triangular, indicamos cortes retos e simétricos, com pouco volume nas laterais. O estilo minimalista valoriza a simplicidade. Tons de cor recomendados: castanho médio, caramelo ou castanho dourado.', true, NOW(), NOW());
 -- LISO + PELE MORENA
 -- (continuação nos próximos blocos) 
 
@@ -268,7 +268,7 @@ INSERT IGNORE INTO recomendacoes (criterio, descricao, ativo, created_at, update
 ('ONDULADO_PELE_NEGRA_TRIANGULAR_MODERNO', 'Para cabelos ondulados com pele negra e rosto triangular, indicamos cortes modernos com camadas desconectadas e franja lateral. O estilo moderno traz leveza ao visual. Tons de cor recomendados: preto profundo, castanho muito escuro ou preto azulado.', true, NOW(), NOW()),
 ('ONDULADO_PELE_NEGRA_TRIANGULAR_ROMANTICO', 'Para cabelos ondulados com pele negra e rosto triangular, recomendamos cortes em camadas longas e volume no topo. O estilo romântico suaviza o formato. Tons de cor recomendados: preto profundo, castanho muito escuro ou preto azulado.', true, NOW(), NOW()),
 ('ONDULADO_PELE_NEGRA_TRIANGULAR_AVENTUREIRO', 'Para cabelos ondulados com pele negra e rosto triangular, sugerimos cortes curtos e assimétricos, como o bob ondulado. O estilo aventureiro destaca a personalidade. Tons de cor recomendados: preto profundo, castanho muito escuro ou preto azulado.', true, NOW(), NOW()),
-('ONDULADO_PELE_NEGRA_TRIANGULAR_MINIMALISTA', 'Para cabelos ondulados com pele negra e rosto triangular, indicamos cortes retos e simétricos, com pouco volume nas laterais. O estilo minimalista valoriza a simplicidade. Tons de cor recomendados: preto profundo, castanho muito escuro ou preto azulado.', true, NOW(), NOW()),
+('ONDULADO_PELE_NEGRA_TRIANGULAR_MINIMALISTA', 'Para cabelos ondulados com pele negra e rosto triangular, indicamos cortes retos e simétricos, com pouco volume nas laterais. O estilo minimalista valoriza a simplicidade. Tons de cor recomendados: preto profundo, castanho muito escuro ou preto azulado.', true, NOW(), NOW());
 -- CRESPO + todos os tons de pele + todos os formatos de rosto + todos os estilos
 -- Total: 4 tons de pele × 5 formatos de rosto × 5 estilos = 100 combinações
 
