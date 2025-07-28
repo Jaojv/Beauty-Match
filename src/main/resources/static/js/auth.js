@@ -1,4 +1,5 @@
-// Gerenciamento de Autenticação
+// Sistema de gerenciamento de autenticação
+// Controla login, logout e estado de autenticação do usuário
 class AuthManager {
     constructor() {
         console.log('AuthManager: Inicializando...');
@@ -6,6 +7,7 @@ class AuthManager {
     }
 
     // Inicializar após DOM estar pronto
+    // Configura verificações de autenticação com delay para evitar conflitos
     init() {
         console.log('AuthManager: Iniciando com delay...');
         // Adicionar delay para garantir que outros scripts não interfiram
@@ -16,6 +18,7 @@ class AuthManager {
     }
 
     // Verificar se o usuário está autenticado
+    // Verifica token e dados do usuário no localStorage
     checkAuthStatus() {
         console.log('AuthManager: Verificando status de autenticação...');
         try {
@@ -48,6 +51,7 @@ class AuthManager {
     }
 
     // Salvar dados de autenticação
+    // Armazena token e dados do usuário no localStorage
     saveAuthData(token, userData) {
         console.log('AuthManager: Salvando dados de autenticação...');
         try {
@@ -59,7 +63,8 @@ class AuthManager {
         }
     }
 
-    // Atualizar UI para usuário logado (se existirem)
+    // Atualizar UI para usuário logado
+    // Esconde botões de login e mostra perfil do usuário
     updateUIForLoggedUser(user) {
         console.log(`AuthManager: Atualizando UI para usuário logado...`);
         try {
@@ -154,7 +159,8 @@ class AuthManager {
         }
     }
 
-    // Atualizar UI para visitante (se existirem)
+    // Atualizar UI para visitante
+    // Mostra botões de login e esconde perfil do usuário
     updateUIForGuest() {
         console.log('AuthManager: Atualizando UI para visitante...');
         try {
@@ -184,6 +190,7 @@ class AuthManager {
     }
 
     // Configurar modal de perfil
+    // Configura abertura e fechamento do modal de perfil do usuário
     setupPerfilModal() {
         console.log('AuthManager: Configurando modal de perfil...');
         try {
@@ -242,6 +249,7 @@ class AuthManager {
     }
 
     // Logout
+    // Remove dados de autenticação e redireciona
     logout() {
         console.log('AuthManager: Executando logout...');
         try {
@@ -266,6 +274,7 @@ class AuthManager {
     }
 
     // Verificar se está autenticado
+    // Retorna true se há token no localStorage
     isAuthenticated() {
         try {
             const isAuth = localStorage.getItem('authToken') !== null;
@@ -278,6 +287,7 @@ class AuthManager {
     }
 
     // Verificar se está autenticado e redirecionar se não estiver
+    // Usado para proteger páginas que requerem login
     requireAuth(redirectTo = '/pages/login.html') {
         if (!this.isAuthenticated()) {
             window.location.href = redirectTo;
@@ -287,6 +297,7 @@ class AuthManager {
     }
 
     // Verificar se NÃO está autenticado e redirecionar se estiver
+    // Usado para páginas que só devem ser acessadas por visitantes
     requireGuest(redirectTo = '/index.html') {
         if (this.isAuthenticated()) {
             window.location.href = redirectTo;
@@ -296,6 +307,7 @@ class AuthManager {
     }
 
     // Obter dados do usuário
+    // Retorna dados do usuário do localStorage
     getUserData() {
         try {
         const userData = localStorage.getItem('userData');
@@ -310,6 +322,7 @@ class AuthManager {
 }
 
 // Instância global do gerenciador de autenticação
+// Inicializa quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔧 AuthManager: DOM carregado, inicializando...');
     try {

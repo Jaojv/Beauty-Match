@@ -11,22 +11,30 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Controller responsável por gerenciar operações relacionadas aos administradores
+// Fornece endpoints para CRUD de administradores com controle de acesso baseado em roles
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
 
+    // Serviço para operações de administrador
     @Autowired
     private AdminService adminService;
 
+    // Serviço de segurança para validação de permissões
     @Autowired
     private SecurityService securityService;
 
+    // Endpoint para listar todos os administradores
+    // Apenas administradores podem acessar esta funcionalidade
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Admin>> listarAdmins() {
         return ResponseEntity.ok(adminService.listarAdmins());
     }
 
+    // Endpoint para buscar um administrador específico por ID
+    // Apenas administradores podem acessar e apenas o próprio admin pode ver seus dados
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and @securityService.isAdminLogado(#id)")
     public ResponseEntity<Admin> buscarAdmin(@PathVariable Long id) {
@@ -37,6 +45,8 @@ public class AdminController {
         return ResponseEntity.notFound().build();
     }
 
+    // Endpoint para criar um novo administrador
+    // Apenas administradores podem criar outros administradores
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Admin> criarAdmin(@RequestBody AdminDTO dto) {
@@ -52,6 +62,8 @@ public class AdminController {
         return ResponseEntity.ok(novoAdmin);
     }
 
+    // Endpoint para atualizar dados de um administrador
+    // Apenas administradores podem atualizar e apenas o próprio admin pode atualizar seus dados
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and @securityService.isAdminLogado(#id)")
     public ResponseEntity<Admin> atualizarAdmin(@PathVariable Long id, @RequestBody AdminDTO dto) {
@@ -71,6 +83,8 @@ public class AdminController {
         return ResponseEntity.ok(adminAtualizado);
     }
 
+    // Endpoint para deletar um administrador
+    // Apenas administradores podem deletar e apenas o próprio admin pode deletar sua conta
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and @securityService.isAdminLogado(#id)")
     public ResponseEntity<Void> deletarAdmin(@PathVariable Long id) {

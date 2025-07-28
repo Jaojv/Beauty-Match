@@ -1,5 +1,9 @@
+// Sistema de gerenciamento de salões
+// Controla exibição, busca e favoritos dos salões
+
 // Função para criar o card do salão
-function criarCardSalao(salao) {
+// Cria elemento visual para exibir informações do salão
+async function criarCardSalao(salao) {
     console.log('🔧 SaloesJS: Criando card para salão:', salao.nome);
     const card = document.createElement('div');
     card.className = 'card';
@@ -52,14 +56,26 @@ function criarCardSalao(salao) {
         border-radius: 50%;
     `;
 
-    // Verificar se o salão está favoritado
-    const favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
-    const isFavoritado = favoritos.some(fav => fav.id === salao.id);
+    // Verificar se o usuário está logado
+    const isLoggedIn = localStorage.getItem('authToken') !== null;
     
-    if (isFavoritado) {
-        favoritoBtn.style.color = '#d46b6b';
-        favoritoBtn.style.borderColor = '#d46b6b';
-        favoritoBtn.style.textShadow = '0 0 5px rgba(212, 107, 107, 0.5)';
+    // Se não estiver logado, coração fica cinza
+    if (!isLoggedIn) {
+        favoritoBtn.style.color = '#ccc';
+        favoritoBtn.style.borderColor = '#ccc';
+    } else {
+        // Se estiver logado, verificar status via API
+        try {
+            const isFavoritado = await apiClient.verificarFavorito(salao.id);
+            if (isFavoritado) {
+                favoritoBtn.style.color = '#d46b6b';
+                favoritoBtn.style.borderColor = '#d46b6b';
+                favoritoBtn.style.textShadow = '0 0 5px rgba(212, 107, 107, 0.5)';
+            }
+        } catch (error) {
+            console.error('❌ SaloesJS: Erro ao verificar favorito:', error);
+            // Em caso de erro, manter coração cinza
+        }
     }
 
     // Evento de clique no botão de favorito
@@ -84,45 +100,56 @@ function criarCardSalao(salao) {
 }
 
 // Função para alternar favorito
-function toggleFavorito(salao, btnElement) {
+// Adiciona ou remove salão dos favoritos
+async function toggleFavorito(salao, btnElement) {
     console.log('🔧 SaloesJS: Alternando favorito para salão:', salao.nome);
+    console.log('🔍 DEBUG: Tipo do salao.id:', typeof salao.id);
+    console.log('🔍 DEBUG: Valor do salao.id:', salao.id);
     
-    const favoritos = JSON.parse(localStorage.getItem('favoritos') || '[]');
-    const salaoIndex = favoritos.findIndex(fav => fav.id === salao.id);
+    // Verificar se o usuário está logado
+    const isLoggedIn = localStorage.getItem('authToken') !== null;
     
-    if (salaoIndex === -1) {
-        // Adicionar aos favoritos
-        favoritos.push({
-            id: salao.id,
-            nome: salao.nome,
-            imagemUrl: salao.imagemUrl || 'images/logo.png',
-            endereco: salao.endereco || '',
-            telefone: salao.telefone || '',
-            email: salao.email || '',
-            dataFavoritado: new Date().toISOString()
-        });
-        
-        // Atualizar visual do botão
-        btnElement.style.color = '#d46b6b';
-        btnElement.style.borderColor = '#d46b6b';
-        btnElement.style.textShadow = '0 0 5px rgba(212, 107, 107, 0.5)';
-        
-        console.log('✅ SaloesJS: Salão adicionado aos favoritos');
-    } else {
-        // Remover dos favoritos
-        favoritos.splice(salaoIndex, 1);
-        
-        // Atualizar visual do botão
-        btnElement.style.color = '#ccc';
-        btnElement.style.borderColor = '#ccc';
-        btnElement.style.textShadow = 'none';
-        
-        console.log('✅ SaloesJS: Salão removido dos favoritos');
+    if (!isLoggedIn) {
+        console.log('⚠️ SaloesJS: Usuário não logado, redirecionando para login');
+        window.location.href = 'pages/login.html';
+        return;
     }
     
-    // Salvar no localStorage
-    localStorage.setItem('favoritos', JSON.stringify(favoritos));
-    console.log('💾 SaloesJS: Favoritos salvos no localStorage');
+    try {
+        // Verificar se o salão está favoritado
+        console.log('🔍 DEBUG: Chamando verificarFavorito com ID:', salao.id);
+        const isFavoritado = await apiClient.verificarFavorito(salao.id);
+        console.log('🔍 DEBUG: Resultado verificarFavorito:', isFavoritado);
+        
+        if (!isFavoritado) {
+            // Adicionar aos favoritos
+            console.log('🔍 DEBUG: Chamando adicionarFavorito com ID:', salao.id);
+            await apiClient.adicionarFavorito(salao.id);
+            
+            // Atualizar visual do botão
+            btnElement.style.color = '#d46b6b';
+            btnElement.style.borderColor = '#d46b6b';
+            btnElement.style.textShadow = '0 0 5px rgba(212, 107, 107, 0.5)';
+            
+            console.log('✅ SaloesJS: Salão adicionado aos favoritos');
+        } else {
+            // Remover dos favoritos
+            console.log('🔍 DEBUG: Chamando removerFavorito com ID:', salao.id);
+            await apiClient.removerFavorito(salao.id);
+            
+            // Atualizar visual do botão
+            btnElement.style.color = '#ccc';
+            btnElement.style.borderColor = '#ccc';
+            btnElement.style.textShadow = 'none';
+            
+            console.log('✅ SaloesJS: Salão removido dos favoritos');
+        }
+        
+        console.log('💾 SaloesJS: Favoritos atualizados no backend');
+    } catch (error) {
+        console.error('❌ SaloesJS: Erro ao alternar favorito:', error);
+        alert('Erro ao atualizar favoritos. Tente novamente.');
+    }
 }
 
 // Função para renderizar os salões
@@ -151,10 +178,10 @@ async function renderizarSaloes(filtro = '') {
         }
         
         // Adicionar cards ao container
-        saloesFiltrados.forEach(salao => {
-            const card = criarCardSalao(salao);
+        for (const salao of saloesFiltrados) {
+            const card = await criarCardSalao(salao);
             container.appendChild(card);
-        });
+        }
         
         console.log('✅ SaloesJS: Salões renderizados com sucesso');
     } catch (e) {

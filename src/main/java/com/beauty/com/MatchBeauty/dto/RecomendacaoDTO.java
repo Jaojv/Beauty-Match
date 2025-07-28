@@ -4,6 +4,7 @@ import com.beauty.com.MatchBeauty.entity.Recomendacao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+// DTO para recomendações do quiz
 public class RecomendacaoDTO {
     
     private Long id;

@@ -1,3 +1,6 @@
+// Sistema de gerenciamento de perfil do usuário
+// Controla exibição, edição e atualização dos dados do perfil
+
 // Gerenciador de Perfil do Usuário
 class GerenciadorPerfil {
     constructor() {
@@ -6,11 +9,13 @@ class GerenciadorPerfil {
         this.inicializar();
     }
 
+    // Inicializa o sistema de perfil
     inicializar() {
         this.configurarEventos();
         this.carregarDadosUsuario();
     }
 
+    // Configura eventos de interação do perfil
     configurarEventos() {
         // Botão de perfil para abrir modal
         const botaoPerfil = document.querySelector('.botao_logado');
@@ -62,6 +67,7 @@ class GerenciadorPerfil {
         }
     }
 
+    // Carrega dados do usuário do localStorage
     carregarDadosUsuario() {
         const userData = localStorage.getItem('userData');
         if (userData) {
@@ -77,6 +83,7 @@ class GerenciadorPerfil {
         }
     }
 
+    // Preenche os campos do perfil com dados do usuário
     preencherDadosPerfil(usuario) {
         console.log('🔧 PerfilJS: Preenchendo dados do perfil para:', usuario.nome);
         

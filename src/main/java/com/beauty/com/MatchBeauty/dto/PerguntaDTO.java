@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// DTO para perguntas do quiz
 public class PerguntaDTO {
     
     private Long id;

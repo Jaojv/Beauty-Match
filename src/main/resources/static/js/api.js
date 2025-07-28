@@ -1,14 +1,20 @@
-// API Client para requisições HTTP
+// Cliente API para requisições HTTP
+// Centraliza todas as chamadas para a API do backend
 class ApiClient {
     constructor() {
+        // URL base da API
         this.baseURL = 'http://localhost:8080/api';
     }
 
     // Função genérica para requisições HTTP
+    // Configura headers, token de autenticação e trata respostas
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
+        console.log('🔍 DEBUG API: URL sendo construída:', url);
+        console.log('🔍 DEBUG API: Endpoint:', endpoint);
+        console.log('🔍 DEBUG API: Base URL:', this.baseURL);
         
-        // Configurações padrão
+        // Configurações padrão para todas as requisições
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -21,31 +27,41 @@ class ApiClient {
         const token = localStorage.getItem('authToken');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
+            console.log('🔍 DEBUG API: Token encontrado, adicionando Authorization header');
+        } else {
+            console.log('🔍 DEBUG API: Nenhum token encontrado');
         }
 
         try {
+            console.log('🔍 DEBUG API: Fazendo requisição para:', url);
             const response = await fetch(url, config);
             
             // Verificar se a resposta é ok
             if (!response.ok) {
                 const errorData = await response.text();
+                console.error('❌ DEBUG API: Erro na resposta:', response.status, errorData);
                 throw new Error(errorData || `Erro ${response.status}: ${response.statusText}`);
             }
 
             // Tentar parsear JSON, se não conseguir retornar texto
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
-                return await response.json();
+                const result = await response.json();
+                console.log('✅ DEBUG API: Resposta JSON recebida:', result);
+                return result;
             } else {
-                return await response.text();
+                const result = await response.text();
+                console.log('✅ DEBUG API: Resposta texto recebida:', result);
+                return result;
             }
         } catch (error) {
-            console.error('Erro na requisição:', error);
+            console.error('❌ DEBUG API: Erro na requisição:', error);
             throw error;
         }
     }
 
     // Métodos específicos para autenticação
+    // Login do usuário
     async login(username, password) {
         return this.request('/auth/login', {
             method: 'POST',
@@ -53,6 +69,7 @@ class ApiClient {
         });
     }
 
+    // Registro de novo usuário
     async register(username, password, nome, email) {
         return this.request('/auth/registro', {
             method: 'POST',
@@ -74,6 +91,7 @@ class ApiClient {
     }
 
     // Método para logout (limpar localStorage)
+    // Remove dados do usuário e redireciona
     logout() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userData');
@@ -93,36 +111,28 @@ class ApiClient {
     // MÉTODOS ESPECÍFICOS DO QUIZ
     // ============================================================================
 
-    /**
-     * Busca todas as perguntas ativas do quiz
-     */
+    // Busca todas as perguntas ativas do quiz
     async getPerguntasQuiz() {
         return this.request('/quiz/perguntas', {
             method: 'GET'
         });
     }
 
-    /**
-     * Verifica o status do quiz para um cliente específico
-     */
+    // Verifica o status do quiz para um cliente específico
     async getStatusQuiz(clienteId) {
         return this.request(`/quiz/cliente/${clienteId}/status`, {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca a resposta do quiz de um cliente específico
-     */
+    // Busca a resposta do quiz de um cliente específico
     async getRespostaQuiz(clienteId) {
         return this.request(`/quiz/cliente/${clienteId}/resposta`, {
             method: 'GET'
         });
     }
 
-    /**
-     * Envia as respostas do quiz e recebe a recomendação
-     */
+    // Envia as respostas do quiz e recebe a recomendação
     async enviarRespostasQuiz(respostaQuizDTO) {
         return this.request('/quiz/responder', {
             method: 'POST',
@@ -130,18 +140,14 @@ class ApiClient {
         });
     }
 
-    /**
-     * Busca uma recomendação específica por critério
-     */
+    // Busca uma recomendação específica por critério
     async getRecomendacaoPorCriterio(criterio) {
         return this.request(`/quiz/recomendacoes/${criterio}`, {
             method: 'GET'
         });
     }
 
-    /**
-     * Limpa as respostas do quiz de um cliente (permite refazer)
-     */
+    // Limpa as respostas do quiz de um cliente (permite refazer)
     async limparRespostasQuiz(clienteId) {
         return this.request(`/quiz/cliente/${clienteId}/respostas`, {
             method: 'DELETE'
@@ -152,54 +158,42 @@ class ApiClient {
     // MÉTODOS DE SALÃO
     // =========================================================================
 
-    /**
-     * Busca todos os salões cadastrados
-     */
+    // Busca todos os salões cadastrados
     async getSaloes() {
         return this.request('/saloes', {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca um salão específico por ID
-     */
+    // Busca um salão específico por ID
     async getSalao(id) {
         return this.request(`/saloes/${id}`, {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca serviços de um salão específico
-     */
+    // Busca serviços de um salão específico
     async getServicosSalao(salaoId) {
         return this.request(`/servicos/salao/${salaoId}`, {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca um serviço específico por ID
-     */
+    // Busca um serviço específico por ID
     async getServico(id) {
         return this.request(`/servicos/${id}`, {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca profissionais de um salão específico
-     */
+    // Busca profissionais de um salão específico
     async getProfissionaisSalao(salaoId) {
         return this.request(`/profissionais/salao/${salaoId}`, {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca horários disponíveis para agendamento
-     */
+    // Busca horários disponíveis para agendamento
     async getHorariosDisponiveis(salaoId, profissionalId, data) {
         const params = new URLSearchParams({
             salaoId: salaoId,
@@ -212,9 +206,7 @@ class ApiClient {
         });
     }
 
-    /**
-     * Cria um novo agendamento
-     */
+    // Cria um novo agendamento
     async criarAgendamento(dadosAgendamento) {
         return this.request('/agendamentos', {
             method: 'POST',
@@ -222,27 +214,21 @@ class ApiClient {
         });
     }
 
-    /**
-     * Busca agendamentos do cliente logado
-     */
+    // Busca agendamentos do cliente logado
     async getAgendamentosCliente() {
         return this.request('/agendamentos/cliente', {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca agendamentos ativos do cliente logado
-     */
+    // Busca agendamentos ativos do cliente logado
     async getAgendamentosAtivosCliente() {
         return this.request('/agendamentos/cliente/ativos', {
             method: 'GET'
         });
     }
 
-    /**
-     * Busca histórico de agendamentos do cliente logado
-     */
+    // Busca histórico de agendamentos do cliente logado
     async getHistoricoAgendamentosCliente(dataInicio = null, dataFim = null) {
         const params = new URLSearchParams();
         if (dataInicio) params.append('dataInicio', dataInicio);
@@ -253,24 +239,61 @@ class ApiClient {
         });
     }
 
-    /**
-     * Cancela um agendamento específico
-     */
+    // Cancela um agendamento específico
     async cancelarAgendamento(agendamentoId) {
         return this.request(`/agendamentos/${agendamentoId}/cancelar`, {
             method: 'PUT'
         });
     }
 
-    /**
-     * Busca um agendamento específico por ID
-     */
+    // Busca um agendamento específico por ID
     async getAgendamento(id) {
         return this.request(`/agendamentos/${id}`, {
+            method: 'GET'
+        });
+    }
+
+    // =========================================================================
+    // MÉTODOS DE FAVORITOS
+    // =========================================================================
+
+    // Lista todos os favoritos do usuário logado
+    async getFavoritos() {
+        return this.request('/favoritos', {
+            method: 'GET'
+        });
+    }
+
+    // Adiciona um salão aos favoritos
+    async adicionarFavorito(salaoId) {
+        return this.request('/favoritos', {
+            method: 'POST',
+            body: JSON.stringify({ salaoId: salaoId })
+        });
+    }
+
+    // Remove um salão dos favoritos
+    async removerFavorito(salaoId) {
+        return this.request(`/favoritos/${salaoId}`, {
+            method: 'DELETE'
+        });
+    }
+
+    // Verifica se um salão está favoritado
+    async verificarFavorito(salaoId) {
+        return this.request(`/favoritos/verificar/${salaoId}`, {
+            method: 'GET'
+        });
+    }
+
+    // Conta quantos favoritos o usuário tem
+    async contarFavoritos() {
+        return this.request('/favoritos/contar', {
             method: 'GET'
         });
     }
 }
 
 // Instância global do cliente API
+// Usada por todos os outros arquivos JavaScript
 const apiClient = new ApiClient(); 

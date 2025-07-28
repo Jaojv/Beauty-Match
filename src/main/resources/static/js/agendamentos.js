@@ -1,3 +1,6 @@
+// Sistema de gerenciamento de agendamentos
+// Controla exibição, filtros e ações dos agendamentos do cliente
+
 // Gerenciador da página de agendamentos
 class AgendamentosManager {
     constructor() {
@@ -9,12 +12,13 @@ class AgendamentosManager {
         this.init();
     }
 
+    // Inicializa o sistema de agendamentos
     async init() {
-        console.log('🔧 AgendamentosJS: Inicializando...');
+        console.log('AgendamentosJS: Inicializando...');
         
         // Verificar se o usuário está logado
         if (!this.isUserLoggedIn()) {
-            console.log('❌ AgendamentosJS: Usuário não logado, redirecionando...');
+            console.log('AgendamentosJS: Usuário não logado, redirecionando...');
             window.location.href = 'login.html';
             return;
         }
@@ -25,15 +29,17 @@ class AgendamentosManager {
         // Carregar agendamentos
         await this.carregarAgendamentos();
         
-        console.log('✅ AgendamentosJS: Inicializado com sucesso');
+        console.log('AgendamentosJS: Inicializado com sucesso');
     }
 
+    // Verifica se o usuário está logado
     isUserLoggedIn() {
         return localStorage.getItem('authToken') !== null;
     }
 
+    // Configura filtros de estabelecimento e status
     configurarFiltros() {
-        console.log('🔧 AgendamentosJS: Configurando filtros...');
+        console.log('AgendamentosJS: Configurando filtros...');
         
         const filtroEstabelecimento = document.getElementById('filtro-estabelecimento');
         const filtroStatus = document.getElementById('filtro-status');
@@ -53,8 +59,9 @@ class AgendamentosManager {
         }
     }
 
+    // Carrega agendamentos da API
     async carregarAgendamentos() {
-        console.log('🔧 AgendamentosJS: Carregando agendamentos...');
+        console.log('AgendamentosJS: Carregando agendamentos...');
         
         try {
             this.mostrarLoading();
@@ -62,7 +69,7 @@ class AgendamentosManager {
             // Buscar agendamentos do cliente
             this.agendamentos = await apiClient.getAgendamentosCliente();
             
-            console.log('✅ AgendamentosJS: Agendamentos carregados:', this.agendamentos.length);
+            console.log('AgendamentosJS: Agendamentos carregados:', this.agendamentos.length);
             
             // Popular filtro de estabelecimentos
             this.popularFiltroEstabelecimentos();
@@ -71,11 +78,12 @@ class AgendamentosManager {
             this.renderizarAgendamentos();
             
         } catch (error) {
-            console.error('❌ AgendamentosJS: Erro ao carregar agendamentos:', error);
+            console.error('AgendamentosJS: Erro ao carregar agendamentos:', error);
             this.mostrarErro('Erro ao carregar agendamentos. Tente novamente.');
         }
     }
 
+    // Popula o filtro de estabelecimentos com dados únicos
     popularFiltroEstabelecimentos() {
         const filtroEstabelecimento = document.getElementById('filtro-estabelecimento');
         if (!filtroEstabelecimento) return;
@@ -95,8 +103,9 @@ class AgendamentosManager {
         });
     }
 
+    // Aplica filtros selecionados aos agendamentos
     aplicarFiltros() {
-        console.log('🔧 AgendamentosJS: Aplicando filtros:', this.filtros);
+        console.log('AgendamentosJS: Aplicando filtros:', this.filtros);
         
         let agendamentosFiltrados = [...this.agendamentos];
 
@@ -118,7 +127,7 @@ class AgendamentosManager {
     }
 
     renderizarAgendamentos(agendamentos = this.agendamentos) {
-        console.log('🔧 AgendamentosJS: Renderizando agendamentos:', agendamentos.length);
+        console.log('AgendamentosJS: Renderizando agendamentos:', agendamentos.length);
         
         const container = document.getElementById('lista-agendamentos');
         const semAgendamentos = document.getElementById('sem-agendamentos');
@@ -150,11 +159,24 @@ class AgendamentosManager {
         const card = document.createElement('div');
         card.className = 'agendamento-card';
         
-        const dataHora = new Date(agendamento.dataHora);
-        const dataFormatada = dataHora.toLocaleDateString('pt-BR');
-        const horaFormatada = dataHora.toLocaleTimeString('pt-BR', { 
+        // Processar data/hora de forma mais robusta
+        let dataHora;
+        if (typeof agendamento.dataHora === 'string') {
+            dataHora = new Date(agendamento.dataHora);
+        } else {
+            dataHora = new Date(agendamento.dataHora);
+        }
+        
+        // Forçar timezone para São Paulo na exibição
+        const offset = -3; // UTC-3 para São Paulo
+        const utc = dataHora.getTime() + (dataHora.getTimezoneOffset() * 60000);
+        const dataHoraLocal = new Date(utc + (offset * 3600000));
+        
+        // Formatar data e hora no timezone local
+        const dataFormatada = dataHoraLocal.toLocaleDateString('pt-BR');
+        const horaFormatada = dataHoraLocal.toLocaleTimeString('pt-BR', { 
             hour: '2-digit', 
-            minute: '2-digit' 
+            minute: '2-digit'
         });
 
         const statusClass = this.getStatusClass(agendamento.status);
@@ -210,10 +232,8 @@ class AgendamentosManager {
                 ` : ''}
             </div>
         `;
-
-        // Adicionar event listeners após criar o HTML
+        
         this.adicionarEventListeners(card, agendamento);
-
         return card;
     }
 
@@ -222,7 +242,7 @@ class AgendamentosManager {
         const btnCancelar = card.querySelector('.btn-cancelar');
         if (btnCancelar) {
             btnCancelar.addEventListener('click', () => {
-                console.log('🔧 AgendamentosJS: Botão cancelar clicado para agendamento:', agendamento.id);
+                console.log('AgendamentosJS: Botão cancelar clicado para agendamento:', agendamento.id);
                 this.cancelarAgendamento(agendamento.id);
             });
         }
@@ -231,7 +251,7 @@ class AgendamentosManager {
         const btnVerDetalhes = card.querySelector('.btn-ver-detalhes');
         if (btnVerDetalhes) {
             btnVerDetalhes.addEventListener('click', () => {
-                console.log('🔧 AgendamentosJS: Botão ver detalhes clicado para agendamento:', agendamento.id);
+                console.log('AgendamentosJS: Botão ver detalhes clicado para agendamento:', agendamento.id);
                 this.verDetalhes(agendamento.id);
             });
         }
@@ -240,7 +260,7 @@ class AgendamentosManager {
         const btnReagendar = card.querySelector('.btn-reagendar');
         if (btnReagendar) {
             btnReagendar.addEventListener('click', () => {
-                console.log('🔧 AgendamentosJS: Botão reagendar clicado para agendamento:', agendamento.id);
+                console.log('AgendamentosJS: Botão reagendar clicado para agendamento:', agendamento.id);
                 this.reagendar(agendamento.id);
             });
         }
@@ -265,8 +285,8 @@ class AgendamentosManager {
     }
 
     async cancelarAgendamento(agendamentoId) {
-        console.log('🔧 AgendamentosJS: Função cancelarAgendamento chamada com ID:', agendamentoId);
-        console.log('🔧 AgendamentosJS: this.agendamentos:', this.agendamentos);
+        console.log('AgendamentosJS: Função cancelarAgendamento chamada com ID:', agendamentoId);
+        console.log('AgendamentosJS: this.agendamentos:', this.agendamentos);
         
         // Mostrar modal de confirmação
         const confirmado = await this.mostrarModalConfirmacao(
@@ -274,18 +294,18 @@ class AgendamentosManager {
             'Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita.'
         );
 
-        console.log('🔧 AgendamentosJS: Usuário confirmou cancelamento:', confirmado);
+        console.log('AgendamentosJS: Usuário confirmou cancelamento:', confirmado);
 
         if (!confirmado) {
-            console.log('🔧 AgendamentosJS: Cancelamento cancelado pelo usuário');
+            console.log('AgendamentosJS: Cancelamento cancelado pelo usuário');
             return;
         }
 
         try {
-            console.log('🔧 AgendamentosJS: Chamando API para cancelar agendamento...');
+            console.log('AgendamentosJS: Chamando API para cancelar agendamento...');
             await apiClient.cancelarAgendamento(agendamentoId);
             
-            console.log('✅ AgendamentosJS: Agendamento cancelado com sucesso');
+            console.log('AgendamentosJS: Agendamento cancelado com sucesso');
             
             // Recarregar agendamentos
             await this.carregarAgendamentos();
@@ -294,7 +314,7 @@ class AgendamentosManager {
             this.mostrarMensagem('Agendamento cancelado com sucesso!', 'success');
             
         } catch (error) {
-            console.error('❌ AgendamentosJS: Erro ao cancelar agendamento:', error);
+            console.error('AgendamentosJS: Erro ao cancelar agendamento:', error);
             this.mostrarMensagem('Erro ao cancelar agendamento. Tente novamente.', 'error');
         }
     }
@@ -328,7 +348,7 @@ ${agendamento.observacoes ? `Observações: ${agendamento.observacoes}` : ''}
     }
 
     reagendar(agendamentoId) {
-        console.log('🔧 AgendamentosJS: Reagendar agendamento:', agendamentoId);
+        console.log('AgendamentosJS: Reagendar agendamento:', agendamentoId);
         
         // Redirecionar para a página de serviços do salão
         const agendamento = this.agendamentos.find(a => a.id === agendamentoId);
@@ -443,17 +463,17 @@ ${agendamento.observacoes ? `Observações: ${agendamento.observacoes}` : ''}
 let agendamentosManager;
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🔧 AgendamentosJS: DOM carregado, iniciando...');
+    console.log('AgendamentosJS: DOM carregado, iniciando...');
     try {
         agendamentosManager = new AgendamentosManager();
-        console.log('✅ AgendamentosJS: AgendamentosManager inicializado com sucesso');
+        console.log('AgendamentosJS: AgendamentosManager inicializado com sucesso');
         
         // Verificar se a variável global está disponível
         window.agendamentosManager = agendamentosManager;
-        console.log('✅ AgendamentosJS: Variável global agendamentosManager definida');
+        console.log('AgendamentosJS: Variável global agendamentosManager definida');
         
     } catch (error) {
-        console.error('❌ AgendamentosJS: Erro ao inicializar AgendamentosManager:', error);
+        console.error('AgendamentosJS: Erro ao inicializar AgendamentosManager:', error);
     }
 });
 

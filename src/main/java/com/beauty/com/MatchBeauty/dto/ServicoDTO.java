@@ -3,6 +3,7 @@ package com.beauty.com.MatchBeauty.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+// DTO para dados de serviços
 public class ServicoDTO {
     private String nome;
     private String descricao;
@@ -62,7 +63,7 @@ public class ServicoDTO {
         this.profissionaisIds = profissionaisIds;
     }
 
-    
+    // Classe para respostas de serviço
     public static class Response {
         private Long id;
         private String nome;
@@ -141,6 +142,7 @@ public class ServicoDTO {
         }
     }
 
+    // Classe para requisições de serviço
     public static class Request {
         private String nome;
         private String descricao;

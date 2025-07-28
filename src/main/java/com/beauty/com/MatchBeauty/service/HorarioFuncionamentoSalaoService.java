@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * SERVIÇO DE HORÁRIOS DE FUNCIONAMENTO DOS SALÕES
@@ -49,6 +50,13 @@ public class HorarioFuncionamentoSalaoService {
     private HorarioFuncionamentoSalaoRepository horarioFuncionamentoRepository;
     
     public void configurarHorariosPadrao(Salao salao) {
+        // Verificar se já existem horários configurados para este salão
+        List<HorarioFuncionamentoSalao> horariosExistentes = horarioFuncionamentoRepository.findBySalaoId(salao.getId());
+        
+        if (!horariosExistentes.isEmpty()) {
+            return; // Horários já configurados, não criar duplicatas
+        }
+        
         List<HorarioFuncionamentoSalao> horarios = new ArrayList<>();
         
         for (DayOfWeek dia : List.of(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, 
@@ -87,7 +95,11 @@ public class HorarioFuncionamentoSalaoService {
             }
         }
         
-        return slots;
+        // Remover duplicatas se houver e ordenar
+        return slots.stream()
+            .distinct()
+            .sorted()
+            .collect(Collectors.toList());
     }
     
     public boolean isHorarioFuncionamento(Long salaoId, DayOfWeek diaSemana, LocalTime horario) {

@@ -1,10 +1,12 @@
-// Validações Frontend
+// Sistema de validação frontend para formulários
+// Gerencia validações de email, senha e campos obrigatórios
 class ValidationManager {
     constructor() {
         this.setupValidations();
     }
 
     // Configurar validações para formulários
+    // Adiciona event listeners para validação em tempo real
     setupValidations() {
         // Validação de email
         const emailInputs = document.querySelectorAll('input[type="email"]');
@@ -28,7 +30,7 @@ class ValidationManager {
         });
     }
 
-    // Validar email
+    // Validar email usando regex
     validateEmail(input) {
         const email = input.value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -42,7 +44,7 @@ class ValidationManager {
         return true;
     }
 
-    // Validar senha
+    // Validar senha (mínimo 6 caracteres)
     validatePassword(input) {
         const password = input.value;
         
@@ -69,6 +71,7 @@ class ValidationManager {
     }
 
     // Validar formulário completo
+    // Verifica todos os campos obrigatórios de uma vez
     validateForm(form) {
         const inputs = form.querySelectorAll('input[required]');
         let isValid = true;
@@ -86,10 +89,11 @@ class ValidationManager {
         return isValid;
     }
 
-    // Mostrar erro
+    // Mostrar erro visual no campo
     showError(input, message) {
         this.clearError(input);
         
+        // Cria elemento de erro
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
         errorDiv.textContent = message;
@@ -101,7 +105,7 @@ class ValidationManager {
         input.style.borderColor = 'red';
     }
 
-    // Limpar erro
+    // Limpar erro visual do campo
     clearError(input) {
         const errorDiv = input.parentNode.querySelector('.error-message');
         if (errorDiv) {
@@ -111,10 +115,12 @@ class ValidationManager {
     }
 
     // Sanitizar input (proteção básica contra XSS)
+    // Remove caracteres perigosos como < e >
     sanitizeInput(input) {
         return input.replace(/[<>]/g, '');
     }
 }
 
 // Instância global do gerenciador de validação
+// Usada por todos os formulários da aplicação
 const validationManager = new ValidationManager(); 

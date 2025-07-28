@@ -15,22 +15,30 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+// Controller responsável por gerenciar autenticação e autorização
+// Fornece endpoints para login, registro e consulta de perfil
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    // Gerenciador de autenticação do Spring Security
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    // Provedor de tokens JWT
     @Autowired
     private JwtTokenProvider tokenProvider;
 
+    // Serviço de autenticação
     @Autowired
     private AutenticacaoService autenticacaoService;
 
+    // Endpoint para login de usuários
+    // Autentica credenciais e retorna token JWT
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
+            // Autentica as credenciais fornecidas
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginRequest.getUsername(),
@@ -38,12 +46,18 @@ public class AuthController {
                 )
             );
 
+            // Define a autenticação no contexto de segurança
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            
+            // Gera token JWT para o usuário autenticado
             String jwt = tokenProvider.generateToken(authentication);
 
+            // Extrai informações do usuário autenticado
             Object principal = authentication.getPrincipal();
             Usuario usuario;
             String tipoUsuario;
+            
+            // Verifica se é um UserPrincipal (padrão do Spring Security)
             if (principal instanceof UserPrincipal) {
                 UserPrincipal userPrincipal = (UserPrincipal) principal;
                 usuario = new Usuario();
@@ -54,12 +68,14 @@ public class AuthController {
                 usuario.setEmail(userPrincipal.getEmail());
                 tipoUsuario = userPrincipal.getTipoUsuario();
             } else if (principal instanceof Usuario) {
+                // Caso seja diretamente um Usuario
                 usuario = (Usuario) principal;
                 tipoUsuario = usuario.getClass().getSimpleName();
             } else {
                 return ResponseEntity.badRequest().body("Usuário não autenticado corretamente");
             }
 
+            // Retorna resposta com token e informações do usuário
             return ResponseEntity.ok(new LoginResponse(
                 jwt,
                 usuario.getIdUsuario(),
@@ -73,10 +89,12 @@ public class AuthController {
         }
     }
 
+    // Endpoint para registro de novos usuários
+    // Cria nova conta com validação de dados obrigatórios
     @PostMapping("/registro")
     public ResponseEntity<?> registro(@RequestBody RegistroRequest registroRequest) {
         try {
-            // Validar dados de entrada
+            // Validação de dados obrigatórios
             if (registroRequest.getUsername() == null || registroRequest.getUsername().trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Username é obrigatório");
             }
@@ -93,7 +111,7 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("Tipo de usuário é obrigatório");
             }
 
-            // Criar usuário
+            // Cria o usuário através do serviço de autenticação
             Usuario usuario = autenticacaoService.criarUsuario(
                 registroRequest.getUsername(),
                 registroRequest.getPassword(),
@@ -108,9 +126,12 @@ public class AuthController {
         }
     }
 
+    // Endpoint para consultar perfil do usuário logado
+    // Retorna informações do usuário autenticado
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile() {
         try {
+            // Obtém a autenticação atual do contexto de segurança
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
                 return ResponseEntity.status(401).body("Usuário não autenticado");
@@ -120,12 +141,12 @@ public class AuthController {
             if (principal instanceof UserPrincipal) {
                 UserPrincipal userPrincipal = (UserPrincipal) principal;
                 
-                // Buscar dados completos do usuário no banco de dados
+                // Busca dados completos do usuário no banco de dados
                 Usuario usuario = autenticacaoService.buscarUsuarioPorId(userPrincipal.getId());
                 
                 if (usuario != null) {
                     return ResponseEntity.ok(new LoginResponse(
-                        null, // Não retornar token novamente
+                        null, // Não retorna token novamente
                         usuario.getIdUsuario(),
                         usuario.getUsername(),
                         usuario.getNome(),

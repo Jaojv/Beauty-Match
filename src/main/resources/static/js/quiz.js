@@ -1,7 +1,8 @@
-/**
- * Quiz Manager - Gerenciador do Quiz de Recomendações
- * Responsável por toda a lógica do quiz do lado do cliente
- */
+// Sistema de gerenciamento do quiz de recomendações
+// Controla perguntas, respostas e geração de recomendações
+
+// Gerenciador do Quiz de Recomendações
+// Responsável por toda a lógica do quiz do lado do cliente
 class QuizManager {
     constructor() {
         this.perguntas = [];
@@ -14,9 +15,8 @@ class QuizManager {
         this.init();
     }
     
-    /**
-     * Inicializa o quiz
-     */
+    // Inicializa o quiz
+    // Verifica autenticação e carrega dados necessários
     async init() {
         try {
             console.log('Iniciando QuizManager...');
@@ -54,9 +54,8 @@ class QuizManager {
         }
     }
     
-    /**
-     * Verifica se o usuário está autenticado
-     */
+    // Verifica se o usuário está autenticado
+    // Valida token e tipo de usuário (deve ser CLIENTE)
     verificarAutenticacao() {
         const token = localStorage.getItem('authToken');
         const userData = localStorage.getItem('userData');
@@ -95,9 +94,7 @@ class QuizManager {
         }
     }
     
-    /**
-     * Carrega dados do usuário logado
-     */
+    // Carrega dados do usuário logado
     async carregarDadosUsuario() {
         try {
             console.log('=== INÍCIO DO DEBUG CARREGAR DADOS USUÁRIO ===');

@@ -2,7 +2,6 @@
 -- Total: 4 tons de pele × 5 formatos de rosto × 5 estilos = 100 combinações
 
 INSERT IGNORE INTO recomendacoes (criterio, descricao, ativo, created_at, updated_at) VALUES
--- LISO + PELE CLARA
 ('LISO_PELE_CLARA_OVAL_CLASSICO', 'Para cabelos lisos com pele clara e rosto oval, recomendamos um corte clássico em camadas médias com franja lateral. O estilo clássico valoriza a simetria do rosto oval. Tons de cor recomendados: castanho claro, loiro dourado ou caramelo suave.', true, NOW(), NOW()),
 ('LISO_PELE_CLARA_OVAL_MODERNO', 'Para cabelos lisos com pele clara e rosto oval, sugerimos um corte moderno com assimetria e textura. O estilo moderno adiciona personalidade ao visual. Tons de cor recomendados: castanho claro, loiro dourado ou caramelo suave.', true, NOW(), NOW()),
 ('LISO_PELE_CLARA_OVAL_ROMANTICO', 'Para cabelos lisos com pele clara e rosto oval, recomendamos um corte em camadas longas com volume lateral. O estilo romântico cria um visual delicado. Tons de cor recomendados: castanho claro, loiro dourado ou caramelo suave.', true, NOW(), NOW()),

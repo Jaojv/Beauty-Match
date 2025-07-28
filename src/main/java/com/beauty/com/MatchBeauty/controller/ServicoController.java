@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Controller responsável por gerenciar operações relacionadas aos serviços
+// Fornece endpoints para CRUD de serviços com documentação Swagger
 @RestController
 @RequestMapping("/api/servicos")
 @Tag(name = "Serviços", description = "API para gerenciamento de serviços")
 public class ServicoController {
 
+    // Serviço para operações de serviço
     @Autowired
     private ServicoService servicoService;
 
+    // Endpoint para criar um novo serviço
+    // Valida os dados de entrada antes de salvar
     @PostMapping
     @Operation(summary = "Criar um novo serviço")
     public ResponseEntity<ServicoDTO.Response> criarServico(@Valid @RequestBody ServicoDTO servicoDTO) {
@@ -28,6 +33,8 @@ public class ServicoController {
         return ResponseEntity.ok(new ServicoDTO.Response(servicoSalvo));
     }
 
+    // Endpoint para listar todos os serviços
+    // Retorna lista de serviços convertida para DTO
     @GetMapping
     @Operation(summary = "Listar todos os serviços")
     public ResponseEntity<List<ServicoDTO.Response>> listarServicos() {
@@ -38,6 +45,8 @@ public class ServicoController {
         return ResponseEntity.ok(servicosDTO);
     }
 
+    // Endpoint para buscar um serviço específico por ID
+    // Retorna 404 se o serviço não for encontrado
     @GetMapping("/{id}")
     @Operation(summary = "Buscar serviço por ID")
     public ResponseEntity<ServicoDTO.Response> buscarServicoPorId(@PathVariable Long id) {
@@ -48,6 +57,8 @@ public class ServicoController {
         return ResponseEntity.ok(new ServicoDTO.Response(servico));
     }
 
+    // Endpoint para buscar serviços por salão
+    // Retorna todos os serviços oferecidos por um salão específico
     @GetMapping("/salao/{salaoId}")
     @Operation(summary = "Buscar serviços por salão")
     public ResponseEntity<List<ServicoDTO.Response>> buscarServicosPorSalao(@PathVariable Long salaoId) {
@@ -58,6 +69,8 @@ public class ServicoController {
         return ResponseEntity.ok(servicosDTO);
     }
 
+    // Endpoint para atualizar um serviço existente
+    // Valida os dados de entrada e retorna 404 se o serviço não existir
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar um serviço existente")
     public ResponseEntity<ServicoDTO.Response> atualizarServico(
@@ -68,6 +81,7 @@ public class ServicoController {
             return ResponseEntity.notFound().build();
         }
         
+        // Atualiza os campos do serviço
         servico.setNome(servicoDTO.getNome());
         servico.setDescricao(servicoDTO.getDescricao());
         servico.setDuracaoMinutos(servicoDTO.getDuracaoMinutos());
@@ -78,6 +92,8 @@ public class ServicoController {
         return ResponseEntity.ok(new ServicoDTO.Response(servicoAtualizado));
     }
 
+    // Endpoint para deletar um serviço
+    // Remove o serviço do sistema
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletar um serviço")
     public ResponseEntity<Void> deletarServico(@PathVariable Long id) {

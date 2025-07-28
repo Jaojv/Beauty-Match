@@ -37,6 +37,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "cliente")
+@DiscriminatorValue("CLIENTE")
 public class Cliente extends Usuario {
     
     /**
