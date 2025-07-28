@@ -3,8 +3,10 @@ package com.beauty.com.MatchBeauty.dto;
 import com.beauty.com.MatchBeauty.entity.Profissional;
 import com.beauty.com.MatchBeauty.entity.Salao;
 
+// DTO para dados de profissionais
 public class ProfissionalDTO {
     
+    // Classe para requisições de profissional
     public static class Request {
     private String username;
     private String password;
@@ -45,6 +47,7 @@ public class ProfissionalDTO {
         public void setSalaoId(Long salaoId) { this.salaoId = salaoId; }
     }
     
+    // Classe para respostas de profissional
     public static class Response {
         private Long idUsuario;
         private String username;
@@ -101,6 +104,7 @@ public class ProfissionalDTO {
         public void setSalao(SalaoResumoDTO salao) { this.salao = salao; }
     }
     
+    // DTO resumido para salão
     public static class SalaoResumoDTO {
         private Long id;
         private String nome;

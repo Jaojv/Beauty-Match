@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// DTO para dados de usuário
 public class UsuarioDTO {
     
+    // Classe para requisições de usuário
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -33,6 +35,7 @@ public class UsuarioDTO {
         public void setTipoUsuario(TipoUsuario tipoUsuario) { this.tipoUsuario = tipoUsuario; }
     }
     
+    // Classe para respostas de usuário
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

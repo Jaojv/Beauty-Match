@@ -2,8 +2,11 @@ package com.beauty.com.MatchBeauty.dto;
 
 import java.util.List;
 
+// DTO para transferência de dados de salão
+// Contém classes Request e Response para salões
 public class SalaoDTO {
     
+    // Request - dados enviados pelo frontend para criar/atualizar salão
     public static class Request {
         private String nome;
         private String endereco;
@@ -82,6 +85,7 @@ public class SalaoDTO {
         }
     }
     
+    // Response - dados retornados pelo backend com informações completas
     public static class Response {
         private Long id;
         private String nome;

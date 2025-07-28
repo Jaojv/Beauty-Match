@@ -6,20 +6,13 @@ import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO FAVORITO - TRANSFERÊNCIA DE DADOS PARA FAVORITOS
- * 
- * Este DTO é usado para transferir dados de favoritos entre o frontend e backend.
- * Contém classes Request (para receber dados) e Response (para enviar dados).
- * 
- */
+// DTO para transferência de dados de favoritos
+// Este DTO é usado para transferir dados de favoritos entre o frontend e backend
+// Contém classes Request (para receber dados) e Response (para enviar dados)
 public class FavoritoDTO {
     
-    /**
-     * REQUEST - DADOS ENVIADOS PELO FRONTEND
-     * Usado para adicionar um novo favorito
-     */
-
+    // Classe para requisições de favorito
+    // Usado para adicionar um novo favorito
     public static class Request {
         private Long salaoId;
         
@@ -41,10 +34,8 @@ public class FavoritoDTO {
     }
     
     
-    /**
-     * RESPONSE SIMPLES - APENAS INFORMAÇÕES BÁSICAS
-     * Usado para listar favoritos de forma simplificada
-     */
+    // Classe para respostas simples de favorito
+    // Usado para listar favoritos de forma simplificada
     public static class ResponseSimples {
         private Long id;
         private Long salaoId;
@@ -65,11 +56,7 @@ public class FavoritoDTO {
             this.dataFavoritado = dataFavoritado;
         }
         
-        /**
-         * CONSTRUTOR A PARTIR DA ENTIDADE
-         * 
-         * @param favorito Entidade Favorito
-         */
+        // Construtor a partir da entidade
         public ResponseSimples(Favorito favorito) {
             this.id = favorito.getId();
             this.salaoId = favorito.getSalao().getId();

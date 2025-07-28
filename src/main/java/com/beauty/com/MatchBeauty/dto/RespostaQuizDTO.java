@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+// DTO para respostas do quiz
 public class RespostaQuizDTO {
     
     private Long id;

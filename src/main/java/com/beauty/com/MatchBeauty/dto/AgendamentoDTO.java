@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+// DTO para agendamentos
 public class AgendamentoDTO {
     
-   
+    // Classe para requisições de agendamento
     public static class Request {
         private LocalDateTime dataHora;
         private Long clienteId;
@@ -74,7 +75,7 @@ public class AgendamentoDTO {
         }
     }
     
-  
+    // Classe para respostas de agendamento
     public static class Response {
         private Long id;
         private LocalDateTime dataHora;
@@ -131,6 +132,7 @@ public class AgendamentoDTO {
         public Double getValorServico() { return valorServico; }
         public void setValorServico(Double valorServico) { this.valorServico = valorServico; }
         
+        // Converte entidade para DTO
         public static Response fromEntity(Agendamento agendamento) {
             if (agendamento == null) return null;
             

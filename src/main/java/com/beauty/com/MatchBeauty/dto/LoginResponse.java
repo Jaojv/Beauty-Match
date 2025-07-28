@@ -2,6 +2,7 @@ package com.beauty.com.MatchBeauty.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// DTO para respostas de login
 public class LoginResponse {
     private String token;
     @JsonProperty("idUsuario")

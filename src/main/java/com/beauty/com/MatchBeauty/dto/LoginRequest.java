@@ -1,5 +1,6 @@
 package com.beauty.com.MatchBeauty.dto;
 
+// DTO para requisições de login
 public class LoginRequest {
     private String username;
     private String password;

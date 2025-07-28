@@ -1,5 +1,6 @@
 package com.beauty.com.MatchBeauty.dto;
 
+// DTO para dados de cliente
 public class ClienteDTO {
     private String username;
     private String password;
