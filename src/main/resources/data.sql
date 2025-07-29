@@ -32,11 +32,11 @@ VALUES
 -- ============================================================================
 
 -- LIMPEZA COMPLETA - Remover todas as perguntas e alternativas existentes
-DELETE FROM alternativas;
-DELETE FROM perguntas;
-DELETE FROM recomendacoes;
-DELETE FROM respostas_quiz_detalhes;
-DELETE FROM respostas_quiz;
+DELETE FROM alternativas WHERE id > 0;
+DELETE FROM perguntas WHERE id > 0;
+DELETE FROM recomendacoes WHERE id > 0;
+DELETE FROM respostas_quiz_detalhes WHERE resposta_quiz_id > 0;
+DELETE FROM respostas_quiz WHERE id > 0;
 
 -- Resetar auto-increment
 ALTER TABLE alternativas AUTO_INCREMENT = 1;
@@ -60,10 +60,11 @@ INSERT INTO alternativas (texto, pergunta_id, ativo, created_at, updated_at) VAL
 
 -- Inserir alternativas para a pergunta 2 (Tom de pele)
 INSERT INTO alternativas (texto, pergunta_id, ativo, created_at, updated_at) VALUES
-('Pele Clara', 2, true, NOW(), NOW()),
-('Pele Morena Clara', 2, true, NOW(), NOW()),
-('Pele Morena', 2, true, NOW(), NOW()),
-('Pele Negra', 2, true, NOW(), NOW());
+('Branca', 2, true, NOW(), NOW()),
+('Preta', 2, true, NOW(), NOW()),
+('Amarela', 2, true, NOW(), NOW()),
+('Parda', 2, true, NOW(), NOW()),
+('Indígena', 2, true, NOW(), NOW());
 
 -- Inserir alternativas para a pergunta 3 (Formato do rosto)
 INSERT INTO alternativas (texto, pergunta_id, ativo, created_at, updated_at) VALUES
@@ -81,37 +82,4 @@ INSERT INTO alternativas (texto, pergunta_id, ativo, created_at, updated_at) VAL
 ('Aventureiro', 4, true, NOW(), NOW()),
 ('Minimalista', 4, true, NOW(), NOW());
 
--- Inserir recomendacoes baseadas em criterios
-INSERT INTO recomendacoes (criterio, descricao, ativo, created_at, updated_at) VALUES
--- Cabelo Liso + Pele Clara + Rosto Oval + Classico
-('LISO_PELE_CLARA_OVAL_CLASSICO', 'Para cabelos lisos com pele clara e rosto oval, recomendamos um corte classico em camadas medias com franja lateral. Tons de cor: castanho claro ou loiro dourado suave. Este estilo valoriza a simetria do seu rosto oval e combina perfeitamente com sua pele clara.', true, NOW(), NOW()),
 
--- Cabelo Liso + Pele Clara + Rosto Oval + Moderno
-('LISO_PELE_CLARA_OVAL_MODERNO', 'Para cabelos lisos com pele clara e rosto oval, sugerimos um corte moderno com assimetria e textura. Tons de cor: loiro platinado ou castanho chocolate. Este estilo adiciona personalidade mantendo a elegancia natural do seu rosto oval.', true, NOW(), NOW()),
-
--- Cabelo Cacheado + Pele Morena Clara + Rosto Redondo + Romantico
-('CACHEADO_PELE_MORENA_CLARA_REDONDO_ROMANTICO', 'Para cabelos cacheados com pele morena clara e rosto redondo, recomendamos um corte em camadas longas com volume na parte superior. Tons de cor: castanho acobreado ou ruivo suave. Este estilo alonga visualmente o rosto e cria um visual romantico e feminino.', true, NOW(), NOW()),
-
--- Cabelo Cacheado + Pele Morena + Rosto Quadrado + Moderno
-('CACHEADO_PELE_MORENA_QUADRADO_MODERNO', 'Para cabelos cacheados com pele morena e rosto quadrado, sugerimos um corte pixie moderno ou bob assimetrico. Tons de cor: castanho escuro ou caramelo. Este estilo suaviza os angulos do rosto e cria um visual contemporaneo e sofisticado.', true, NOW(), NOW()),
-
--- Cabelo Crespo + Pele Negra + Rosto Diamante + Aventureiro
-('CRESPO_PELE_NEGRA_DIAMANTE_AVENTUREIRO', 'Para cabelos crespos com pele negra e rosto diamante, recomendamos um corte afro moderno ou dreadlocks. Tons de cor: manter a cor natural ou adicionar highlights dourados. Este estilo celebra a textura natural do cabelo e cria um visual unico e expressivo.', true, NOW(), NOW()),
-
--- Cabelo Ondulado + Pele Morena + Rosto Triangular + Minimalista
-('ONDULADO_PELE_MORENA_TRIANGULAR_MINIMALISTA', 'Para cabelos ondulados com pele morena e rosto triangular, sugerimos um corte bob medio com volume equilibrado. Tons de cor: castanho natural ou caramelo. Este estilo equilibra a largura do rosto e mantem um visual limpo e minimalista.', true, NOW(), NOW()),
-
--- Cabelo Liso + Pele Negra + Rosto Redondo + Classico
-('LISO_PELE_NEGRA_REDONDO_CLASSICO', 'Para cabelos lisos com pele negra e rosto redondo, recomendamos um corte longo com camadas suaves e franja lateral. Tons de cor: preto profundo ou castanho escuro. Este estilo alonga o rosto e cria um visual classico e elegante.', true, NOW(), NOW()),
-
--- Cabelo Cacheado + Pele Clara + Rosto Quadrado + Romantico
-('CACHEADO_PELE_CLARA_QUADRADO_ROMANTICO', 'Para cabelos cacheados com pele clara e rosto quadrado, sugerimos um corte em camadas longas com volume lateral. Tons de cor: loiro mel ou castanho claro. Este estilo suaviza os angulos e cria um visual romantico e feminino.', true, NOW(), NOW()),
-
--- Cabelo Crespo + Pele Morena + Rosto Oval + Moderno
-('CRESPO_PELE_MORENA_OVAL_MODERNO', 'Para cabelos crespos com pele morena e rosto oval, recomendamos um corte pixie texturizado ou bob curto. Tons de cor: castanho medio ou caramelo. Este estilo valoriza a textura natural e cria um visual moderno e versatil.', true, NOW(), NOW()),
-
--- Cabelo Ondulado + Pele Negra + Rosto Triangular + Aventureiro
-('ONDULADO_PELE_NEGRA_TRIANGULAR_AVENTUREIRO', 'Para cabelos ondulados com pele negra e rosto triangular, sugerimos um corte assimetrico com volume superior. Tons de cor: preto azulado ou castanho escuro com highlights. Este estilo adiciona personalidade e equilibra a forma do rosto.', true, NOW(), NOW()),
-
--- Recomendacao padrao para combinacoes nao mapeadas
-('PADRAO', 'Com base nas suas caracteristicas, recomendamos consultar um profissional para uma avaliacao personalizada. Cada pessoa e unica e merece um tratamento individualizado que valorize suas caracteristicas naturais e atenda as suas preferencias de estilo.', true, NOW(), NOW());
