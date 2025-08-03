@@ -54,4 +54,12 @@ public interface SalaoRepository extends JpaRepository<Salao, Long> {
      * @return true se existe, false caso contrário
      */
     boolean existsByNomeAndEndereco(String nome, String endereco);
+
+    /**
+     * CONTA SALÕES POR STATUS
+     * 
+     * @param status Status dos salões (PENDENTE, APROVADO, REJEITADO)
+     * @return Número de salões com o status especificado
+     */
+    Long countByStatus(String status);
 } 

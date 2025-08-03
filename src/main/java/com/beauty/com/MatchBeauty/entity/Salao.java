@@ -76,6 +76,14 @@ public class Salao {
      */
     @Column
     private String imagemUrl;
+
+    /**
+     * STATUS DO SALÃO
+     * PENDENTE, APROVADO, REJEITADO
+     * Por padrão, novos salões ficam PENDENTES até aprovação do admin
+     */
+    @Column(nullable = false)
+    private String status = "PENDENTE";
     
     /**
      * PROPRIETÁRIO DO SALÃO
@@ -185,6 +193,14 @@ public class Salao {
 
     public void setImagemUrl(String imagemUrl) {
         this.imagemUrl = imagemUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Usuario getProprietario() {

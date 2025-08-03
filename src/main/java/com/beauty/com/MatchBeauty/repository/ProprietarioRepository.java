@@ -23,4 +23,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProprietarioRepository extends JpaRepository<Proprietario, Long> {
+    
+    /**
+     * VERIFICA SE EXISTE PROPRIETÁRIO COM USERNAME
+     * 
+     * @param username Nome de usuário
+     * @return true se existe, false caso contrário
+     */
+    boolean existsByUsername(String username);
 } 

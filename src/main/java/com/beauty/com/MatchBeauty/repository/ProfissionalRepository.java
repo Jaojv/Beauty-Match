@@ -33,4 +33,12 @@ public interface ProfissionalRepository extends JpaRepository<Profissional, Long
      * @return Lista de profissionais do salão
      */
     List<Profissional> findBySalao_Id(Long salaoId);
+
+    /**
+     * VERIFICA SE EXISTE PROFISSIONAL COM USERNAME
+     * 
+     * @param username Nome de usuário
+     * @return true se existe, false caso contrário
+     */
+    boolean existsByUsername(String username);
 } 
