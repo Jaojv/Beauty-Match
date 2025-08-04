@@ -23,4 +23,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+    
+    /**
+     * VERIFICA SE EXISTE CLIENTE COM USERNAME
+     * 
+     * @param username Nome de usuário
+     * @return true se existe, false caso contrário
+     */
+    boolean existsByUsername(String username);
 } 

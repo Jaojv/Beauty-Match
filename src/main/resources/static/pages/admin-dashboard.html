@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Match - Painel Administrativo</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar">
+        <div class="admin-sidebar-header">
+            <img src="../images/logo.png" alt="Beauty Match" class="logo">
+        </div>
+        
+        <nav class="admin-sidebar-nav">
+            <a href="#" class="admin-nav-item active" data-page="dashboard">
+                Dashboard
+            </a>
+            <a href="#" class="admin-nav-item" data-page="usuarios">
+                Usuários
+            </a>
+            <a href="#" class="admin-nav-item" data-page="saloes">
+                Salões
+            </a>
+            <a href="#" class="admin-nav-item admin-logout">
+                Sair
+            </a>
+        </nav>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-main">
+        <!-- HEADER -->
+        <header class="admin-header">
+            <div class="d-flex align-center">
+                <button class="sidebar-toggle">☰</button>
+                <h1>Dashboard</h1>
+            </div>
+            
+            <div class="admin-user-info">
+                <div>
+                    <strong>Administrador</strong><br>
+                    <small>admin@beautymatch.com</small>
+                </div>
+                <img src="../images/user.png" alt="Admin">
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <main class="admin-content">
+            <!-- O conteúdo será carregado dinamicamente pelo JavaScript -->
+            <div class="admin-loading">Carregando...</div>
+        </main>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../js/api.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html> 

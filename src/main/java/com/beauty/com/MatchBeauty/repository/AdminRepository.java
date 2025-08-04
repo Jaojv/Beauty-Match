@@ -23,4 +23,12 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AdminRepository extends JpaRepository<Admin, Long> {
+    
+    /**
+     * VERIFICA SE EXISTE ADMIN COM USERNAME
+     * 
+     * @param username Nome de usuário
+     * @return true se existe, false caso contrário
+     */
+    boolean existsByUsername(String username);
 } 
