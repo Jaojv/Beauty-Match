@@ -308,14 +308,35 @@ async function carregarProfissionaisModal(salaoId) {
             label.htmlFor = `prof${index + 1}`;
             label.className = 'foto-profissional';
             label.style.cssText = `
-                padding: 8px 12px;
-                border-radius: 5px;
-                cursor: pointer;
-                margin: 2px;
-                background: ${index % 2 === 0 ? '#d46b6b' : '#7d3535'};
+                background: #CB5A6E;
                 color: white;
+                transition: background-color 0.3s ease;
             `;
             label.textContent = profissional.nome || `Profissional ${index + 1}`;
+
+            // Adicionar evento hover
+            label.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = '#85373f';
+            });
+            
+            label.addEventListener('mouseleave', function() {
+                if (!input.checked) {
+                    this.style.backgroundColor = '#CB5A6E';
+                }
+            });
+
+            // Adicionar evento de seleção
+            input.addEventListener('change', function() {
+                // Resetar todos os labels
+                container.querySelectorAll('.foto-profissional').forEach(l => {
+                    l.style.backgroundColor = '#CB5A6E';
+                });
+                
+                // Destacar o selecionado
+                if (this.checked) {
+                    label.style.backgroundColor = '#85373f';
+                }
+            });
 
             container.appendChild(input);
             container.appendChild(label);
@@ -353,14 +374,35 @@ function carregarProfissionaisMockModal() {
         label.htmlFor = `prof${index + 1}`;
         label.className = 'foto-profissional';
         label.style.cssText = `
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 2px;
-            background: ${index % 2 === 0 ? '#d46b6b' : '#7d3535'};
+            background: #CB5A6E;
             color: white;
+            transition: background-color 0.3s ease;
         `;
         label.textContent = prof.nome;
+
+        // Adicionar evento hover
+        label.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = '#85373f';
+        });
+        
+        label.addEventListener('mouseleave', function() {
+            if (!input.checked) {
+                this.style.backgroundColor = '#CB5A6E';
+            }
+        });
+
+        // Adicionar evento de seleção
+        input.addEventListener('change', function() {
+            // Resetar todos os labels
+            container.querySelectorAll('.foto-profissional').forEach(l => {
+                l.style.backgroundColor = '#CB5A6E';
+            });
+            
+            // Destacar o selecionado
+            if (this.checked) {
+                label.style.backgroundColor = '#85373f';
+            }
+        });
 
         container.appendChild(input);
         container.appendChild(label);
