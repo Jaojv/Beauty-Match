@@ -571,10 +571,23 @@ class AdminPanel {
     }
 
     // Editar usuário
-    editUser(userId) {
-        console.log('AdminPanel: Editando usuário:', userId);
-        // TODO: Implementar edição de usuário
-        this.showInfo('Funcionalidade de edição será implementada');
+    // Editar usuário
+    async editUser(userId) {
+        try {
+            console.log('AdminPanel: Editando usuário ID:', userId);
+            
+            // Buscar dados do usuário
+            const usuario = await apiClient.request(`/admin/usuarios/${userId}`, {
+                method: 'GET'
+            });
+            
+            console.log('AdminPanel: Dados do usuário recebidos:', usuario);
+            this.showEditUserModal(usuario);
+            
+        } catch (error) {
+            console.error('AdminPanel: Erro ao buscar dados do usuário:', error);
+            this.showError('Erro ao carregar dados do usuário: ' + error.message);
+        }
     }
 
     // Deletar usuário
@@ -591,6 +604,100 @@ class AdminPanel {
                 console.error('AdminPanel: Erro ao deletar usuário:', error);
                 this.showError('Erro ao deletar usuário: ' + error.message);
             }
+        }
+    }
+
+    // Mostrar modal de edição de usuário
+    showEditUserModal(usuario) {
+        const modal = document.createElement('div');
+        modal.className = 'admin-modal';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+            <div class="admin-modal-content">
+                <div class="admin-modal-header">
+                    <h3 class="admin-modal-title">Editar Usuário</h3>
+                    <button class="admin-modal-close">&times;</button>
+                </div>
+                <form id="editUserForm">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Nome</label>
+                        <input type="text" class="admin-form-input" name="nome" value="${usuario.nome || ''}" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Username</label>
+                        <input type="text" class="admin-form-input" name="username" value="${usuario.username || ''}" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Email</label>
+                        <input type="email" class="admin-form-input" name="email" value="${usuario.email || ''}" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Telefone</label>
+                        <input type="text" class="admin-form-input" name="telefone" value="${usuario.telefone || ''}" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Tipo de Usuário</label>
+                        <select class="admin-form-input" name="tipoUsuario" required>
+                            <option value="CLIENTE" ${usuario.tipoUsuario === 'CLIENTE' ? 'selected' : ''}>Cliente</option>
+                            <option value="PROFISSIONAL" ${usuario.tipoUsuario === 'PROFISSIONAL' ? 'selected' : ''}>Profissional</option>
+                            <option value="PROPRIETARIO" ${usuario.tipoUsuario === 'PROPRIETARIO' ? 'selected' : ''}>Proprietário</option>
+                            <option value="ADMIN" ${usuario.tipoUsuario === 'ADMIN' ? 'selected' : ''}>Administrador</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Nova Senha (deixe em branco para manter a atual)</label>
+                        <input type="password" class="admin-form-input" name="password" placeholder="Digite a nova senha...">
+                    </div>
+                    <div class="admin-form-actions">
+                        <button type="submit" class="admin-btn admin-btn-primary">Salvar Alterações</button>
+                        <button type="button" class="admin-btn admin-btn-secondary" onclick="adminPanel.closeAllModals()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Event listener para o formulário
+        const form = modal.querySelector('#editUserForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await this.updateUser(usuario.id, new FormData(form));
+        });
+    }
+
+    // Atualizar usuário
+    async updateUser(userId, formData) {
+        try {
+            console.log('AdminPanel: Atualizando usuário ID:', userId);
+            
+            const userData = {
+                id: userId,
+                nome: formData.get('nome'),
+                username: formData.get('username'),
+                email: formData.get('email'),
+                telefone: formData.get('telefone'),
+                tipoUsuario: formData.get('tipoUsuario'),
+                password: formData.get('password') || null
+            };
+            
+            console.log('AdminPanel: Dados do usuário para atualizar:', userData);
+            
+            // Usar apiClient em vez de fetch
+            const usuarioAtualizado = await apiClient.request(`/admin/usuarios/${userId}`, {
+                method: 'PUT',
+                body: JSON.stringify(userData)
+            });
+            
+            console.log('AdminPanel: Usuário atualizado com sucesso:', usuarioAtualizado);
+            
+            this.showSuccess('Usuário atualizado com sucesso!');
+            this.closeAllModals();
+            this.loadUsuarios(); // Recarregar lista
+            
+        } catch (error) {
+            console.error('AdminPanel: Erro ao atualizar usuário:', error);
+            this.showError('Erro ao atualizar usuário: ' + error.message);
         }
     }
 

@@ -7,6 +7,7 @@ import com.beauty.com.MatchBeauty.dto.UsuarioAdminDTO;
 import com.beauty.com.MatchBeauty.dto.SalaoAdminDTO;
 import com.beauty.com.MatchBeauty.dto.AprovarSalaoDTO;
 import com.beauty.com.MatchBeauty.dto.EditarSalaoDTO;
+import com.beauty.com.MatchBeauty.dto.EditarUsuarioDTO;
 import com.beauty.com.MatchBeauty.entity.Admin;
 import com.beauty.com.MatchBeauty.security.SecurityService;
 import com.beauty.com.MatchBeauty.service.AdminService;
@@ -41,7 +42,7 @@ public class AdminController {
 
     // Endpoint para buscar um administrador específico por ID
     // Apenas administradores podem acessar e apenas o próprio admin pode ver seus dados
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN') and @securityService.isAdminLogado(#id)")
     public ResponseEntity<Admin> buscarAdmin(@PathVariable Long id) {
         Admin admin = adminService.buscarAdmin(id);
@@ -70,7 +71,7 @@ public class AdminController {
 
     // Endpoint para atualizar dados de um administrador
     // Apenas administradores podem atualizar e apenas o próprio admin pode atualizar seus dados
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN') and @securityService.isAdminLogado(#id)")
     public ResponseEntity<Admin> atualizarAdmin(@PathVariable Long id, @RequestBody AdminDTO dto) {
         Admin admin = adminService.buscarAdmin(id);
@@ -91,7 +92,7 @@ public class AdminController {
 
     // Endpoint para deletar um administrador
     // Apenas administradores podem deletar e apenas o próprio admin pode deletar sua conta
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasRole('ADMIN') and @securityService.isAdminLogado(#id)")
     public ResponseEntity<Void> deletarAdmin(@PathVariable Long id) {
         if (adminService.deletarAdmin(id)) {
@@ -153,6 +154,64 @@ public class AdminController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * BUSCA UM USUÁRIO ESPECÍFICO POR ID
+     * 
+     * Retorna as informações detalhadas de um usuário específico
+     * Apenas administradores podem acessar esta funcionalidade
+     */
+    @GetMapping("/usuarios/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioAdminDTO> buscarUsuarioPorId(@PathVariable Long id) {
+        try {
+            System.out.println("Controller: Recebendo requisição para buscar usuário ID: " + id);
+            
+            UsuarioAdminDTO usuario = adminService.buscarUsuarioPorId(id);
+            
+            if (usuario != null) {
+                System.out.println("Controller: Usuário encontrado: " + usuario.getNome());
+                return ResponseEntity.ok(usuario);
+            } else {
+                System.out.println("Controller: Usuário não encontrado para ID: " + id);
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            System.err.println("Controller: Erro ao buscar usuário: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     * EDITA INFORMAÇÕES DE UM USUÁRIO
+     * 
+     * Atualiza as informações de um usuário existente
+     * Apenas administradores podem acessar esta funcionalidade
+     */
+    @PutMapping("/usuarios/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UsuarioAdminDTO> editarUsuario(@PathVariable Long id, @RequestBody EditarUsuarioDTO dto) {
+        try {
+            System.out.println("Controller: Recebendo requisição para editar usuário");
+            System.out.println("Controller: Usuário ID: " + id);
+            
+            // Garantir que o ID do path corresponde ao ID do DTO
+            dto.setId(id);
+            
+            UsuarioAdminDTO usuarioEditado = adminService.editarUsuario(dto);
+            System.out.println("Controller: Usuário editado com sucesso");
+            
+            return ResponseEntity.ok(usuarioEditado);
+        } catch (IllegalArgumentException e) {
+            System.err.println("Controller: Usuário não encontrado: " + e.getMessage());
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.err.println("Controller: Erro ao editar usuário: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // ==================== GESTÃO DE SALÕES ====================
