@@ -22,6 +22,7 @@ main{
     font-style: normal;
     overflow-y: auto;
     border-left: 4px solid #d46b6b;
+    margin-bottom: 30px;
 }
 
 .containertable input {
