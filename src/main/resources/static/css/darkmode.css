@@ -153,3 +153,17 @@ body.dark-mode .btn-ver-detalhes {
 body.dark-mode .btn-ver-detalhes:hover {
     background-color: #944545;
 }
+
+body.dark-mode .admin-sidebar, body.dark-mode .admin-header, body.dark-mode .admin-table th{
+    background: #632b36;
+}
+
+body.dark-mode .dashboard-card, body.dark-mode .admin-table-container {
+    background-color: #2D2D2D;
+}
+body.dark-mode .admin-table-container:hover {
+    background-color: #424242;
+}
+body.dark-mode .dashboard-card-title, body.dark-mode .admin-header h1, body.dark-mode .admin-table-title, body.dark-mode .admin-table th{
+    color: white;
+}
