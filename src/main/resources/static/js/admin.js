@@ -653,24 +653,14 @@ class AdminPanel {
         try {
             console.log('AdminPanel: Aprovando salão ID:', salaoId);
             
-            const response = await fetch('/api/admin/saloes/aprovar', {
+            const resultado = await apiClient.request('/admin/saloes/aprovar', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.getToken()}`,
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify({
                     salaoId: salaoId,
                     status: 'APROVADO',
                     observacao: 'Aprovado pelo administrador'
                 })
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const resultado = await response.json();
             
             if (resultado) {
                 this.showSuccess('Salão aprovado com sucesso!');
@@ -690,24 +680,14 @@ class AdminPanel {
         try {
             console.log('AdminPanel: Rejeitando salão ID:', salaoId);
             
-            const response = await fetch('/api/admin/saloes/aprovar', {
+            const resultado = await apiClient.request('/admin/saloes/aprovar', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.getToken()}`,
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify({
                     salaoId: salaoId,
                     status: 'REJEITADO',
                     observacao: 'Rejeitado pelo administrador'
                 })
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const resultado = await response.json();
             
             if (resultado) {
                 this.showSuccess('Salão rejeitado com sucesso!');
@@ -726,21 +706,20 @@ class AdminPanel {
     async editSalao(salaoId) {
         try {
             console.log('AdminPanel: Editando salão ID:', salaoId);
+            console.log('AdminPanel: Token disponível:', !!this.getToken());
             
-            // Buscar dados do salão
-            const response = await fetch(`/api/admin/saloes/${salaoId}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${this.getToken()}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            // Verificar se apiClient está disponível
+            if (typeof apiClient === 'undefined') {
+                throw new Error('ApiClient não está disponível');
             }
             
-            const salao = await response.json();
+            // Buscar dados do salão usando apiClient
+            console.log('AdminPanel: Fazendo requisição para:', `/admin/saloes/${salaoId}`);
+            const salao = await apiClient.request(`/admin/saloes/${salaoId}`, {
+                method: 'GET'
+            });
+            
+            console.log('AdminPanel: Dados do salão recebidos:', salao);
             this.showEditSalaoModal(salao);
             
         } catch (error) {
@@ -822,20 +801,15 @@ class AdminPanel {
                 status: formData.get('status')
             };
             
-            const response = await fetch(`/api/admin/saloes/${salaoId}`, {
+            console.log('AdminPanel: Dados do salão para atualizar:', salaoData);
+            
+            // Usar apiClient em vez de fetch
+            const salaoAtualizado = await apiClient.request(`/admin/saloes/${salaoId}`, {
                 method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${this.getToken()}`,
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify(salaoData)
             });
             
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const salaoAtualizado = await response.json();
+            console.log('AdminPanel: Salão atualizado com sucesso:', salaoAtualizado);
             
             this.showSuccess('Salão atualizado com sucesso!');
             this.closeAllModals();

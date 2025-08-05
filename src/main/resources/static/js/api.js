@@ -13,6 +13,8 @@ class ApiClient {
         console.log('🔍 DEBUG API: URL sendo construída:', url);
         console.log('🔍 DEBUG API: Endpoint:', endpoint);
         console.log('🔍 DEBUG API: Base URL:', this.baseURL);
+        console.log('🔍 DEBUG API: URL completa:', url);
+        console.log('🔍 DEBUG API: Método:', options.method || 'GET');
         
         // Configurações padrão para todas as requisições
         const config = {
