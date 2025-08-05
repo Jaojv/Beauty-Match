@@ -6,6 +6,7 @@ import com.beauty.com.MatchBeauty.dto.UsuarioAdminDTO;
 import com.beauty.com.MatchBeauty.dto.SalaoAdminDTO;
 import com.beauty.com.MatchBeauty.dto.AprovarSalaoDTO;
 import com.beauty.com.MatchBeauty.dto.EditarSalaoDTO;
+import com.beauty.com.MatchBeauty.dto.EditarUsuarioDTO;
 import com.beauty.com.MatchBeauty.entity.Admin;
 import com.beauty.com.MatchBeauty.entity.Cliente;
 import com.beauty.com.MatchBeauty.entity.Profissional;
@@ -463,6 +464,267 @@ public class AdminService {
         }
         
         return false;
+    }
+
+    /**
+     * BUSCA UM USUÁRIO ESPECÍFICO POR ID
+     * 
+     * Busca um usuário específico por ID e tipo
+     * 
+     * @param id ID do usuário
+     * @return UsuarioAdminDTO do usuário encontrado ou null se não encontrado
+     */
+    public UsuarioAdminDTO buscarUsuarioPorId(Long id) {
+        try {
+            System.out.println("Iniciando busca do usuário ID: " + id);
+            
+            // Tentar encontrar em cada repositório
+            Cliente cliente = clienteRepository.findById(id).orElse(null);
+            if (cliente != null) {
+                System.out.println("Cliente encontrado: " + cliente.getNome());
+                return new UsuarioAdminDTO(
+                    cliente.getIdUsuario(),
+                    cliente.getUsername(),
+                    cliente.getNome(),
+                    cliente.getEmail(),
+                    cliente.getTelefone(),
+                    "CLIENTE",
+                    "ATIVO"
+                );
+            }
+            
+            Profissional profissional = profissionalRepository.findById(id).orElse(null);
+            if (profissional != null) {
+                System.out.println("Profissional encontrado: " + profissional.getNome());
+                return new UsuarioAdminDTO(
+                    profissional.getIdUsuario(),
+                    profissional.getUsername(),
+                    profissional.getNome(),
+                    profissional.getEmail(),
+                    profissional.getTelefone(),
+                    "PROFISSIONAL",
+                    "ATIVO"
+                );
+            }
+            
+            Proprietario proprietario = proprietarioRepository.findById(id).orElse(null);
+            if (proprietario != null) {
+                System.out.println("Proprietário encontrado: " + proprietario.getNome());
+                return new UsuarioAdminDTO(
+                    proprietario.getIdUsuario(),
+                    proprietario.getUsername(),
+                    proprietario.getNome(),
+                    proprietario.getEmail(),
+                    proprietario.getTelefone(),
+                    "PROPRIETARIO",
+                    "ATIVO"
+                );
+            }
+            
+            Admin admin = adminRepository.findById(id).orElse(null);
+            if (admin != null) {
+                System.out.println("Admin encontrado: " + admin.getNome());
+                return new UsuarioAdminDTO(
+                    admin.getIdUsuario(),
+                    admin.getUsername(),
+                    admin.getNome(),
+                    admin.getEmail(),
+                    admin.getTelefone(),
+                    "ADMIN",
+                    "ATIVO"
+                );
+            }
+            
+            System.out.println("Usuário não encontrado para ID: " + id);
+            return null;
+            
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * EDITA INFORMAÇÕES DE UM USUÁRIO
+     * 
+     * Atualiza as informações de um usuário existente
+     * 
+     * @param dto Dados do usuário a ser editado
+     * @return UsuarioAdminDTO do usuário editado
+     */
+    public UsuarioAdminDTO editarUsuario(EditarUsuarioDTO dto) {
+        try {
+            System.out.println("Iniciando edição do usuário ID: " + dto.getId());
+            System.out.println("Tipo de usuário: " + dto.getTipoUsuario());
+            
+            switch (dto.getTipoUsuario().toUpperCase()) {
+                case "CLIENTE":
+                    return editarCliente(dto);
+                case "PROFISSIONAL":
+                    return editarProfissional(dto);
+                case "PROPRIETARIO":
+                    return editarProprietario(dto);
+                case "ADMIN":
+                    return editarAdmin(dto);
+                default:
+                    throw new IllegalArgumentException("Tipo de usuário inválido: " + dto.getTipoUsuario());
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Erro ao editar usuário: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    // Métodos auxiliares para edição específica de cada tipo de usuário
+    private UsuarioAdminDTO editarCliente(EditarUsuarioDTO dto) {
+        Cliente cliente = clienteRepository.findById(dto.getId()).orElse(null);
+        if (cliente == null) {
+            throw new IllegalArgumentException("Cliente não encontrado");
+        }
+        
+        // Verificar se username já existe (exceto para o próprio usuário)
+        if (!cliente.getUsername().equals(dto.getUsername())) {
+            if (clienteRepository.existsByUsername(dto.getUsername())) {
+                throw new IllegalArgumentException("Username já existe");
+            }
+        }
+        
+        // Atualizar dados
+        cliente.setUsername(dto.getUsername());
+        cliente.setNome(dto.getNome());
+        cliente.setEmail(dto.getEmail());
+        cliente.setTelefone(dto.getTelefone());
+        
+        // Atualizar senha se fornecida
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            cliente.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        
+        Cliente clienteSalvo = clienteRepository.save(cliente);
+        
+        return new UsuarioAdminDTO(
+            clienteSalvo.getIdUsuario(),
+            clienteSalvo.getUsername(),
+            clienteSalvo.getNome(),
+            clienteSalvo.getEmail(),
+            clienteSalvo.getTelefone(),
+            "CLIENTE",
+            "ATIVO"
+        );
+    }
+
+    private UsuarioAdminDTO editarProfissional(EditarUsuarioDTO dto) {
+        Profissional profissional = profissionalRepository.findById(dto.getId()).orElse(null);
+        if (profissional == null) {
+            throw new IllegalArgumentException("Profissional não encontrado");
+        }
+        
+        // Verificar se username já existe (exceto para o próprio usuário)
+        if (!profissional.getUsername().equals(dto.getUsername())) {
+            if (profissionalRepository.existsByUsername(dto.getUsername())) {
+                throw new IllegalArgumentException("Username já existe");
+            }
+        }
+        
+        // Atualizar dados
+        profissional.setUsername(dto.getUsername());
+        profissional.setNome(dto.getNome());
+        profissional.setEmail(dto.getEmail());
+        profissional.setTelefone(dto.getTelefone());
+        
+        // Atualizar senha se fornecida
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            profissional.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        
+        Profissional profissionalSalvo = profissionalRepository.save(profissional);
+        
+        return new UsuarioAdminDTO(
+            profissionalSalvo.getIdUsuario(),
+            profissionalSalvo.getUsername(),
+            profissionalSalvo.getNome(),
+            profissionalSalvo.getEmail(),
+            profissionalSalvo.getTelefone(),
+            "PROFISSIONAL",
+            "ATIVO"
+        );
+    }
+
+    private UsuarioAdminDTO editarProprietario(EditarUsuarioDTO dto) {
+        Proprietario proprietario = proprietarioRepository.findById(dto.getId()).orElse(null);
+        if (proprietario == null) {
+            throw new IllegalArgumentException("Proprietário não encontrado");
+        }
+        
+        // Verificar se username já existe (exceto para o próprio usuário)
+        if (!proprietario.getUsername().equals(dto.getUsername())) {
+            if (proprietarioRepository.existsByUsername(dto.getUsername())) {
+                throw new IllegalArgumentException("Username já existe");
+            }
+        }
+        
+        // Atualizar dados
+        proprietario.setUsername(dto.getUsername());
+        proprietario.setNome(dto.getNome());
+        proprietario.setEmail(dto.getEmail());
+        proprietario.setTelefone(dto.getTelefone());
+        
+        // Atualizar senha se fornecida
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            proprietario.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        
+        Proprietario proprietarioSalvo = proprietarioRepository.save(proprietario);
+        
+        return new UsuarioAdminDTO(
+            proprietarioSalvo.getIdUsuario(),
+            proprietarioSalvo.getUsername(),
+            proprietarioSalvo.getNome(),
+            proprietarioSalvo.getEmail(),
+            proprietarioSalvo.getTelefone(),
+            "PROPRIETARIO",
+            "ATIVO"
+        );
+    }
+
+    private UsuarioAdminDTO editarAdmin(EditarUsuarioDTO dto) {
+        Admin admin = adminRepository.findById(dto.getId()).orElse(null);
+        if (admin == null) {
+            throw new IllegalArgumentException("Admin não encontrado");
+        }
+        
+        // Verificar se username já existe (exceto para o próprio usuário)
+        if (!admin.getUsername().equals(dto.getUsername())) {
+            if (adminRepository.existsByUsername(dto.getUsername())) {
+                throw new IllegalArgumentException("Username já existe");
+            }
+        }
+        
+        // Atualizar dados
+        admin.setUsername(dto.getUsername());
+        admin.setNome(dto.getNome());
+        admin.setEmail(dto.getEmail());
+        admin.setTelefone(dto.getTelefone());
+        
+        // Atualizar senha se fornecida
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            admin.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        
+        Admin adminSalvo = adminRepository.save(admin);
+        
+        return new UsuarioAdminDTO(
+            adminSalvo.getIdUsuario(),
+            adminSalvo.getUsername(),
+            adminSalvo.getNome(),
+            adminSalvo.getEmail(),
+            adminSalvo.getTelefone(),
+            "ADMIN",
+            "ATIVO"
+        );
     }
 
     /**

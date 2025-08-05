@@ -236,6 +236,11 @@ body {
     gap: 8px;
 }
 
+.admin-btn-small {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
 .admin-btn-primary {
     background-color: #CB5A6E;
     color: white;
