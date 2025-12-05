@@ -89,7 +89,7 @@ Na pasta `/docs`, você encontrará:
 
 ### **Instalação**
 
-# ✅ **1. Instalar o Java (JDK 17 ou superior)**
+# ✅ **Instalar o Java (JDK 17 ou superior)**
 
 ### **Windows**
 
@@ -112,7 +112,7 @@ java -version
 
 ---
 
-# ✅ **2. Instalar o Maven**
+# ✅ **Instalar o Maven**
 
 ### **Windows**
 
@@ -143,7 +143,7 @@ mvn -version
 
 ---
 
-# ✅ **3. Instalar o MySQL**
+# ✅ **Instalar o MySQL**
 
 ### **Windows**
 
