@@ -1,7 +1,7 @@
 
 ---
 
-# **Beauty Match – Plataforma de Agendamentos para Salões de Beleza**
+# **Beauty Match – Agendamentos para Salões de Beleza**
 
 O **Beauty Match** é uma plataforma completa desenvolvida para otimizar a gestão de salões de beleza, solucionando conflitos de agendamento e centralizando a comunicação entre **proprietários**, **colaboradores** e **clientes** em um único sistema.
 
@@ -11,14 +11,14 @@ Este projeto foi criado como solução real para uma empresa do ramo, com foco e
 
 ## 🚀 **Principais Funcionalidades**
 
-* ✔️ **Agendamento de serviços** de forma simples e intuitiva
-* ✔️ **Cadastro de usuários**, funcionários, clientes e proprietários
-* ✔️ **Gestão de serviços**, horários e disponibilidade
-* ✔️ **Processamento e validação de dados**
-* ✔️ **Controle seguro de login e autorização (Security)**
-* ✔️ **Upload e gerenciamento de imagens**
-* ✔️ **Painel administrativo** para proprietários
-* ✔️ **Interface organizada**, estética e funcional
+ ✔️ **Agendamento de serviços** de forma simples e intuitiva
+ ✔️ **Cadastro de usuários**, funcionários, clientes e proprietários
+ ✔️ **Gestão de serviços**, horários e disponibilidade
+ ✔️ **Processamento e validação de dados**
+ ✔️ **Controle seguro de login e autorização (Security)**
+ ✔️ **Upload e gerenciamento de imagens**
+ ✔️ **Painel administrativo** para proprietários
+ ✔️ **Interface organizada**, estética e funcional
 
 ---
 
