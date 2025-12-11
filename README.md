@@ -20,16 +20,17 @@ Este projeto foi criado como solução real para uma empresa do ramo, com foco e
  * **Painel administrativo** para proprietários
  * **Interface organizada**, estética e funcional
 
----
-Tela Inicial - Darkmode Ativado
+* Tela Inicial - Darkmode Ativado
+  
 ![6de937a3-147c-434b-9fa9-3d5a8b96eac5](https://github.com/user-attachments/assets/c1f620b2-fbb4-4d33-98ad-aea030fbcf66)
 
-Histórico de Agendamentos do Cliente
+* Histórico de Agendamentos do Cliente
+  
 ![5c28a4c3-5e49-4795-a251-c17ceb435657](https://github.com/user-attachments/assets/d7fb097c-e409-45d6-b4eb-7f6e277ec430)
 
-Dashboard do Administrador
+* Dashboard do Administrador
+  
 ![4abb6406-3dc9-4774-b620-6a42a49be1ae](https://github.com/user-attachments/assets/74485fdf-ca86-48da-a82c-ca424258937d)
-![0c65896c-bfc0-4975-b5ce-c9d308f93ce0](https://github.com/user-attachments/assets/f1f3d7d5-f079-4d8b-9ece-e9f33ed0a4b3)
 
 ---
 ## 🛠️ **Tecnologias Utilizadas**
