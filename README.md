@@ -30,7 +30,6 @@ Este projeto foi criado como solução real para uma empresa do ramo, com foco e
 
 * Histórico de Agendamentos do Cliente
   
-![5c28a4c3-5e49-4795-a251-c17ceb435657](https://github.com/user-attachments/assets/d7fb097c-e409-45d6-b4eb-7f6e277ec430)
 ![5c28a4c3-5e49-4795-a251-c17ceb435657 (1)](https://github.com/user-attachments/assets/854bf81c-dab5-481b-9ec9-669e914dab4d)
 
 * Dashboard do Administrador
