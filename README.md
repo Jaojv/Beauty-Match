@@ -20,7 +20,9 @@ Este projeto foi criado como solução real para uma empresa do ramo, com foco e
  * **Painel administrativo** para proprietários
  * **Interface organizada**, estética e funcional
 
-### **Prévia do Sistema**
+---
+
+### 🖥️ **Prévia do Sistema**
 
 * Tela Inicial - Darkmode Ativado
   
