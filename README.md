@@ -22,6 +22,9 @@ Este projeto foi criado como solução real para uma empresa do ramo, com foco e
 
 ---
 
+![6de937a3-147c-434b-9fa9-3d5a8b96eac5](https://github.com/user-attachments/assets/c1f620b2-fbb4-4d33-98ad-aea030fbcf66)
+
+---
 ## 🛠️ **Tecnologias Utilizadas**
 
 ### **Backend**
